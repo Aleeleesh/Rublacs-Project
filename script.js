@@ -1,422 +1,678 @@
+/* =========================================================
+   ROBLOX STREAMING HUB
+   MAIN JAVASCRIPT
+   ========================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
 
-  const $ = selector => document.querySelector(selector);
-  const $$ = selector => [...document.querySelectorAll(selector)];
+  /* =======================================================
+     ELEMENTS
+     ======================================================= */
 
-  /* =========================
+  const toastContainer =
+    document.getElementById("toastContainer");
+
+  const themeToggle =
+    document.getElementById("themeToggle");
+
+  const mobileMenu =
+    document.getElementById("mobileMenu");
+
+  const mainNav =
+    document.getElementById("mainNav");
+
+  const gameGrid =
+    document.getElementById("gameGrid");
+
+  const gameSearch =
+    document.getElementById("gameSearch");
+
+  const filterButtons =
+    document.getElementById("filterButtons");
+
+  const noGames =
+    document.getElementById("noGames");
+
+  const gameModal =
+    document.getElementById("gameModal");
+
+  const needModal =
+    document.getElementById("needModal");
+
+  const startStreamBtn =
+    document.getElementById("startStream");
+
+  const likeButton =
+    document.getElementById("likeButton");
+
+  const shareButton =
+    document.getElementById("shareButton");
+
+  const pollButton =
+    document.getElementById("pollButton");
+
+  const pollResult =
+    document.getElementById("pollResult");
+
+  const chatMessages =
+    document.getElementById("chatMessages");
+
+  const chatForm =
+    document.getElementById("chatForm");
+
+  const chatInput =
+    document.getElementById("chatInput");
+
+  const starRating =
+    document.getElementById("starRating");
+
+
+  /* =======================================================
      TOAST
-  ========================= */
+     ======================================================= */
 
   function showToast(message) {
-    const container = $("#toastContainer");
-    if (!container) return;
 
-    const toast = document.createElement("div");
+    const toast =
+      document.createElement("div");
+
     toast.className = "toast";
     toast.textContent = message;
 
-    container.appendChild(toast);
+    toastContainer.appendChild(toast);
 
     setTimeout(() => {
       toast.remove();
-    }, 2500);
+    }, 3100);
   }
 
 
-  /* =========================
+  /* =======================================================
      THEME
-  ========================= */
+     ======================================================= */
 
-  const themeToggle = $("#themeToggle");
+  const savedTheme =
+    localStorage.getItem("robloxTheme");
 
-  if (localStorage.getItem("robloxTheme") === "light") {
-    document.body.classList.add("light-mode");
+  if (savedTheme === "light") {
+    document.body.classList.add("light-theme");
   }
 
   themeToggle.addEventListener("click", () => {
 
-    document.body.classList.toggle("light-mode");
+    document.body.classList.toggle("light-theme");
+
+    const isLight =
+      document.body.classList.contains("light-theme");
 
     localStorage.setItem(
       "robloxTheme",
-      document.body.classList.contains("light-mode")
-        ? "light"
-        : "dark"
+      isLight ? "light" : "dark"
+    );
+
+    showToast(
+      isLight
+        ? "Light theme enabled."
+        : "Dark theme enabled."
+    );
+  });
+
+
+  /* =======================================================
+     MOBILE MENU
+     ======================================================= */
+
+  mobileMenu.addEventListener("click", () => {
+
+    const isOpen =
+      mainNav.classList.toggle("open");
+
+    mobileMenu.setAttribute(
+      "aria-expanded",
+      String(isOpen)
     );
 
   });
 
 
-  /* =========================
-     MOBILE NAV
-  ========================= */
+  mainNav.querySelectorAll("a").forEach(link => {
 
-  const mobileMenu = $("#mobileMenu");
-  const mainNav = $("#mainNav");
-
-  mobileMenu.addEventListener("click", () => {
-    mainNav.classList.toggle("open");
-  });
-
-  $$("#mainNav a").forEach(link => {
     link.addEventListener("click", () => {
+
       mainNav.classList.remove("open");
+
+      mobileMenu.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
     });
+
   });
 
 
-  /* =========================
+  /* =======================================================
      GAME DATA
-  ========================= */
+     ======================================================= */
 
   const games = [
 
     {
+      id: "brookhaven",
       name: "Brookhaven RP",
-      icon: "🏡",
       category: "roleplay",
+      icon: "🏡",
       type: "Roleplay",
       value: "High",
-      description: "A social roleplay experience based around exploring a town and creating stories.",
-      reason: "Viewers can suggest scenarios and react to funny or unexpected moments."
+      description:
+        "A social roleplay experience where players can create stories and interact with others.",
+      reason:
+        "It gives the streamer many opportunities for funny situations, viewer suggestions, and collaborative roleplay."
     },
 
     {
+      id: "adoptme",
       name: "Adopt Me!",
-      icon: "🐶",
       category: "roleplay",
-      type: "Social",
+      icon: "🐶",
+      type: "Roleplay",
       value: "High",
-      description: "A social experience involving pets, homes, trading and exploration.",
-      reason: "The social gameplay creates many opportunities for audience interaction."
+      description:
+        "A social experience focused on pets, customization, trading, and exploring.",
+      reason:
+        "The variety of activities makes it easy to create casual and interactive content."
     },
 
     {
+      id: "bloxfruits",
       name: "Blox Fruits",
-      icon: "⚔️",
       category: "action",
-      type: "Adventure",
-      value: "High",
-      description: "Explore islands, fight enemies, level up and discover abilities.",
-      reason: "Progression and combat give viewers clear goals to follow."
+      icon: "⚔️",
+      type: "Action",
+      value: "Very High",
+      description:
+        "An action-focused adventure involving combat, progression, exploration, and abilities.",
+      reason:
+        "Progression and combat naturally create goals, challenges, reactions, and exciting moments."
     },
 
     {
+      id: "mm2",
       name: "Murder Mystery 2",
-      icon: "🔎",
       category: "competitive",
-      type: "Mystery",
-      value: "High",
-      description: "Players receive different roles and try to figure out what is happening.",
-      reason: "Mystery creates suspense and gives the streamer plenty to react to."
+      icon: "🔎",
+      type: "Competitive",
+      value: "Very High",
+      description:
+        "A round-based mystery game where players take different roles.",
+      reason:
+        "Every round can create suspense, reactions, predictions, and funny interactions."
     },
 
     {
+      id: "doors",
       name: "DOORS",
-      icon: "🚪",
       category: "horror",
+      icon: "🚪",
+      type: "Horror",
+      value: "Very High",
+      description:
+        "A horror adventure where players progress through rooms while dealing with threats.",
+      reason:
+        "Unexpected moments and reactions can make the stream entertaining for viewers."
+    },
+
+    {
+      id: "towerofhell",
+      name: "Tower of Hell",
+      category: "challenge",
+      icon: "🗼",
+      type: "Challenge",
+      value: "High",
+      description:
+        "An obstacle-course experience that tests movement and timing.",
+      reason:
+        "Failure, progress, and difficult sections create natural challenges for a stream."
+    },
+
+    {
+      id: "arsenal",
+      name: "Arsenal",
+      category: "competitive",
+      icon: "🎯",
+      type: "Competitive",
+      value: "Very High",
+      description:
+        "A fast-paced competitive shooter experience.",
+      reason:
+        "Quick rounds and changing situations create plenty of reactions and competitive moments."
+    },
+
+    {
+      id: "bedwars",
+      name: "BedWars",
+      category: "competitive",
+      icon: "🛏️",
+      type: "Competitive",
+      value: "Very High",
+      description:
+        "A team-based competitive game involving bases, resources, and combat.",
+      reason:
+        "Teamwork and objectives give the stream clear goals and opportunities for challenges."
+    },
+
+    {
+      id: "piggy",
+      name: "Piggy",
+      category: "horror",
+      icon: "🐷",
       type: "Horror",
       value: "High",
-      description: "Explore a mysterious environment while surviving unexpected encounters.",
-      reason: "Unexpected events create natural reactions and memorable moments."
+      description:
+        "A suspenseful adventure involving puzzles, objectives, and escaping danger.",
+      reason:
+        "The story and suspense provide natural opportunities for reactions and discussion."
     },
 
     {
-      name: "Tower of Hell",
-      icon: "🗼",
-      category: "challenge",
-      type: "Obby",
-      value: "High",
-      description: "A difficult obstacle course where players try to reach the top.",
-      reason: "The difficulty gives viewers something to root for."
-    },
-
-    {
-      name: "Arsenal",
-      icon: "🎯",
-      category: "competitive",
-      type: "Action",
-      value: "High",
-      description: "Fast-paced competitive matches with constantly changing weapons.",
-      reason: "Quick rounds keep the stream active and exciting."
-    },
-
-    {
-      name: "BedWars",
-      icon: "🛏️",
-      category: "competitive",
-      type: "Strategy",
-      value: "High",
-      description: "Protect your team's bed while gathering resources and fighting opponents.",
-      reason: "Teamwork and strategy give the stream a clear objective."
-    },
-
-    {
-      name: "Piggy",
-      icon: "🐷",
-      category: "horror",
-      type: "Survival",
-      value: "High",
-      description: "Solve puzzles and escape while trying to survive.",
-      reason: "The survival format creates suspense and reactions."
-    },
-
-    {
+      id: "dress",
       name: "Dress to Impress",
-      icon: "👗",
       category: "roleplay",
-      type: "Fashion",
-      value: "Medium",
-      description: "Create outfits based on themes and compete in fashion rounds.",
-      reason: "Viewers can react to outfits and suggest ideas."
+      icon: "👗",
+      type: "Social",
+      value: "High",
+      description:
+        "A fashion competition where players create outfits around different themes.",
+      reason:
+        "Viewers can participate by suggesting themes, rating outfits, and reacting to results."
     },
 
     {
+      id: "naturaldisaster",
       name: "Natural Disaster Survival",
-      icon: "🌪️",
       category: "challenge",
+      icon: "🌪️",
       type: "Survival",
       value: "High",
-      description: "Try to survive random disasters using quick decisions.",
-      reason: "Every round can create a different situation."
+      description:
+        "Players attempt to survive different environmental disasters.",
+      reason:
+        "Each round changes the situation, making it easy to create unpredictable moments."
     },
 
     {
+      id: "obby",
       name: "Obby Challenge",
-      icon: "🧱",
       category: "challenge",
-      type: "Obstacle Course",
+      icon: "🏃",
+      type: "Challenge",
       value: "High",
-      description: "Test movement, timing and reactions through obstacle courses.",
-      reason: "Challenges are simple for viewers to understand and follow."
+      description:
+        "An obstacle-course style challenge focused on movement and timing.",
+      reason:
+        "The streamer can set completion goals and let viewers react to progress or failure."
     }
 
   ];
 
 
-  /* =========================
-     GAME LIBRARY
-  ========================= */
+  /* =======================================================
+     FAVORITES
+     ======================================================= */
 
-  const gameGrid = $("#gameGrid");
-  const noGames = $("#noGames");
-  const gameSearch = $("#gameSearch");
+  let favorites = [];
 
-  let currentFilter = "all";
+  try {
 
-  function getFavorites() {
-    try {
-      return JSON.parse(
-        localStorage.getItem("robloxFavorites") || "[]"
+    const savedFavorites =
+      JSON.parse(
+        localStorage.getItem("robloxFavorites")
       );
-    } catch {
-      return [];
+
+    if (Array.isArray(savedFavorites)) {
+      favorites = savedFavorites;
     }
+
+  } catch {
+    favorites = [];
   }
 
-  function saveFavorites(favorites) {
+
+  function saveFavorites() {
+
     localStorage.setItem(
       "robloxFavorites",
       JSON.stringify(favorites)
     );
+
   }
+
+
+  function isFavorite(gameId) {
+    return favorites.includes(gameId);
+  }
+
+
+  /* =======================================================
+     GAME CARDS
+     ======================================================= */
+
+  let currentFilter = "all";
+  let currentSearch = "";
+
 
   function renderGames() {
 
+    gameGrid.textContent = "";
+
     const search =
-      gameSearch.value.toLowerCase().trim();
+      currentSearch.trim().toLowerCase();
 
-    const results = games.filter(game => {
+    const filtered =
+      games.filter(game => {
 
-      const categoryMatch =
-        currentFilter === "all" ||
-        game.category === currentFilter;
+        const matchesFilter =
+          currentFilter === "all" ||
+          game.category === currentFilter;
 
-      const searchMatch =
-        game.name.toLowerCase().includes(search) ||
-        game.type.toLowerCase().includes(search);
+        const matchesSearch =
+          !search ||
+          game.name.toLowerCase().includes(search) ||
+          game.description.toLowerCase().includes(search) ||
+          game.category.toLowerCase().includes(search);
 
-      return categoryMatch && searchMatch;
-    });
+        return matchesFilter && matchesSearch;
 
-    gameGrid.replaceChildren();
+      });
+
 
     noGames.classList.toggle(
       "hidden",
-      results.length > 0
+      filtered.length !== 0
     );
 
-    results.forEach(game => {
 
-      const card = document.createElement("article");
+    filtered.forEach(game => {
+
+      const card =
+        document.createElement("article");
+
       card.className = "game-card";
 
-      const icon = document.createElement("div");
+
+      const top =
+        document.createElement("div");
+
+      top.className = "game-card-top";
+
+
+      const icon =
+        document.createElement("div");
+
       icon.className = "game-icon";
       icon.textContent = game.icon;
 
-      const title = document.createElement("h3");
+
+      const category =
+        document.createElement("span");
+
+      category.className = "game-category";
+      category.textContent = game.category;
+
+
+      top.appendChild(icon);
+      top.appendChild(category);
+
+
+      const title =
+        document.createElement("h3");
+
       title.textContent = game.name;
 
-      const description = document.createElement("p");
-      description.textContent = game.description;
 
-      const category = document.createElement("span");
-      category.className = "game-category";
-      category.textContent = game.type;
+      const description =
+        document.createElement("p");
 
-      const actions = document.createElement("div");
+      description.textContent =
+        game.description;
+
+
+      const actions =
+        document.createElement("div");
+
       actions.className = "game-actions";
 
-      const viewButton = document.createElement("button");
-      viewButton.textContent = "View Details";
 
-      const favoriteButton = document.createElement("button");
+      const viewButton =
+        document.createElement("button");
 
-      const favorites = getFavorites();
+      viewButton.className = "view-game";
+      viewButton.textContent = "View";
 
-      favoriteButton.textContent =
-        favorites.includes(game.name)
-          ? "★ Saved"
-          : "☆ Save";
 
       viewButton.addEventListener("click", () => {
         openGameModal(game);
       });
 
-      favoriteButton.addEventListener("click", () => {
 
-        let saved = getFavorites();
+      const favoriteButton =
+        document.createElement("button");
 
-        if (saved.includes(game.name)) {
+      favoriteButton.className = "favorite-game";
 
-          saved = saved.filter(
-            name => name !== game.name
+      updateFavoriteButton(
+        favoriteButton,
+        game
+      );
+
+
+      favoriteButton.addEventListener(
+        "click",
+        () => {
+
+          toggleFavorite(
+            game,
+            favoriteButton
           );
 
-          favoriteButton.textContent = "☆ Save";
-
-          showToast(
-            `${game.name} removed from favorites`
-          );
-
-        } else {
-
-          saved.push(game.name);
-
-          favoriteButton.textContent = "★ Saved";
-
-          showToast(
-            `${game.name} added to favorites`
-          );
         }
+      );
 
-        saveFavorites(saved);
-      });
 
       actions.appendChild(viewButton);
       actions.appendChild(favoriteButton);
 
-      card.appendChild(icon);
+
+      card.appendChild(top);
       card.appendChild(title);
       card.appendChild(description);
-      card.appendChild(category);
       card.appendChild(actions);
 
       gameGrid.appendChild(card);
+
     });
+
   }
 
-  $$(".filter-btn").forEach(button => {
 
-    button.addEventListener("click", () => {
+  function updateFavoriteButton(
+    button,
+    game
+  ) {
 
-      $$(".filter-btn").forEach(btn =>
-        btn.classList.remove("active")
+    if (isFavorite(game.id)) {
+
+      button.classList.add("saved");
+      button.textContent = "★ Saved";
+
+    } else {
+
+      button.classList.remove("saved");
+      button.textContent = "☆ Favorite";
+
+    }
+
+  }
+
+
+  function toggleFavorite(
+    game,
+    button
+  ) {
+
+    if (isFavorite(game.id)) {
+
+      favorites =
+        favorites.filter(
+          id => id !== game.id
+        );
+
+      showToast(
+        `${game.name} removed from favorites.`
       );
 
-      button.classList.add("active");
+    } else {
+
+      favorites.push(game.id);
+
+      showToast(
+        `${game.name} added to favorites.`
+      );
+
+    }
+
+    saveFavorites();
+
+    updateFavoriteButton(
+      button,
+      game
+    );
+
+  }
+
+
+  gameSearch.addEventListener(
+    "input",
+    event => {
+
+      currentSearch =
+        event.target.value;
+
+      renderGames();
+
+    }
+  );
+
+
+  filterButtons.addEventListener(
+    "click",
+    event => {
+
+      const button =
+        event.target.closest(
+          ".filter-btn"
+        );
+
+      if (!button) return;
 
       currentFilter =
         button.dataset.filter;
 
+      filterButtons
+        .querySelectorAll(".filter-btn")
+        .forEach(btn => {
+          btn.classList.remove("active");
+        });
+
+      button.classList.add("active");
+
       renderGames();
-    });
 
-  });
-
-  gameSearch.addEventListener(
-    "input",
-    renderGames
+    }
   );
 
-  renderGames();
 
-
-  /* =========================
+  /* =======================================================
      GAME MODAL
-  ========================= */
-
-  const gameModal = $("#gameModal");
+     ======================================================= */
 
   let selectedGame = null;
+
 
   function openGameModal(game) {
 
     selectedGame = game;
 
-    $("#modalGameIcon").textContent =
-      game.icon;
+    document.getElementById(
+      "modalGameIcon"
+    ).textContent = game.icon;
 
-    $("#modalGameCategory").textContent =
+    document.getElementById(
+      "modalGameCategory"
+    ).textContent =
       game.category.toUpperCase();
 
-    $("#modalGameName").textContent =
-      game.name;
+    document.getElementById(
+      "modalGameName"
+    ).textContent = game.name;
 
-    $("#modalGameDescription").textContent =
+    document.getElementById(
+      "modalGameDescription"
+    ).textContent =
       game.description;
 
-    $("#modalGameType").textContent =
+    document.getElementById(
+      "modalGameType"
+    ).textContent =
       game.type;
 
-    $("#modalGameValue").textContent =
+    document.getElementById(
+      "modalGameValue"
+    ).textContent =
       game.value;
 
-    $("#modalGameReason").textContent =
+    document.getElementById(
+      "modalGameReason"
+    ).textContent =
       game.reason;
 
     updateModalFavorite();
 
-    gameModal.classList.add("show");
-    gameModal.setAttribute("aria-hidden","false");
+    gameModal.classList.add("open");
+    gameModal.setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
+    document.body.style.overflow = "hidden";
+
   }
+
 
   function closeGameModal() {
 
-    gameModal.classList.remove("show");
-    gameModal.setAttribute("aria-hidden","true");
+    gameModal.classList.remove("open");
+
+    gameModal.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    document.body.style.overflow = "";
 
   }
 
-  $$("[data-close-modal]").forEach(element => {
-
-    element.addEventListener(
-      "click",
-      closeGameModal
-    );
-
-  });
 
   function updateModalFavorite() {
 
+    const button =
+      document.getElementById(
+        "modalFavorite"
+      );
+
     if (!selectedGame) return;
 
-    const favorites = getFavorites();
-
-    const button = $("#modalFavorite");
-
-    if (favorites.includes(selectedGame.name)) {
+    if (isFavorite(selectedGame.id)) {
 
       button.textContent =
         "★ Remove from Favorites";
@@ -425,119 +681,440 @@ document.addEventListener("DOMContentLoaded", () => {
 
       button.textContent =
         "☆ Add to Favorites";
+
     }
+
   }
 
-  $("#modalFavorite").addEventListener("click", () => {
 
-    if (!selectedGame) return;
+  document.querySelectorAll(
+    "[data-close-modal]"
+  ).forEach(element => {
 
-    let favorites = getFavorites();
+    element.addEventListener(
+      "click",
+      closeGameModal
+    );
 
-    if (favorites.includes(selectedGame.name)) {
+  });
 
-      favorites = favorites.filter(
-        name => name !== selectedGame.name
+
+  document.getElementById(
+    "modalFavorite"
+  ).addEventListener(
+    "click",
+    () => {
+
+      if (!selectedGame) return;
+
+      if (isFavorite(selectedGame.id)) {
+
+        favorites =
+          favorites.filter(
+            id => id !== selectedGame.id
+          );
+
+        showToast(
+          `${selectedGame.name} removed from favorites.`
+        );
+
+      } else {
+
+        favorites.push(
+          selectedGame.id
+        );
+
+        showToast(
+          `${selectedGame.name} added to favorites.`
+        );
+
+      }
+
+      saveFavorites();
+
+      updateModalFavorite();
+
+      renderGames();
+
+    }
+  );
+
+
+  /* =======================================================
+     STREAM STATE
+     ======================================================= */
+
+  let isLive = false;
+  let streamSeconds = 0;
+  let streamTimerId = null;
+  let viewerCount = 0;
+
+
+  function formatTime(seconds) {
+
+    const hours =
+      Math.floor(seconds / 3600);
+
+    const minutes =
+      Math.floor(
+        (seconds % 3600) / 60
       );
 
-      showToast(
-        `${selectedGame.name} removed from favorites`
+    const secs =
+      seconds % 60;
+
+    return [
+      hours,
+      minutes,
+      secs
+    ]
+      .map(value =>
+        String(value).padStart(2, "0")
+      )
+      .join(":");
+
+  }
+
+
+  function updateStreamUI() {
+
+    const streamStatus =
+      document.getElementById(
+        "streamStatus"
       );
+
+    const sideStatus =
+      document.getElementById(
+        "sideStatus"
+      );
+
+    const dashboardTitle =
+      document.getElementById(
+        "dashboardTitle"
+      );
+
+    const viewerElement =
+      document.getElementById(
+        "viewerCount"
+      );
+
+    const chatUsers =
+      document.getElementById(
+        "chatUsers"
+      );
+
+    const streamTimer =
+      document.getElementById(
+        "streamTimer"
+      );
+
+
+    streamTimer.textContent =
+      formatTime(streamSeconds);
+
+
+    viewerElement.textContent =
+      isLive
+        ? viewerCount.toLocaleString()
+        : "0";
+
+
+    chatUsers.textContent =
+      isLive
+        ? `${viewerCount.toLocaleString()} watching`
+        : "0 watching";
+
+
+    if (isLive) {
+
+      streamStatus.textContent =
+        "● LIVE";
+
+      streamStatus.className =
+        "status live";
+
+      sideStatus.textContent =
+        "Live";
+
+      dashboardTitle.textContent =
+        "Roblox Community Stream is LIVE";
 
     } else {
 
-      favorites.push(selectedGame.name);
+      streamStatus.textContent =
+        "● OFFLINE";
+
+      streamStatus.className =
+        "status offline";
+
+      sideStatus.textContent =
+        "Offline";
+
+      dashboardTitle.textContent =
+        "Waiting to start...";
+
+    }
+
+  }
+
+
+  function startStream() {
+
+    if (isLive) {
+
+      stopStream();
+      return;
+
+    }
+
+
+    isLive = true;
+
+    streamSeconds = 0;
+
+    viewerCount =
+      1100 +
+      Math.floor(
+        Math.random() * 400
+      );
+
+
+    startStreamBtn.textContent =
+      "■ Stop Stream";
+
+
+    updateStreamUI();
+
+
+    streamTimerId =
+      setInterval(() => {
+
+        if (!isLive) return;
+
+        streamSeconds++;
+
+        const change =
+          Math.floor(
+            Math.random() * 31
+          ) - 15;
+
+        viewerCount =
+          Math.max(
+            0,
+            viewerCount + change
+          );
+
+        updateStreamUI();
+
+      }, 1000);
+
+
+    startBotChat();
+
+    showToast(
+      "🔴 Stream started!"
+    );
+
+  }
+
+
+  function stopStream() {
+
+    isLive = false;
+
+
+    if (streamTimerId !== null) {
+
+      clearInterval(
+        streamTimerId
+      );
+
+      streamTimerId = null;
+
+    }
+
+
+    stopBotChat();
+
+    startStreamBtn.textContent =
+      "▶ Start Stream";
+
+    viewerCount = 0;
+
+    updateStreamUI();
+
+    showToast(
+      "Stream stopped."
+    );
+
+  }
+
+
+  startStreamBtn.addEventListener(
+    "click",
+    startStream
+  );
+
+
+  /* =======================================================
+     LIKES
+     ======================================================= */
+
+  let likeCount =
+    Number(
+      localStorage.getItem(
+        "robloxLikes"
+      )
+    ) || 0;
+
+
+  function updateLikes() {
+
+    document.getElementById(
+      "likeCount"
+    ).textContent =
+      likeCount.toLocaleString();
+
+    document.getElementById(
+      "sideLikeCount"
+    ).textContent =
+      likeCount.toLocaleString();
+
+  }
+
+
+  likeButton.addEventListener(
+    "click",
+    () => {
+
+      likeCount++;
+
+      localStorage.setItem(
+        "robloxLikes",
+        String(likeCount)
+      );
+
+      updateLikes();
 
       showToast(
-        `${selectedGame.name} added to favorites`
+        "❤️ Like added!"
       );
+
     }
-
-    saveFavorites(favorites);
-    updateModalFavorite();
-    renderGames();
-
-  });
+  );
 
 
-  /* =========================
-     NEED MODAL
-  ========================= */
+  updateLikes();
 
-  const needModal = $("#needModal");
 
-  const needs = {
+  /* =======================================================
+     SHARE
+     ======================================================= */
 
-    entertainment: {
-      icon: "🎉",
-      title: "Entertainment",
-      description:
-        "Viewers need fun moments, interesting gameplay, challenges, reactions and commentary that keep the stream enjoyable."
-    },
+  shareButton.addEventListener(
+    "click",
+    async () => {
 
-    interaction: {
-      icon: "💬",
-      title: "Interaction",
-      description:
-        "Viewers should have opportunities to participate through chat, polls, questions, suggestions and challenges."
-    },
+      const shareData = {
+        title: "Roblox Streaming Hub",
+        text:
+          "Check out our Roblox Streaming Hub school project!",
+        url: window.location.href
+      };
 
-    consistency: {
-      icon: "📅",
-      title: "Consistency",
-      description:
-        "A consistent style helps viewers understand what kind of experience they can expect from the stream."
-    },
 
-    discovery: {
-      icon: "🔎",
-      title: "Discovery",
-      description:
-        "Introducing viewers to interesting Roblox experiences can help them discover new games and ideas."
+      try {
+
+        if (
+          navigator.share
+        ) {
+
+          await navigator.share(
+            shareData
+          );
+
+          showToast(
+            "Thanks for sharing!"
+          );
+
+        } else if (
+          navigator.clipboard
+        ) {
+
+          await navigator.clipboard.writeText(
+            window.location.href
+          );
+
+          showToast(
+            "Link copied to clipboard!"
+          );
+
+        } else {
+
+          showToast(
+            "Sharing isn't available here."
+          );
+
+        }
+
+      } catch (error) {
+
+        if (
+          error &&
+          error.name !== "AbortError"
+        ) {
+
+          showToast(
+            "Couldn't share right now."
+          );
+
+        }
+
+      }
+
     }
-
-  };
-
-  $$(".need-card").forEach(card => {
-
-    card.addEventListener("click", () => {
-
-      const data =
-        needs[card.dataset.need];
-
-      if (!data) return;
-
-      $("#needIcon").textContent =
-        data.icon;
-
-      $("#needTitle").textContent =
-        data.title;
-
-      $("#needDescription").textContent =
-        data.description;
-
-      needModal.classList.add("show");
-      needModal.setAttribute("aria-hidden","false");
-
-    });
-
-  });
-
-  $$("[data-close-need]").forEach(element => {
-
-    element.addEventListener("click", () => {
-
-      needModal.classList.remove("show");
-      needModal.setAttribute("aria-hidden","true");
-
-    });
-
-  });
+  );
 
 
-  /* =========================
+  /* =======================================================
+     POLL
+     ======================================================= */
+
+  pollButton.addEventListener(
+    "click",
+    () => {
+
+      const selected =
+        document.querySelector(
+          'input[name="poll"]:checked'
+        );
+
+
+      if (!selected) {
+
+        showToast(
+          "Choose a game first."
+        );
+
+        return;
+
+      }
+
+
+      pollResult.textContent =
+        `${selected.value} received your vote!`;
+
+      showToast(
+        "Vote submitted!"
+      );
+
+    }
+  );
+
+
+  /* =======================================================
      AUDIENCE
-  ========================= */
+     ======================================================= */
 
   const audienceData = {
 
@@ -545,7 +1122,7 @@ document.addEventListener("DOMContentLoaded", () => {
       icon: "🎮",
       title: "Roblox Players",
       description:
-        "Players can relate to the games being played and may enjoy discovering strategies, experiences, challenges or new games.",
+        "Players can relate to the games being played and may enjoy discovering strategies, experiences, challenges, or new games.",
       points: [
         "✓ Game discovery",
         "✓ Gameplay ideas",
@@ -557,11 +1134,11 @@ document.addEventListener("DOMContentLoaded", () => {
       icon: "👀",
       title: "Roblox Viewers",
       description:
-        "Viewers can enjoy reactions, commentary, challenges, funny moments and the personality of the streamer.",
+        "Viewers who enjoy watching gameplay can follow entertaining moments, reactions, commentary, and challenges without playing themselves.",
       points: [
         "✓ Entertainment",
         "✓ Reactions",
-        "✓ Commentary"
+        "✓ Interesting gameplay"
       ]
     },
 
@@ -569,7 +1146,7 @@ document.addEventListener("DOMContentLoaded", () => {
       icon: "👥",
       title: "Social Viewers",
       description:
-        "People watching with friends can discuss games, vote in polls, react together and participate in challenges.",
+        "People watching with friends can enjoy shared jokes, discussions, polls, challenges, and moments that encourage everyone to participate.",
       points: [
         "✓ Group interaction",
         "✓ Polls",
@@ -579,386 +1156,309 @@ document.addEventListener("DOMContentLoaded", () => {
 
   };
 
-  $$(".audience-tab").forEach(tab => {
 
-    tab.addEventListener("click", () => {
+  document.querySelectorAll(
+    ".audience-tab"
+  ).forEach(button => {
 
-      $$(".audience-tab").forEach(item =>
-        item.classList.remove("active")
-      );
+    button.addEventListener(
+      "click",
+      () => {
 
-      tab.classList.add("active");
+        const type =
+          button.dataset.audience;
 
-      const data =
-        audienceData[tab.dataset.audience];
+        const data =
+          audienceData[type];
 
-      if (!data) return;
+        if (!data) return;
 
-      $("#audienceIcon").textContent =
-        data.icon;
 
-      $("#audienceTitle").textContent =
-        data.title;
+        document.querySelectorAll(
+          ".audience-tab"
+        ).forEach(tab => {
+          tab.classList.remove("active");
+        });
 
-      $("#audienceDescription").textContent =
-        data.description;
+        button.classList.add("active");
 
-      const points =
-        $("#audiencePoints");
 
-      points.replaceChildren();
+        const display =
+          document.getElementById(
+            "audienceDisplay"
+          );
 
-      data.points.forEach(point => {
+        display.querySelector(
+          ".big-icon"
+        ).textContent =
+          data.icon;
 
-        const span =
-          document.createElement("span");
+        display.querySelector(
+          "h3"
+        ).textContent =
+          data.title;
 
-        span.textContent = point;
+        display.querySelector(
+          "p"
+        ).textContent =
+          data.description;
 
-        points.appendChild(span);
-      });
 
-    });
+        const points =
+          display.querySelector(
+            ".audience-points"
+          );
+
+        points.textContent = "";
+
+        data.points.forEach(point => {
+
+          const span =
+            document.createElement("span");
+
+          span.textContent = point;
+
+          points.appendChild(span);
+
+        });
+
+      }
+    );
 
   });
 
 
-  /* =========================
+  /* =======================================================
+     VIEWER NEEDS
+     ======================================================= */
+
+  const needs = {
+
+    entertainment: {
+      icon: "🎉",
+      title: "Entertainment",
+      description:
+        "Viewers need content that is enjoyable and interesting. Funny moments, challenges, reactions, and engaging commentary can help make gameplay entertaining."
+    },
+
+    interaction: {
+      icon: "💬",
+      title: "Interaction",
+      description:
+        "Viewers often enjoy having a way to participate. Chat, polls, questions, and suggestions can make them feel involved in the stream."
+    },
+
+    consistency: {
+      icon: "📅",
+      title: "Consistency",
+      description:
+        "A consistent style and reliable stream experience can help viewers know what to expect while still allowing different games and activities."
+    },
+
+    discovery: {
+      icon: "🔎",
+      title: "Discovery",
+      description:
+        "A stream can help viewers discover Roblox games and experiences they may not have tried before."
+    }
+
+  };
+
+
+  document.querySelectorAll(
+    ".need-card"
+  ).forEach(card => {
+
+    card.addEventListener(
+      "click",
+      () => {
+
+        const type =
+          card.dataset.need;
+
+        const data =
+          needs[type];
+
+        if (!data) return;
+
+
+        document.getElementById(
+          "needIcon"
+        ).textContent =
+          data.icon;
+
+        document.getElementById(
+          "needTitle"
+        ).textContent =
+          data.title;
+
+        document.getElementById(
+          "needDescription"
+        ).textContent =
+          data.description;
+
+
+        needModal.classList.add(
+          "open"
+        );
+
+        needModal.setAttribute(
+          "aria-hidden",
+          "false"
+        );
+
+        document.body.style.overflow =
+          "hidden";
+
+      }
+    );
+
+  });
+
+
+  function closeNeedModal() {
+
+    needModal.classList.remove(
+      "open"
+    );
+
+    needModal.setAttribute(
+      "aria-hidden",
+      "true"
+    );
+
+    document.body.style.overflow =
+      "";
+
+  }
+
+
+  document.querySelectorAll(
+    "[data-close-need]"
+  ).forEach(element => {
+
+    element.addEventListener(
+      "click",
+      closeNeedModal
+    );
+
+  });
+
+
+  /* =======================================================
      QUALITY ACCORDION
-  ========================= */
+     ======================================================= */
 
-  $$(".quality-header").forEach(header => {
+  document.querySelectorAll(
+    ".quality-header"
+  ).forEach(button => {
 
-    header.addEventListener("click", () => {
+    button.addEventListener(
+      "click",
+      () => {
 
-      const item =
-        header.closest(".quality-item");
+        const item =
+          button.closest(
+            ".quality-item"
+          );
 
-      item.classList.toggle("open");
+        if (!item) return;
 
-    });
+        item.classList.toggle(
+          "open"
+        );
+
+      }
+    );
 
   });
 
 
-  /* =========================
-     STREAM DASHBOARD
-  ========================= */
-
-  let streamLive = false;
-  let streamSeconds = 0;
-  let viewers = 0;
-  let streamTimer = null;
-
-  let likes =
-    Number(
-      localStorage.getItem("robloxLikes") || 0
-    );
-
-  function formatTime(totalSeconds) {
-
-    const hours =
-      Math.floor(totalSeconds / 3600);
-
-    const minutes =
-      Math.floor(
-        (totalSeconds % 3600) / 60
-      );
-
-    const seconds =
-      totalSeconds % 60;
-
-    return [
-      hours,
-      minutes,
-      seconds
-    ]
-      .map(value =>
-        String(value).padStart(2,"0")
-      )
-      .join(":");
-  }
-
-  function updateDashboard() {
-
-    $("#streamTimer").textContent =
-      formatTime(streamSeconds);
-
-    $("#viewerCount").textContent =
-      viewers.toLocaleString();
-
-    $("#chatUsers").textContent =
-      `${viewers.toLocaleString()} watching`;
-
-    $("#likeCount").textContent =
-      likes.toLocaleString();
-
-    $("#sideLikeCount").textContent =
-      likes.toLocaleString();
-
-    $("#sideStatus").textContent =
-      streamLive ? "Live" : "Offline";
-  }
-
-  function startStream() {
-
-    if (streamLive) return;
-
-    streamLive = true;
-
-    streamSeconds = 0;
-
-    viewers =
-      Math.floor(Math.random() * 70) + 80;
-
-    $("#streamStatus").textContent =
-      "● LIVE";
-
-    $("#streamStatus").className =
-      "status live";
-
-    $("#dashboardTitle").textContent =
-      "Roblox Community Stream is LIVE!";
-
-    $("#dashboardSubtitle").textContent =
-      "Viewers are joining the stream.";
-
-    $("#startStream").textContent =
-      "■ Stop Stream";
-
-    updateDashboard();
-
-    streamTimer = setInterval(() => {
-
-      streamSeconds++;
-
-      const change =
-        Math.floor(Math.random() * 9) - 3;
-
-      viewers += change;
-
-      if (viewers < 1) {
-        viewers = 1;
-      }
-
-      updateDashboard();
-
-    },1000);
-
-    startBotChat();
-
-    showToast("🔴 Stream started!");
-  }
-
-  function stopStream() {
-
-    if (!streamLive) return;
-
-    streamLive = false;
-
-    clearInterval(streamTimer);
-    streamTimer = null;
-
-    stopBotChat();
-
-    $("#streamStatus").textContent =
-      "● OFFLINE";
-
-    $("#streamStatus").className =
-      "status offline";
-
-    $("#dashboardTitle").textContent =
-      "Stream ended.";
-
-    $("#dashboardSubtitle").textContent =
-      "Press Start Stream to begin another session.";
-
-    $("#startStream").textContent =
-      "▶ Start Stream";
-
-    viewers = 0;
-
-    updateDashboard();
-
-    showToast("⏹️ Stream stopped.");
-  }
-
-  $("#startStream").addEventListener(
-    "click",
-    () => {
-
-      if (streamLive) {
-        stopStream();
-      } else {
-        startStream();
-      }
-
-    }
-  );
-
-
-  /* =========================
-     LIKES
-  ========================= */
-
-  $("#likeButton").addEventListener("click", () => {
-
-    likes++;
-
-    localStorage.setItem(
-      "robloxLikes",
-      likes
-    );
-
-    updateDashboard();
-
-    showToast("❤️ Like added!");
-
-  });
-
-
-  /* =========================
-     SHARE
-  ========================= */
-
-  $("#shareButton").addEventListener(
-    "click",
-    async () => {
-
-      try {
-
-        if (navigator.share) {
-
-          await navigator.share({
-            title: "Roblox Streaming Hub",
-            text: "Check out our Roblox Streaming Hub!"
-          });
-
-        } else if (navigator.clipboard) {
-
-          await navigator.clipboard.writeText(
-            window.location.href
-          );
-
-          showToast("🔗 Link copied!");
-
-        } else {
-
-          showToast(
-            "Copy this page link and share it!"
-          );
-        }
-
-      } catch {
-
-        showToast("Share cancelled.");
-
-      }
-
-    }
-  );
-
-
-  /* =========================
-     POLL
-  ========================= */
-
-  $("#pollButton").addEventListener(
-    "click",
-    () => {
-
-      const selected =
-        document.querySelector(
-          'input[name="poll"]:checked'
-        );
-
-      if (!selected) {
-
-        showToast(
-          "Choose a game first!"
-        );
-
-        return;
-      }
-
-      $("#pollResult").textContent =
-        `✓ Vote submitted for ${selected.value}!`;
-
-      showToast("📊 Vote submitted!");
-
-    }
-  );
-
-
-  /* =========================
+  /* =======================================================
      RATINGS
-  ========================= */
+     ======================================================= */
 
-  const ratingButtons =
-    $$("#starRating button");
-
-  const ratingText =
-    $("#ratingText");
-
-  const savedRating =
+  let savedRating =
     Number(
-      localStorage.getItem("robloxRating") || 0
-    );
+      localStorage.getItem(
+        "robloxRating"
+      )
+    ) || 0;
 
-  function updateRating(rating) {
 
-    ratingButtons.forEach(button => {
+  function updateRatingDisplay() {
 
-      button.classList.toggle(
-        "active",
-        Number(button.dataset.rating) <= rating
+    const stars =
+      starRating.querySelectorAll(
+        "button"
       );
 
-    });
 
-    ratingText.textContent =
-      rating
-        ? `${rating}/5 stars`
-        : "Not rated yet";
-  }
-
-  ratingButtons.forEach(button => {
-
-    button.addEventListener("click", () => {
+    stars.forEach(star => {
 
       const rating =
-        Number(button.dataset.rating);
+        Number(
+          star.dataset.rating
+        );
 
-      localStorage.setItem(
-        "robloxRating",
-        rating
-      );
-
-      updateRating(rating);
-
-      showToast(
-        `⭐ You rated it ${rating}/5!`
+      star.classList.toggle(
+        "active",
+        rating <= savedRating
       );
 
     });
 
+
+    const ratingText =
+      document.getElementById(
+        "ratingText"
+      );
+
+
+    ratingText.textContent =
+      savedRating
+        ? `${savedRating}/5 — Thanks for rating!`
+        : "Not rated yet";
+
+  }
+
+
+  starRating.querySelectorAll(
+    "button"
+  ).forEach(star => {
+
+    star.addEventListener(
+      "click",
+      () => {
+
+        savedRating =
+          Number(
+            star.dataset.rating
+          );
+
+        localStorage.setItem(
+          "robloxRating",
+          String(savedRating)
+        );
+
+        updateRatingDisplay();
+
+        showToast(
+          `Rated ${savedRating}/5!`
+        );
+
+      }
+    );
+
   });
 
-  updateRating(savedRating);
+
+  updateRatingDisplay();
 
 
-  /* =========================
+  /* =======================================================
      CHAT
-  ========================= */
-
-  const chatMessages =
-    $("#chatMessages");
-
-  const chatForm =
-    $("#chatForm");
-
-  const chatInput =
-    $("#chatInput");
+     ======================================================= */
 
   function addChatMessage(
     username,
@@ -970,59 +1470,86 @@ document.addEventListener("DOMContentLoaded", () => {
       document.createElement("div");
 
     wrapper.className =
-      isBot
-        ? "chat-message bot-message"
-        : "chat-message";
+      "chat-message";
+
+    if (isBot) {
+      wrapper.classList.add(
+        "bot-message"
+      );
+    }
+
 
     const avatar =
       document.createElement("span");
 
-    avatar.className = "avatar";
+    avatar.className =
+      "avatar";
 
     avatar.textContent =
-      username.charAt(0).toUpperCase();
+      username
+        .charAt(0)
+        .toUpperCase();
+
 
     const content =
       document.createElement("div");
 
+
     const name =
       document.createElement("strong");
 
-    name.textContent = username;
+    name.textContent =
+      username;
 
-    content.appendChild(name);
 
     if (isBot) {
 
       const badge =
         document.createElement("span");
 
-      badge.className = "bot-badge";
+      badge.className =
+        "bot-badge";
 
-      badge.textContent = "BOT";
+      badge.textContent =
+        "BOT";
 
-      content.appendChild(badge);
+      name.appendChild(badge);
+
     }
+
 
     const text =
       document.createElement("p");
 
-    text.textContent = message;
+    text.textContent =
+      message;
 
+
+    content.appendChild(name);
     content.appendChild(text);
 
     wrapper.appendChild(avatar);
     wrapper.appendChild(content);
 
-    chatMessages.appendChild(wrapper);
+    chatMessages.appendChild(
+      wrapper
+    );
 
-    while (chatMessages.children.length > 45) {
+
+    while (
+      chatMessages.children.length > 60
+    ) {
+
       chatMessages.firstElementChild.remove();
+
     }
+
 
     chatMessages.scrollTop =
       chatMessages.scrollHeight;
+
   }
+
 
   chatForm.addEventListener(
     "submit",
@@ -1034,6 +1561,7 @@ document.addEventListener("DOMContentLoaded", () => {
         chatInput.value.trim();
 
       if (!message) return;
+
 
       addChatMessage(
         "You",
@@ -1047,163 +1575,136 @@ document.addEventListener("DOMContentLoaded", () => {
   );
 
 
-  /* =========================
-     SIMULATED BOTS
-  ========================= */
+  /* =======================================================
+     BOT CHAT
+     ======================================================= */
 
-  const bots = [
+  const botMessages = [
 
     {
-      name: "Jaymat1210",
-      messages: [
-        "I'm the goat",
-        "W stream",
-        "This is actually fire",
-        "Easy work 😭"
-      ]
+      username: "Jaymat1210",
+      message: "I'm the goat"
     },
 
     {
-      name: "Drossog",
-      messages: [
-        "tuff",
-        "W website",
-        "nah this is tuff",
-        "Actually fire"
-      ]
+      username: "Drossog",
+      message: "tuff"
     },
 
     {
-      name: "Frenchfries",
-      messages: [
-        "rating this a 6.7",
-        "6.7/10",
-        "Could be higher 💀",
-        "I'm giving this a 6.7"
-      ]
+      username: "Frenchfries",
+      message: "rating this a 6.7"
     },
 
     {
-      name: "Scrappy",
-      messages: [
-        "monchayster city",
-        "MONCHAYSTER CITY 🗣️",
-        "city mentioned",
-        "monchayster"
-      ]
-    },
-
-    {
-      name: "Key",
-      messages: [
-        "Sam just called our work a 'slop'",
-        "bro really said slop 💀",
-        "NAHHH 😭",
-        "Sam said slop and dipped"
-      ]
-    },
-
-    {
-      name: "Menoopy",
-      messages: [
-        "the website got broken",
-        "bro the website is cooked 💀",
-        "something broke 😭",
-        "WHO BROKE THE WEBSITE"
-      ]
+      username: "Scrappy",
+      message: "monchayster city"
     }
 
   ];
 
+
   let botTimeout = null;
 
-  function sendRandomBotMessage() {
 
-    if (!streamLive) return;
+  function sendBotMessage() {
+
+    if (!isLive) return;
+
+    const randomIndex =
+      Math.floor(
+        Math.random() *
+        botMessages.length
+      );
 
     const bot =
-      bots[
-        Math.floor(
-          Math.random() * bots.length
-        )
-      ];
-
-    const message =
-      bot.messages[
-        Math.floor(
-          Math.random() * bot.messages.length
-        )
-      ];
+      botMessages[randomIndex];
 
     addChatMessage(
-      bot.name,
-      message,
+      bot.username,
+      bot.message,
       true
     );
+
   }
+
 
   function scheduleBotMessage() {
 
-    if (!streamLive) return;
-
-    const delay =
-      Math.floor(
-        Math.random() * 3000
-      ) + 3000;
+    if (!isLive) return;
 
     botTimeout =
       setTimeout(() => {
 
-        sendRandomBotMessage();
+        botTimeout = null;
+
+        if (!isLive) return;
+
+        sendBotMessage();
 
         scheduleBotMessage();
 
-      },delay);
+      }, 3000 + Math.random() * 3000);
+
   }
+
 
   function startBotChat() {
 
-    if (botTimeout) return;
+    if (
+      botTimeout ||
+      !isLive
+    ) {
+      return;
+    }
 
-    sendRandomBotMessage();
+    sendBotMessage();
 
     scheduleBotMessage();
+
   }
+
 
   function stopBotChat() {
 
     if (botTimeout) {
 
-      clearTimeout(botTimeout);
+      clearTimeout(
+        botTimeout
+      );
 
       botTimeout = null;
+
     }
+
   }
 
 
-  /* =========================
-     KEYBOARD CONTROLS
-  ========================= */
+  /* =======================================================
+     ESCAPE KEY
+     ======================================================= */
 
   document.addEventListener(
     "keydown",
     event => {
 
-      if (event.key !== "Escape") return;
+      if (event.key !== "Escape") {
+        return;
+      }
 
       closeGameModal();
-
-      needModal.classList.remove("show");
-      needModal.setAttribute("aria-hidden","true");
+      closeNeedModal();
 
     }
   );
 
 
-  /* =========================
-     INITIAL DASHBOARD
-  ========================= */
+  /* =======================================================
+     INITIALIZATION
+     ======================================================= */
 
-  updateDashboard();
+  renderGames();
+
+  updateStreamUI();
 
 });
