@@ -3,1265 +3,433 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <meta name="description" content="Roblox Streaming Hub - Gaming, community and interactive streaming.">
-
     <title>Roblox Streaming Hub</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- ==============================
-     HEADER
-================================ -->
+<header class="navbar">
+    <div class="logo">
+        <span>◈</span> Roblox Streaming Hub
+    </div>
 
-<header class="site-header">
-
-    <nav class="navbar">
-
-        <a href="#home" class="logo">
-            <span class="logo-icon">🎮</span>
-            <span>RSH</span>
-            <small>ROBLOX STREAMING HUB</small>
-        </a>
-
-        <div class="nav-links">
-            <a href="#home" class="nav-link active">Home</a>
-            <a href="#games" class="nav-link">Games</a>
-            <a href="#dashboard" class="nav-link">Dashboard</a>
-            <a href="#audience" class="nav-link">Audience</a>
-            <a href="#research" class="nav-link">Research</a>
-        </div>
-
-        <button id="theme-toggle" class="icon-button" aria-label="Toggle theme">
-            🌙
-        </button>
-
+    <nav>
+        <a href="#home" class="nav-link active">Home</a>
+        <a href="#content" class="nav-link">Content</a>
+        <a href="#audience" class="nav-link">Audience</a>
+        <a href="#needs" class="nav-link">Viewer Needs</a>
+        <a href="#good-stream" class="nav-link">Good Stream</a>
+        <a href="#research" class="nav-link">Research</a>
     </nav>
 
+    <button id="themeBtn" class="icon-btn" aria-label="Toggle theme">☾</button>
 </header>
 
 
-<!-- ==============================
-     MAIN
-================================ -->
-
 <main>
 
-<!-- ==============================
-     HERO
-================================ -->
-
-<section id="home" class="hero">
-
-    <div class="hero-background"></div>
-
-    <div class="hero-grid"></div>
-
+<!-- HOME -->
+<section id="home" class="hero section">
     <div class="hero-content">
-
-        <div class="live-badge">
-            <span></span>
-            STREAMING COMMUNITY
-        </div>
-
-        <p class="eyebrow">WELCOME TO THE HUB</p>
+        <div class="badge">🎮 ROBLOX STREAMING PROJECT</div>
 
         <h1>
-            ROBLOX
-            <span>STREAMING</span>
+            Play.
+            <span>Connect.</span>
+            Stream.
         </h1>
 
-        <p class="hero-description">
-            Explore Roblox games, discover new experiences,
-            participate in challenges, and become part of the
-            stream.
+        <p>
+            A Roblox streaming experience designed to be fun,
+            interactive, engaging, and enjoyable for viewers.
         </p>
 
         <div class="hero-buttons">
-
-            <a href="#games" class="primary-button">
-                Explore Games
-                <span>→</span>
-            </a>
-
-            <a href="#dashboard" class="secondary-button">
-                Open Dashboard
-            </a>
-
+            <a href="#content" class="primary-btn">Explore Content →</a>
+            <button id="learnBtn" class="secondary-btn">Why Roblox?</button>
         </div>
-
-        <div class="hero-stats">
-
-            <div>
-                <strong>10+</strong>
-                <span>Featured Games</span>
-            </div>
-
-            <div>
-                <strong>24/7</strong>
-                <span>Community</span>
-            </div>
-
-            <div>
-                <strong>100%</strong>
-                <span>Interactive</span>
-            </div>
-
-        </div>
-
     </div>
 
+    <div class="hero-visual">
+        <div class="floating-card card-one">🎮</div>
+        <div class="floating-card card-two">🔥</div>
+
+        <div class="controller">
+            <div class="controller-top">
+                <span></span>
+                <span></span>
+            </div>
+
+            <div class="controller-body">
+                <div class="dpad">
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                    <i></i>
+                </div>
+
+                <div class="buttons">
+                    <b></b>
+                    <b></b>
+                    <b></b>
+                    <b></b>
+                </div>
+            </div>
+        </div>
+    </div>
 </section>
 
 
-<!-- ==============================
-     FEATURED GAME
-================================ -->
-
-<section class="featured-section">
-
-    <div class="featured-card">
-
-        <div class="featured-content">
-
-            <span class="featured-label">
-                ⭐ FEATURED EXPERIENCE
-            </span>
-
-            <h2>Brookhaven RP</h2>
-
-            <p>
-                Hang out with friends, explore the city, customize
-                your character, and create your own roleplay stories.
-            </p>
-
-            <button class="primary-button game-open"
-                    data-game="brookhaven">
-                View Game Info →
-            </button>
-
-        </div>
-
-        <div class="featured-art">
-            🏙️
-        </div>
-
-    </div>
-
-</section>
-
-
-<!-- ==============================
-     GAMES
-================================ -->
-
-<section id="games" class="section">
-
+<!-- CONTENT -->
+<section id="content" class="section">
     <div class="section-heading">
-
         <div>
-            <span class="section-number">01</span>
-
-            <h2>Game Library</h2>
-
-            <p>
-                Browse some of the Roblox experiences we could
-                feature on stream.
-            </p>
+            <span class="eyebrow">01 / CONTENT</span>
+            <h2>What will we stream?</h2>
         </div>
 
+        <p>
+            Our stream focuses on Roblox gameplay, challenges,
+            reactions, exploration, and interaction with viewers.
+        </p>
     </div>
 
+    <div class="game-grid">
 
-    <!-- Search -->
-
-    <div class="game-controls">
-
-        <div class="search-box">
-
-            <span>🔎</span>
-
-            <input
-                type="text"
-                id="game-search"
-                placeholder="Search games..."
-                autocomplete="off"
-            >
-
-        </div>
-
-        <div class="filter-buttons">
-
-            <button class="filter-button active" data-category="all">
-                All
-            </button>
-
-            <button class="filter-button" data-category="roleplay">
-                Roleplay
-            </button>
-
-            <button class="filter-button" data-category="action">
-                Action
-            </button>
-
-            <button class="filter-button" data-category="horror">
-                Horror
-            </button>
-
-            <button class="filter-button" data-category="obby">
-                Obby
-            </button>
-
-            <button class="filter-button" data-category="simulator">
-                Simulator
-            </button>
-
-        </div>
-
-    </div>
-
-
-    <!-- Game Grid -->
-
-    <div class="games-grid" id="games-grid">
-
-
-        <!-- Brookhaven -->
-
-        <article class="game-card"
-                 data-category="roleplay"
-                 data-search="brookhaven roleplay">
-
-            <div class="game-image brookhaven-image">
-                🏙️
+        <article class="game-card" data-game="Brookhaven RP">
+            <div class="game-icon brookhaven">🏡</div>
+            <div>
+                <span class="game-type">ROLEPLAY</span>
+                <h3>Brookhaven RP</h3>
+                <p>Explore a virtual town and create fun roleplay situations.</p>
             </div>
-
-            <div class="game-card-content">
-
-                <div class="game-title-row">
-
-                    <h3>Brookhaven RP</h3>
-
-                    <button class="favorite-button"
-                            data-favorite="brookhaven">
-                        ☆
-                    </button>
-
-                </div>
-
-                <span class="game-category">ROLEPLAY</span>
-
-                <p>
-                    Social roleplay, houses, vehicles and
-                    customizable characters.
-                </p>
-
-                <button class="game-info-button game-open"
-                        data-game="brookhaven">
-                    View Details
-                </button>
-
-            </div>
-
+            <button class="details-btn">View idea →</button>
         </article>
 
-
-        <!-- Adopt Me -->
-
-        <article class="game-card"
-                 data-category="roleplay simulator"
-                 data-search="adopt me pets roleplay">
-
-            <div class="game-image adopt-image">
-                🐶
+        <article class="game-card" data-game="Adopt Me!">
+            <div class="game-icon adopt">🐶</div>
+            <div>
+                <span class="game-type">SOCIAL</span>
+                <h3>Adopt Me!</h3>
+                <p>Interact, explore, and experience the game's social features.</p>
             </div>
-
-            <div class="game-card-content">
-
-                <div class="game-title-row">
-
-                    <h3>Adopt Me!</h3>
-
-                    <button class="favorite-button"
-                            data-favorite="adoptme">
-                        ☆
-                    </button>
-
-                </div>
-
-                <span class="game-category">ROLEPLAY / PETS</span>
-
-                <p>
-                    Collect pets, customize homes and explore
-                    a social world with other players.
-                </p>
-
-                <button class="game-info-button game-open"
-                        data-game="adoptme">
-                    View Details
-                </button>
-
-            </div>
-
+            <button class="details-btn">View idea →</button>
         </article>
 
-
-        <!-- Blox Fruits -->
-
-        <article class="game-card"
-                 data-category="action"
-                 data-search="blox fruits anime fighting">
-
-            <div class="game-image blox-image">
-                ⚔️
+        <article class="game-card" data-game="Blox Fruits">
+            <div class="game-icon blox">⚔️</div>
+            <div>
+                <span class="game-type">ACTION</span>
+                <h3>Blox Fruits</h3>
+                <p>Show gameplay, exploration, combat, and progression.</p>
             </div>
-
-            <div class="game-card-content">
-
-                <div class="game-title-row">
-
-                    <h3>Blox Fruits</h3>
-
-                    <button class="favorite-button"
-                            data-favorite="bloxfruits">
-                        ☆
-                    </button>
-
-                </div>
-
-                <span class="game-category">ACTION / ADVENTURE</span>
-
-                <p>
-                    Explore islands, battle enemies, use powerful
-                    abilities and develop your character.
-                </p>
-
-                <button class="game-info-button game-open"
-                        data-game="bloxfruits">
-                    View Details
-                </button>
-
-            </div>
-
+            <button class="details-btn">View idea →</button>
         </article>
 
-
-        <!-- MM2 -->
-
-        <article class="game-card"
-                 data-category="action"
-                 data-search="murder mystery 2 mm2">
-
-            <div class="game-image mm2-image">
-                🔪
+        <article class="game-card" data-game="Murder Mystery 2">
+            <div class="game-icon mm2">🔎</div>
+            <div>
+                <span class="game-type">MYSTERY</span>
+                <h3>Murder Mystery 2</h3>
+                <p>React to rounds, make predictions, and interact with chat.</p>
             </div>
-
-            <div class="game-card-content">
-
-                <div class="game-title-row">
-
-                    <h3>Murder Mystery 2</h3>
-
-                    <button class="favorite-button"
-                            data-favorite="mm2">
-                        ☆
-                    </button>
-
-                </div>
-
-                <span class="game-category">ACTION / SOCIAL</span>
-
-                <p>
-                    A mystery-based round game where players have
-                    different roles.
-                </p>
-
-                <button class="game-info-button game-open"
-                        data-game="mm2">
-                    View Details
-                </button>
-
-            </div>
-
+            <button class="details-btn">View idea →</button>
         </article>
 
-
-        <!-- DOORS -->
-
-        <article class="game-card"
-                 data-category="horror"
-                 data-search="doors horror">
-
-            <div class="game-image doors-image">
-                🚪
+        <article class="game-card" data-game="DOORS">
+            <div class="game-icon doors">🚪</div>
+            <div>
+                <span class="game-type">HORROR</span>
+                <h3>DOORS</h3>
+                <p>Capture reactions while exploring unpredictable rooms.</p>
             </div>
-
-            <div class="game-card-content">
-
-                <div class="game-title-row">
-
-                    <h3>DOORS</h3>
-
-                    <button class="favorite-button"
-                            data-favorite="doors">
-                        ☆
-                    </button>
-
-                </div>
-
-                <span class="game-category">HORROR</span>
-
-                <p>
-                    Explore mysterious rooms while trying to survive
-                    dangerous encounters.
-                </p>
-
-                <button class="game-info-button game-open"
-                        data-game="doors">
-                    View Details
-                </button>
-
-            </div>
-
+            <button class="details-btn">View idea →</button>
         </article>
 
-
-        <!-- Tower of Hell -->
-
-        <article class="game-card"
-                 data-category="obby"
-                 data-search="tower of hell obby">
-
-            <div class="game-image tower-image">
-                🗼
+        <article class="game-card" data-game="Dress to Impress">
+            <div class="game-icon dti">👗</div>
+            <div>
+                <span class="game-type">COMPETITION</span>
+                <h3>Dress to Impress</h3>
+                <p>Compete in themes and let viewers react to the results.</p>
             </div>
-
-            <div class="game-card-content">
-
-                <div class="game-title-row">
-
-                    <h3>Tower of Hell</h3>
-
-                    <button class="favorite-button"
-                            data-favorite="tower">
-                        ☆
-                    </button>
-
-                </div>
-
-                <span class="game-category">OBBY</span>
-
-                <p>
-                    Race through challenging obstacle towers without
-                    checkpoints.
-                </p>
-
-                <button class="game-info-button game-open"
-                        data-game="tower">
-                    View Details
-                </button>
-
-            </div>
-
-        </article>
-
-
-        <!-- Arsenal -->
-
-        <article class="game-card"
-                 data-category="action"
-                 data-search="arsenal fps shooter">
-
-            <div class="game-image arsenal-image">
-                🎯
-            </div>
-
-            <div class="game-card-content">
-
-                <div class="game-title-row">
-
-                    <h3>Arsenal</h3>
-
-                    <button class="favorite-button"
-                            data-favorite="arsenal">
-                        ☆
-                    </button>
-
-                </div>
-
-                <span class="game-category">ACTION / FPS</span>
-
-                <p>
-                    Fast-paced competitive shooting with constantly
-                    changing weapons.
-                </p>
-
-                <button class="game-info-button game-open"
-                        data-game="arsenal">
-                    View Details
-                </button>
-
-            </div>
-
-        </article>
-
-
-        <!-- BedWars -->
-
-        <article class="game-card"
-                 data-category="action"
-                 data-search="bedwars pvp">
-
-            <div class="game-image bedwars-image">
-                🛏️
-            </div>
-
-            <div class="game-card-content">
-
-                <div class="game-title-row">
-
-                    <h3>BedWars</h3>
-
-                    <button class="favorite-button"
-                            data-favorite="bedwars">
-                        ☆
-                    </button>
-
-                </div>
-
-                <span class="game-category">ACTION / PVP</span>
-
-                <p>
-                    Protect your team's bed while gathering resources
-                    and fighting opposing teams.
-                </p>
-
-                <button class="game-info-button game-open"
-                        data-game="bedwars">
-                    View Details
-                </button>
-
-            </div>
-
-        </article>
-
-
-        <!-- Piggy -->
-
-        <article class="game-card"
-                 data-category="horror"
-                 data-search="piggy horror survival">
-
-            <div class="game-image piggy-image">
-                🐷
-            </div>
-
-            <div class="game-card-content">
-
-                <div class="game-title-row">
-
-                    <h3>Piggy</h3>
-
-                    <button class="favorite-button"
-                            data-favorite="piggy">
-                        ☆
-                    </button>
-
-                </div>
-
-                <span class="game-category">HORROR / SURVIVAL</span>
-
-                <p>
-                    Solve puzzles, escape danger and uncover the
-                    game's mysterious story.
-                </p>
-
-                <button class="game-info-button game-open"
-                        data-game="piggy">
-                    View Details
-                </button>
-
-            </div>
-
-        </article>
-
-
-        <!-- Dress to Impress -->
-
-        <article class="game-card"
-                 data-category="roleplay simulator"
-                 data-search="dress to impress fashion">
-
-            <div class="game-image dti-image">
-                👗
-            </div>
-
-            <div class="game-card-content">
-
-                <div class="game-title-row">
-
-                    <h3>Dress to Impress</h3>
-
-                    <button class="favorite-button"
-                            data-favorite="dti">
-                        ☆
-                    </button>
-
-                </div>
-
-                <span class="game-category">FASHION / COMPETITION</span>
-
-                <p>
-                    Create outfits around different themes and
-                    compete with other players.
-                </p>
-
-                <button class="game-info-button game-open"
-                        data-game="dti">
-                    View Details
-                </button>
-
-            </div>
-
+            <button class="details-btn">View idea →</button>
         </article>
 
     </div>
-
-    <div id="no-games" class="no-games hidden">
-        <span>🔎</span>
-        <h3>No games found</h3>
-        <p>Try another search or category.</p>
-    </div>
-
 </section>
 
 
-<!-- ==============================
-     DASHBOARD
-================================ -->
-
-<section id="dashboard" class="section dashboard-section">
-
+<!-- STREAM EXPERIENCE -->
+<section class="stream-section section">
     <div class="section-heading">
-
         <div>
-            <span class="section-number">02</span>
-
-            <h2>Stream Dashboard</h2>
-
-            <p>
-                A simulated control center for our stream.
-            </p>
+            <span class="eyebrow">LIVE EXPERIENCE</span>
+            <h2>What the stream could feel like</h2>
         </div>
-
     </div>
 
+    <div class="stream-layout">
 
-    <div class="dashboard-grid">
-
-        <div class="dashboard-main">
-
-            <div class="dashboard-header">
-
-                <div>
-                    <span class="status-indicator" id="status-dot"></span>
-
-                    <strong id="status-text">OFFLINE</strong>
-                </div>
-
-                <button id="stream-toggle" class="primary-button">
-                    Go Live
-                </button>
-
+        <div class="stream-player">
+            <div class="live-top">
+                <span class="live-dot"></span>
+                <span id="streamStatus">LIVE</span>
+                <span class="viewer-count">👁 <b id="viewers">247</b></span>
             </div>
 
-
-            <div class="dashboard-video">
-
-                <div class="video-overlay">
-
-                    <span class="offline-label" id="video-status">
-                        STREAM OFFLINE
-                    </span>
-
-                    <div class="play-symbol">
-                        ▶
-                    </div>
-
-                    <p>
-                        Start the stream to begin the session.
-                    </p>
-
-                </div>
-
+            <div class="fake-video">
+                <div class="play-symbol">▶</div>
+                <p>ROBLOX GAMEPLAY</p>
+                <small>Interactive stream preview</small>
             </div>
-
 
             <div class="stream-controls">
-
-                <div class="stat-box">
-                    <span>👥</span>
-                    <small>VIEWERS</small>
-                    <strong id="viewer-count">0</strong>
+                <button id="playBtn">▶</button>
+                <div class="progress">
+                    <span id="progressBar"></span>
                 </div>
-
-                <div class="stat-box">
-                    <span>⏱️</span>
-                    <small>UPTIME</small>
-                    <strong id="stream-timer">00:00:00</strong>
-                </div>
-
-                <div class="stat-box">
-                    <span>👍</span>
-                    <small>LIKES</small>
-                    <strong id="like-count">0</strong>
-                </div>
-
+                <span id="streamTime">00:00</span>
+                <button id="likeBtn">♡ <span id="likes">128</span></button>
             </div>
-
-
-            <div class="dashboard-actions">
-
-                <button id="like-button" class="secondary-button">
-                    👍 Like Stream
-                </button>
-
-                <button id="share-button" class="secondary-button">
-                    🔗 Share
-                </button>
-
-                <span id="share-message"></span>
-
-            </div>
-
         </div>
 
+        <aside class="stream-info">
+            <span class="eyebrow">STREAM PLAN</span>
+            <h3>Make viewers part of the experience.</h3>
 
-        <!-- Poll -->
-
-        <aside class="dashboard-sidebar">
-
-            <div class="side-panel">
-
-                <div class="panel-heading">
-                    <span>📊</span>
-                    <h3>Community Poll</h3>
-                </div>
-
-                <p class="panel-description">
-                    What should we play next?
-                </p>
-
-                <div class="poll-options">
-
-                    <button class="poll-option" data-game="Brookhaven RP">
-                        <span>🏙️</span>
-                        Brookhaven RP
-                    </button>
-
-                    <button class="poll-option" data-game="DOORS">
-                        <span>🚪</span>
-                        DOORS
-                    </button>
-
-                    <button class="poll-option" data-game="Blox Fruits">
-                        <span>⚔️</span>
-                        Blox Fruits
-                    </button>
-
-                    <button class="poll-option" data-game="Dress to Impress">
-                        <span>👗</span>
-                        Dress to Impress
-                    </button>
-
-                </div>
-
-                <p id="poll-result" class="poll-result"></p>
-
+            <div class="info-item">
+                <span>01</span>
+                <p>Gameplay and challenges</p>
             </div>
 
-
-            <!-- Rating -->
-
-            <div class="side-panel">
-
-                <div class="panel-heading">
-                    <span>⭐</span>
-                    <h3>Rate the Stream</h3>
-                </div>
-
-                <div class="stars" id="stars">
-
-                    <button data-rating="1">★</button>
-                    <button data-rating="2">★</button>
-                    <button data-rating="3">★</button>
-                    <button data-rating="4">★</button>
-                    <button data-rating="5">★</button>
-
-                </div>
-
-                <p id="rating-result">
-                    Click a star to rate.
-                </p>
-
+            <div class="info-item">
+                <span>02</span>
+                <p>Live reactions and commentary</p>
             </div>
 
+            <div class="info-item">
+                <span>03</span>
+                <p>Viewer interaction and chat</p>
+            </div>
+
+            <div class="info-item">
+                <span>04</span>
+                <p>Spontaneous moments</p>
+            </div>
         </aside>
 
     </div>
-
-
-    <!-- CHAT -->
-
-    <div class="chat-panel">
-
-        <div class="chat-header">
-
-            <div>
-                <span class="chat-live-dot"></span>
-                <strong>Live Chat</strong>
-            </div>
-
-            <span>Community</span>
-
-        </div>
-
-        <div id="chat-box" class="chat-box">
-
-            <div class="chat-message system-message">
-                <strong>System</strong>
-                <span>Welcome to the stream chat!</span>
-            </div>
-
-            <div class="chat-message">
-                <strong>PixelPlayer</strong>
-                <span>What game are we playing today?</span>
-            </div>
-
-            <div class="chat-message">
-                <strong>RobloxFan</strong>
-                <span>DOORS would be funny 😂</span>
-            </div>
-
-        </div>
-
-        <div class="chat-input">
-
-            <input
-                type="text"
-                id="chat-input"
-                maxlength="120"
-                placeholder="Send a message..."
-            >
-
-            <button id="send-chat">
-                Send
-            </button>
-
-        </div>
-
-    </div>
-
 </section>
 
 
-<!-- ==============================
-     AUDIENCE
-================================ -->
-
+<!-- AUDIENCE -->
 <section id="audience" class="section">
-
     <div class="section-heading">
-
         <div>
-            <span class="section-number">03</span>
+            <span class="eyebrow">02 / AUDIENCE</span>
+            <h2>Who are we streaming for?</h2>
+        </div>
 
-            <h2>Our Audience</h2>
+        <p>
+            Our target audience is people aged 13 and up,
+            especially teenagers who enjoy playing or watching Roblox.
+        </p>
+    </div>
 
-            <p>
-                Who are we creating the stream for?
-            </p>
+    <div class="audience-grid">
+
+        <div class="audience-card">
+            <span class="big-number">13+</span>
+            <h3>Age Group</h3>
+            <p>Teenagers and viewers who enjoy Roblox content.</p>
+        </div>
+
+        <div class="audience-card">
+            <span class="big-number">🎮</span>
+            <h3>Gamers</h3>
+            <p>People interested in gameplay, challenges and new experiences.</p>
+        </div>
+
+        <div class="audience-card">
+            <span class="big-number">💬</span>
+            <h3>Social Viewers</h3>
+            <p>Viewers who enjoy commentary, reactions and interaction.</p>
         </div>
 
     </div>
-
-
-    <div class="audience-layout">
-
-        <div class="audience-intro">
-
-            <span class="mini-label">THE COMMUNITY</span>
-
-            <h3>
-                More than just
-                <span>watching.</span>
-            </h3>
-
-            <p>
-                Our goal is to create a stream where viewers
-                can participate instead of simply watching
-                gameplay.
-            </p>
-
-        </div>
-
-
-        <div class="audience-cards">
-
-            <div class="audience-card">
-                <span>01</span>
-                <h3>Teenagers</h3>
-                <p>
-                    Viewers who enjoy gaming and Roblox content.
-                </p>
-            </div>
-
-            <div class="audience-card">
-                <span>02</span>
-                <h3>Gamers</h3>
-                <p>
-                    People interested in discovering new games.
-                </p>
-            </div>
-
-            <div class="audience-card">
-                <span>03</span>
-                <h3>Social Viewers</h3>
-                <p>
-                    People who enjoy chatting and interacting.
-                </p>
-            </div>
-
-            <div class="audience-card">
-                <span>04</span>
-                <h3>Roblox Fans</h3>
-                <p>
-                    Players looking for Roblox entertainment.
-                </p>
-            </div>
-
-        </div>
-
-    </div>
-
 </section>
 
 
-<!-- ==============================
-     VIEWER NEEDS
-================================ -->
-
-<section class="section needs-section">
-
+<!-- VIEWER NEEDS -->
+<section id="needs" class="section dark-panel">
     <div class="section-heading">
-
         <div>
-            <span class="section-number">04</span>
-
-            <h2>Viewer Experience</h2>
-
-            <p>
-                What makes a stream worth watching?
-            </p>
+            <span class="eyebrow">03 / VIEWER NEEDS</span>
+            <h2>What do viewers want?</h2>
         </div>
+    </div>
+
+    <div class="needs-list">
+
+        <button class="need" data-answer="Viewers are more likely to stay when something interesting is happening instead of long periods of silence.">
+            <span>01</span>
+            <strong>Entertainment</strong>
+            <span>+</span>
+        </button>
+
+        <button class="need" data-answer="Commentary helps viewers understand what is happening and makes the stream feel more personal.">
+            <span>02</span>
+            <strong>Commentary</strong>
+            <span>+</span>
+        </button>
+
+        <button class="need" data-answer="Responding to chat makes viewers feel noticed and gives them a reason to participate.">
+            <span>03</span>
+            <strong>Interaction</strong>
+            <span>+</span>
+        </button>
+
+        <button class="need" data-answer="Changing activities and adding challenges can prevent the stream from becoming repetitive.">
+            <span>04</span>
+            <strong>Variety</strong>
+            <span>+</span>
+        </button>
 
     </div>
 
-
-    <div class="experience-grid">
-
-        <article>
-            <span>🎮</span>
-            <h3>Interesting Gameplay</h3>
-            <p>
-                Games should provide moments that are fun,
-                unpredictable and entertaining.
-            </p>
-        </article>
-
-        <article>
-            <span>💬</span>
-            <h3>Interaction</h3>
-            <p>
-                Viewers should have opportunities to participate
-                through polls, chat and suggestions.
-            </p>
-        </article>
-
-        <article>
-            <span>🎙️</span>
-            <h3>Good Commentary</h3>
-            <p>
-                Reactions and commentary can make gameplay more
-                entertaining to watch.
-            </p>
-        </article>
-
-        <article>
-            <span>⚡</span>
-            <h3>Energy</h3>
-            <p>
-                A lively presentation helps maintain attention
-                throughout the stream.
-            </p>
-        </article>
-
-        <article>
-            <span>😊</span>
-            <h3>Friendly Atmosphere</h3>
-            <p>
-                A welcoming community makes viewers more
-                comfortable participating.
-            </p>
-        </article>
-
-        <article>
-            <span>🛡️</span>
-            <h3>Responsible Streaming</h3>
-            <p>
-                Good streams should respect viewers and promote
-                responsible online behavior.
-            </p>
-        </article>
-
+    <div id="needAnswer" class="hidden-answer">
+        Click an item above to see why it matters.
     </div>
-
 </section>
 
 
-<!-- ==============================
-     RESEARCH
-================================ -->
+<!-- GOOD STREAM -->
+<section id="good-stream" class="section">
+    <div class="section-heading">
+        <div>
+            <span class="eyebrow">04 / GOOD STREAM</span>
+            <h2>What makes a good stream?</h2>
+        </div>
 
+        <p>
+            A successful stream isn't only about the game.
+            The streamer and the audience experience matter too.
+        </p>
+    </div>
+
+    <div class="quality-grid">
+
+        <div class="quality-card">
+            <span>01</span>
+            <h3>Engaging</h3>
+            <p>Keep the audience interested through commentary, challenges and reactions.</p>
+        </div>
+
+        <div class="quality-card">
+            <span>02</span>
+            <h3>Interactive</h3>
+            <p>Give viewers opportunities to participate through chat and decisions.</p>
+        </div>
+
+        <div class="quality-card">
+            <span>03</span>
+            <h3>Entertaining</h3>
+            <p>Use humor, reactions and spontaneous moments to make the stream enjoyable.</p>
+        </div>
+
+        <div class="quality-card">
+            <span>04</span>
+            <h3>Consistent</h3>
+            <p>Maintain a clear style and reliable content so viewers know what to expect.</p>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- RESEARCH -->
 <section id="research" class="section research-section">
-
     <div class="section-heading">
-
         <div>
-            <span class="section-number">05</span>
-
-            <h2>Our Research Journey</h2>
-
-            <p>
-                How we developed the concept.
-            </p>
+            <span class="eyebrow">05 / RESEARCH</span>
+            <h2>Our research journey</h2>
         </div>
-
     </div>
-
 
     <div class="timeline">
 
         <div class="timeline-item">
-
             <span>01</span>
-
             <div>
-                <h3>Exploring Streaming</h3>
-                <p>
-                    We explored different forms of streaming content
-                    and considered what would be enjoyable to create.
-                </p>
+                <h3>Identify the audience</h3>
+                <p>We considered who would be interested in Roblox streaming content.</p>
             </div>
-
         </div>
 
-
         <div class="timeline-item">
-
             <span>02</span>
-
             <div>
-                <h3>Understanding Our Interests</h3>
-                <p>
-                    Gaming stood out because it is something we
-                    already understand and enjoy.
-                </p>
+                <h3>Understand viewer needs</h3>
+                <p>We looked at what can make a stream enjoyable and worth watching.</p>
             </div>
-
         </div>
 
-
         <div class="timeline-item">
-
             <span>03</span>
-
             <div>
-                <h3>Choosing Roblox</h3>
-                <p>
-                    Roblox gives us access to many different
-                    experiences instead of limiting the stream
-                    to one game.
-                </p>
+                <h3>Plan the content</h3>
+                <p>We selected gameplay, challenges, commentary, reactions and interaction.</p>
             </div>
-
         </div>
 
-
         <div class="timeline-item">
-
             <span>04</span>
-
             <div>
-                <h3>Designing the Experience</h3>
-                <p>
-                    We combined gameplay, interaction, challenges,
-                    commentary and community features into one
-                    streaming concept.
-                </p>
+                <h3>Build the experience</h3>
+                <p>We organized our ideas into a streaming concept designed for our audience.</p>
             </div>
-
         </div>
 
     </div>
-
 </section>
 
 
-<!-- ==============================
-     FINAL CTA
-================================ -->
-
+<!-- FINAL CTA -->
 <section class="final-section">
+    <div>
+        <span class="eyebrow">READY?</span>
+        <h2>Let's make the stream worth watching.</h2>
+        <p>Gameplay is only the beginning. The audience is part of the experience.</p>
+    </div>
 
-    <div class="final-glow"></div>
-
-    <span class="mini-label">READY?</span>
-
-    <h2>
-        LET'S START
-        <span>STREAMING.</span>
-    </h2>
-
-    <p>
-        Explore games, interact with viewers and create
-        memorable Roblox moments.
-    </p>
-
-    <a href="#games" class="primary-button">
-        Browse Game Library →
-    </a>
-
+    <a href="#home" class="primary-btn">Back to top ↑</a>
 </section>
 
 </main>
 
 
-<!-- ==============================
-     FOOTER
-================================ -->
+<!-- GAME MODAL -->
+<div id="gameModal" class="modal">
+    <div class="modal-box">
+        <button id="closeModal" class="modal-close">×</button>
+        <span id="modalType" class="eyebrow">GAME</span>
+        <h2 id="modalTitle">Game</h2>
+        <p id="modalText"></p>
 
-<footer>
-
-    <div class="footer-content">
-
-        <div class="footer-brand">
-
-            <strong>🎮 Roblox Streaming Hub</strong>
-
-            <p>
-                A student streaming concept built around Roblox,
-                gaming and community interaction.
-            </p>
-
+        <div class="modal-plan">
+            <strong>Streaming idea</strong>
+            <p id="modalIdea"></p>
         </div>
 
-        <div class="footer-links">
-
-            <a href="#home">Home</a>
-            <a href="#games">Games</a>
-            <a href="#dashboard">Dashboard</a>
-            <a href="#audience">Audience</a>
-
-        </div>
-
+        <button id="modalDone" class="primary-btn">Got it ✓</button>
     </div>
-
-    <div class="footer-bottom">
-        © 2026 Roblox Streaming Hub · Created for our streaming project
-    </div>
-
-</footer>
-
-
-<!-- ==============================
-     GAME MODAL
-================================ -->
-
-<div id="game-modal" class="modal">
-
-    <div class="modal-overlay"></div>
-
-    <div class="modal-window">
-
-        <button id="close-modal" class="modal-close">
-            ×
-        </button>
-
-        <div id="modal-icon" class="modal-icon">
-            🎮
-        </div>
-
-        <span id="modal-category" class="game-category">
-            CATEGORY
-        </span>
-
-        <h2 id="modal-title">
-            Game
-        </h2>
-
-        <p id="modal-description">
-            Game information.
-        </p>
-
-        <div class="modal-details">
-
-            <div>
-                <span>🎯</span>
-                <strong>Genre</strong>
-                <small id="modal-genre">-</small>
-            </div>
-
-            <div>
-                <span>👥</span>
-                <strong>Stream Potential</strong>
-                <small id="modal-potential">-</small>
-            </div>
-
-            <div>
-                <span>🎮</span>
-                <strong>Stream Idea</strong>
-                <small id="modal-idea">-</small>
-            </div>
-
-        </div>
-
-        <button id="modal-favorite" class="primary-button">
-            ☆ Add to Favorites
-        </button>
-
-    </div>
-
 </div>
 
 
-<!-- Toast -->
-
-<div id="toast" class="toast">
-    <span>✓</span>
-    <p>Done!</p>
-</div>
-
+<div id="toast" class="toast">Action completed.</div>
 
 <script src="script.js"></script>
-
 </body>
-            </html>
+</html>
