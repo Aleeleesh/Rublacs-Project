@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GameVault — discover your next favorite game.">
+  <title>GameVault — Discover Your Next Game</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-grid"></div>
+  <div class="orb orb-one"></div>
+  <div class="orb orb-two"></div>
+
+  <header class="site-header">
+    <a href="#home" class="logo">GAME<span>VAULT</span></a>
+    <button class="menu-toggle" id="menuToggle" aria-label="Open navigation">☰</button>
+    <nav id="nav">
+      <a href="#home" class="nav-link active">Home</a>
+      <a href="#discover" class="nav-link">Discover</a>
+      <a href="#genres" class="nav-link">Genres</a>
+      <a href="#about" class="nav-link">About</a>
+      <a href="#discover" class="nav-cta">Explore Games ↗</a>
+    </nav>
+  </header>
+
+  <main id="home">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">THE NEXT LEVEL OF DISCOVERY</p>
+        <h1>Find your next <span>favorite game.</span></h1>
+        <p class="hero-text">Explore games across different genres, discover hidden gems, and find something worth playing next.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#discover">Explore Games</a>
+          <a class="button secondary" href="#genres">Browse Genres</a>
+        </div>
+        <div class="stats">
+          <div><strong>24+</strong><small>Games listed</small></div>
+          <div><strong>08</strong><small>Genres</small></div>
+          <div><strong>∞</strong><small>Ways to play</small></div>
+        </div>
+      </div>
+
+      <div class="featured">
+        <div class="featured-art">
+          <div class="moon"></div>
+          <div class="character">HK</div>
+        </div>
+        <div class="featured-info">
+          <p class="eyebrow">FEATURED GAME</p>
+          <h2>Hollow Knight</h2>
+          <p>Explore a mysterious underground kingdom filled with challenging combat, secrets, and unforgettable places.</p>
+          <div class="tags"><span>Indie</span><span>Adventure</span><span>Action</span></div>
+          <button class="text-button" id="featureButton">Why play it? →</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="discover">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">DISCOVER</p>
+          <h2>Games worth checking out.</h2>
+        </div>
+        <p class="section-note">Search or filter the collection.</p>
+      </div>
+
+      <div class="toolbar">
+        <label class="search">
+          <span>⌕</span>
+          <input id="searchInput" type="search" placeholder="Search games..." autocomplete="off">
+        </label>
+        <div class="filters" id="filters">
+          <button class="filter active" data-filter="all">All</button>
+          <button class="filter" data-filter="action">Action</button>
+          <button class="filter" data-filter="adventure">Adventure</button>
+          <button class="filter" data-filter="sandbox">Sandbox</button>
+          <button class="filter" data-filter="horror">Horror</button>
+          <button class="filter" data-filter="indie">Indie</button>
+        </div>
+      </div>
+
+      <div class="game-grid" id="gameGrid">
+        <article class="game-card" data-title="Hollow Knight" data-genre="indie adventure action">
+          <div class="game-art art-hollow"><span>HK</span></div>
+          <div class="card-body"><div><p class="card-type">INDIE • ACTION</p><h3>Hollow Knight</h3></div><span class="arrow">↗</span></div>
+          <p>Explore a beautifully mysterious underground world.</p>
+        </article>
+
+        <article class="game-card" data-title="Minecraft" data-genre="sandbox adventure">
+          <div class="game-art art-minecraft"><span>MC</span></div>
+          <div class="card-body"><div><p class="card-type">SANDBOX</p><h3>Minecraft</h3></div><span class="arrow">↗</span></div>
+          <p>Build, explore, survive, and create almost anything.</p>
+        </article>
+
+        <article class="game-card" data-title="Roblox" data-genre="sandbox adventure">
+          <div class="game-art art-roblox"><span>RBX</span></div>
+          <div class="card-body"><div><p class="card-type">SANDBOX</p><h3>Roblox</h3></div><span class="arrow">↗</span></div>
+          <p>A huge collection of experiences made by players.</p>
+        </article>
+
+        <article class="game-card" data-title="Undertale" data-genre="indie adventure">
+          <div class="game-art art-undertale"><span>UT</span></div>
+          <div class="card-body"><div><p class="card-type">INDIE • RPG</p><h3>Undertale</h3></div><span class="arrow">↗</span></div>
+          <p>A strange journey where your choices actually matter.</p>
+        </article>
+
+        <article class="game-card" data-title="Dead Cells" data-genre="indie action">
+          <div class="game-art art-deadcells"><span>DC</span></div>
+          <div class="card-body"><div><p class="card-type">INDIE • ACTION</p><h3>Dead Cells</h3></div><span class="arrow">↗</span></div>
+          <p>Fast combat, exploration, and a different run every time.</p>
+        </article>
+
+        <article class="game-card" data-title="Phasmophobia" data-genre="horror indie">
+          <div class="game-art art-phasma"><span>PH</span></div>
+          <div class="card-body"><div><p class="card-type">HORROR • CO-OP</p><h3>Phasmophobia</h3></div><span class="arrow">↗</span></div>
+          <p>Investigate haunted locations with friends.</p>
+        </article>
+      </div>
+      <p class="empty" id="emptyState">No games found. Try another search or filter.</p>
+    </section>
+
+    <section class="section" id="genres">
+      <div class="section-heading">
+        <div><p class="eyebrow">GENRES</p><h2>Pick a mood.</h2></div>
+      </div>
+      <div class="genre-grid">
+        <button class="genre-tile" data-genre-jump="action"><strong>Action</strong><span>Fast & intense →</span></button>
+        <button class="genre-tile" data-genre-jump="adventure"><strong>Adventure</strong><span>Explore worlds →</span></button>
+        <button class="genre-tile" data-genre-jump="sandbox"><strong>Sandbox</strong><span>Make your own fun →</span></button>
+        <button class="genre-tile" data-genre-jump="horror"><strong>Horror</strong><span>Good luck sleeping →</span></button>
+      </div>
+    </section>
+
+    <section class="about section" id="about">
+      <div>
+        <p class="eyebrow">ABOUT GAMEVAULT</p>
+        <h2>Less scrolling.<br><span>More playing.</span></h2>
+      </div>
+      <p>GameVault is a simple gaming discovery website made to help players find games without getting lost in endless lists. Browse by genre, search for a title, and find something new to play.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="logo">GAME<span>VAULT</span></div>
+    <p>Made for gamers • GameVault v1.0</p>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+  <script src="script.js"></script>
+</body>
+</html>
