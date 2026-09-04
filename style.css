@@ -500,3 +500,55 @@ footer p:first-child {
     font-size: clamp(2rem,5vw,3.4rem);
     line-height: 1.1;
 }
+
+.nav-links a.active {
+    color: #fff;
+    background: rgba(37,99,235,.2);
+}
+
+/* Status Indicator Colors */
+.status-offline {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ef4444;
+    display: inline-block;
+}
+
+.status-live {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #22c55e;
+    display: inline-block;
+}
+
+/* Star Rating Style */
+.star {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.2s ease;
+}
+
+.star:hover {
+    color: #f59e0b;
+}
+
+/* Light Mode Overrides */
+body.light-mode {
+    background-color: #f4f4f9;
+    color: #111827;
+}
+
+body.light-mode .roblox-info,
+body.light-mode .content-card {
+    background-color: #ffffff;
+    color: #111827;
+    border: 1px solid #e5e7eb;
+}
+
+body.light-mode button.button {
+    background-color: #2563eb;
+    color: #ffffff;
+}

@@ -52,11 +52,99 @@
                 <a href="#content" class="button">
                     Explore Our Stream
                 </a>
+<!-- ================= THEME TOGGLE (Put inside <header> or <nav>) ================= -->
+<button id="theme-toggle-btn" class="button" style="padding: 6px 12px; font-size: 0.8rem;">🌙 Dark Mode</button>
+
+<!-- ================= INTERACTIVE STREAM DASHBOARD ================= -->
+<section class="section" id="interactive-dashboard">
+    <div class="roblox-info">
+        <h3>🔴 Stream Dashboard</h3>
+        
+        <!-- Status, Uptime & Viewers -->
+        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+            <span id="status-dot" class="status-offline"></span>
+            <span id="status-text" style="font-weight: 800;">OFFLINE</span>
+            <span>⏱️ Uptime: <strong id="stream-timer">00:00:00</strong></span>
+            <span>👥 Viewers: <strong id="viewer-count">0</strong></span>
+            <button id="toggle-stream-btn" class="button" style="padding: 6px 14px; font-size: 0.75rem;">Go Live</button>
+        </div>
+
+        <!-- Like & Share -->
+        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 25px;">
+            <button id="like-btn" class="button" style="padding: 8px 16px;">👍 Like (<span id="like-count">0</span>)</button>
+            <button id="copy-link-btn" class="button" style="background: #333; padding: 8px 16px;">🔗 Share Stream</button>
+            <span id="copy-notice" style="color: #3b82f6; font-size: 0.85rem;"></span>
+        </div>
+
+        <!-- Live Viewer Poll -->
+        <h3>📊 What should we play next?</h3>
+        <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+            <button class="button poll-opt" data-game="Blox Fruits">Blox Fruits</button>
+            <button class="button poll-opt" data-game="Adopt Me!">Adopt Me!</button>
+            <button class="button poll-opt" data-game="Brookhaven">Brookhaven</button>
+        </div>
+        <p id="poll-results" style="margin-top: 10px; color: #3b82f6; font-weight: 600;"></p>
+
+        <hr style="margin: 25px 0; border: 0; border-top: 1px solid #444;">
+
+        <!-- Stream Rating System -->
+        <h3>⭐ Rate Our Stream</h3>
+        <div class="star-rating" style="display: flex; gap: 5px; margin: 10px 0;">
+            <span class="star" data-value="1">★</span>
+            <span class="star" data-value="2">★</span>
+            <span class="star" data-value="3">★</span>
+            <span class="star" data-value="4">★</span>
+            <span class="star" data-value="5">★</span>
+        </div>
+        <p id="rating-feedback" style="color: #3b82f6; font-size: 0.9rem;"></p>
+
+        <hr style="margin: 25px 0; border: 0; border-top: 1px solid #444;">
+
+        <!-- Live Chat Simulator -->
+        <h3>💬 Live Stream Chat</h3>
+        <div id="chat-box" style="height: 150px; overflow-y: auto; background: rgba(0,0,0,0.2); border: 1px solid #444; padding: 10px; border-radius: 6px; margin-bottom: 10px;">
+            <p><em>Stream chat initialized...</em></p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+            <input type="text" id="chat-input" placeholder="Say something in chat..." style="flex: 1; padding: 8px; border-radius: 4px; border: 1px solid #444; background: transparent; color: inherit;">
+            <button id="send-chat-btn" class="button" style="padding: 8px 16px;">Send</button>
+        </div>
+    </div>
+</section>
+
+<!-- ================= CONTENT FILTER SECTION ================= -->
+<section class="section" id="content-filter-section">
+    <div class="section-heading">
+        <h2>🎮 Stream Content Filter</h2>
+    </div>
+    
+    <!-- Filter Controls -->
+    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+        <button class="button filter-btn active" data-filter="all">All</button>
+        <button class="button filter-btn" data-filter="gameplay">Gameplay</button>
+        <button class="button filter-btn" data-filter="challenges">Challenges</button>
+    </div>
+
+    <!-- Filterable Content Items -->
+    <div class="content-grid">
+        <article class="content-card filter-item gameplay">
+            <h3>🎮 Blox Fruits Quest</h3>
+            <p>Leveling up and exploring new islands in Blox Fruits.</p>
+        </article>
+        <article class="content-card filter-item challenges">
+            <h3>🏆 Speedrun Challenge</h3>
+            <p>Attempting to complete obbies as fast as possible.</p>
+        </article>
+        <article class="content-card filter-item gameplay">
+            <h3>🌎 Brookhaven RP</h3>
+            <p>Hanging out and roleplaying with viewers.</p>
+        </article>
+    </div>
+</section>
 
             </div>
 
         </section>
-
 
         <!-- ================= STREAMING CONTENT ================= -->
         <section id="content" class="section">
