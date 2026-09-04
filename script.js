@@ -9,62 +9,25 @@ document.addEventListener("DOMContentLoaded", () => {
      ELEMENTS
      ======================================================= */
 
-  const toastContainer =
-    document.getElementById("toastContainer");
-
-  const themeToggle =
-    document.getElementById("themeToggle");
-
-  const mobileMenu =
-    document.getElementById("mobileMenu");
-
-  const mainNav =
-    document.getElementById("mainNav");
-
-  const gameGrid =
-    document.getElementById("gameGrid");
-
-  const gameSearch =
-    document.getElementById("gameSearch");
-
-  const filterButtons =
-    document.getElementById("filterButtons");
-
-  const noGames =
-    document.getElementById("noGames");
-
-  const gameModal =
-    document.getElementById("gameModal");
-
-  const needModal =
-    document.getElementById("needModal");
-
-  const startStreamBtn =
-    document.getElementById("startStream");
-
-  const likeButton =
-    document.getElementById("likeButton");
-
-  const shareButton =
-    document.getElementById("shareButton");
-
-  const pollButton =
-    document.getElementById("pollButton");
-
-  const pollResult =
-    document.getElementById("pollResult");
-
-  const chatMessages =
-    document.getElementById("chatMessages");
-
-  const chatForm =
-    document.getElementById("chatForm");
-
-  const chatInput =
-    document.getElementById("chatInput");
-
-  const starRating =
-    document.getElementById("starRating");
+  const toastContainer = document.getElementById("toastContainer");
+  const themeToggle = document.getElementById("themeToggle");
+  const mobileMenu = document.getElementById("mobileMenu");
+  const mainNav = document.getElementById("mainNav");
+  const gameGrid = document.getElementById("gameGrid");
+  const gameSearch = document.getElementById("gameSearch");
+  const filterButtons = document.getElementById("filterButtons");
+  const noGames = document.getElementById("noGames");
+  const gameModal = document.getElementById("gameModal");
+  const needModal = document.getElementById("needModal");
+  const startStreamBtn = document.getElementById("startStream");
+  const likeButton = document.getElementById("likeButton");
+  const shareButton = document.getElementById("shareButton");
+  const pollButton = document.getElementById("pollButton");
+  const pollResult = document.getElementById("pollResult");
+  const chatMessages = document.getElementById("chatMessages");
+  const chatForm = document.getElementById("chatForm");
+  const chatInput = document.getElementById("chatInput");
+  const starRating = document.getElementById("starRating");
 
 
   /* =======================================================
@@ -72,9 +35,7 @@ document.addEventListener("DOMContentLoaded", () => {
      ======================================================= */
 
   function showToast(message) {
-
-    const toast =
-      document.createElement("div");
+    const toast = document.createElement("div");
 
     toast.className = "toast";
     toast.textContent = message;
@@ -91,15 +52,13 @@ document.addEventListener("DOMContentLoaded", () => {
      THEME
      ======================================================= */
 
-  const savedTheme =
-    localStorage.getItem("robloxTheme");
+  const savedTheme = localStorage.getItem("robloxTheme");
 
   if (savedTheme === "light") {
     document.body.classList.add("light-theme");
   }
 
   themeToggle.addEventListener("click", () => {
-
     document.body.classList.toggle("light-theme");
 
     const isLight =
@@ -123,31 +82,23 @@ document.addEventListener("DOMContentLoaded", () => {
      ======================================================= */
 
   mobileMenu.addEventListener("click", () => {
-
-    const isOpen =
-      mainNav.classList.toggle("open");
+    const isOpen = mainNav.classList.toggle("open");
 
     mobileMenu.setAttribute(
       "aria-expanded",
       String(isOpen)
     );
-
   });
 
-
   mainNav.querySelectorAll("a").forEach(link => {
-
     link.addEventListener("click", () => {
-
       mainNav.classList.remove("open");
 
       mobileMenu.setAttribute(
         "aria-expanded",
         "false"
       );
-
     });
-
   });
 
 
@@ -156,7 +107,6 @@ document.addEventListener("DOMContentLoaded", () => {
      ======================================================= */
 
   const games = [
-
     {
       id: "brookhaven",
       name: "Brookhaven RP",
@@ -312,7 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
       reason:
         "The streamer can set completion goals and let viewers react to progress or failure."
     }
-
   ];
 
 
@@ -323,7 +272,6 @@ document.addEventListener("DOMContentLoaded", () => {
   let favorites = [];
 
   try {
-
     const savedFavorites =
       JSON.parse(
         localStorage.getItem("robloxFavorites")
@@ -332,19 +280,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (Array.isArray(savedFavorites)) {
       favorites = savedFavorites;
     }
-
   } catch {
     favorites = [];
   }
 
 
   function saveFavorites() {
-
     localStorage.setItem(
       "robloxFavorites",
       JSON.stringify(favorites)
     );
-
   }
 
 
@@ -362,7 +307,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   function renderGames() {
-
     gameGrid.textContent = "";
 
     const search =
@@ -382,7 +326,6 @@ document.addEventListener("DOMContentLoaded", () => {
           game.category.toLowerCase().includes(search);
 
         return matchesFilter && matchesSearch;
-
       });
 
 
@@ -394,61 +337,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
     filtered.forEach(game => {
 
-      const card =
-        document.createElement("article");
-
+      const card = document.createElement("article");
       card.className = "game-card";
 
-
-      const top =
-        document.createElement("div");
-
+      const top = document.createElement("div");
       top.className = "game-card-top";
 
-
-      const icon =
-        document.createElement("div");
-
+      const icon = document.createElement("div");
       icon.className = "game-icon";
       icon.textContent = game.icon;
 
-
-      const category =
-        document.createElement("span");
-
+      const category = document.createElement("span");
       category.className = "game-category";
       category.textContent = game.category;
-
 
       top.appendChild(icon);
       top.appendChild(category);
 
 
-      const title =
-        document.createElement("h3");
-
+      const title = document.createElement("h3");
       title.textContent = game.name;
 
 
-      const description =
-        document.createElement("p");
-
-      description.textContent =
-        game.description;
+      const description = document.createElement("p");
+      description.textContent = game.description;
 
 
-      const actions =
-        document.createElement("div");
-
+      const actions = document.createElement("div");
       actions.className = "game-actions";
 
 
-      const viewButton =
-        document.createElement("button");
-
+      const viewButton = document.createElement("button");
       viewButton.className = "view-game";
       viewButton.textContent = "View";
-
 
       viewButton.addEventListener("click", () => {
         openGameModal(game);
@@ -458,7 +379,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const favoriteButton =
         document.createElement("button");
 
-      favoriteButton.className = "favorite-game";
+      favoriteButton.className =
+        "favorite-game";
 
       updateFavoriteButton(
         favoriteButton,
@@ -469,12 +391,10 @@ document.addEventListener("DOMContentLoaded", () => {
       favoriteButton.addEventListener(
         "click",
         () => {
-
           toggleFavorite(
             game,
             favoriteButton
           );
-
         }
       );
 
@@ -482,43 +402,29 @@ document.addEventListener("DOMContentLoaded", () => {
       actions.appendChild(viewButton);
       actions.appendChild(favoriteButton);
 
-
       card.appendChild(top);
       card.appendChild(title);
       card.appendChild(description);
       card.appendChild(actions);
 
       gameGrid.appendChild(card);
-
     });
-
   }
 
 
-  function updateFavoriteButton(
-    button,
-    game
-  ) {
+  function updateFavoriteButton(button, game) {
 
     if (isFavorite(game.id)) {
-
       button.classList.add("saved");
       button.textContent = "★ Saved";
-
     } else {
-
       button.classList.remove("saved");
       button.textContent = "☆ Favorite";
-
     }
-
   }
 
 
-  function toggleFavorite(
-    game,
-    button
-  ) {
+  function toggleFavorite(game, button) {
 
     if (isFavorite(game.id)) {
 
@@ -538,7 +444,6 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast(
         `${game.name} added to favorites.`
       );
-
     }
 
     saveFavorites();
@@ -547,19 +452,16 @@ document.addEventListener("DOMContentLoaded", () => {
       button,
       game
     );
-
   }
 
 
   gameSearch.addEventListener(
     "input",
     event => {
-
       currentSearch =
         event.target.value;
 
       renderGames();
-
     }
   );
 
@@ -587,7 +489,6 @@ document.addEventListener("DOMContentLoaded", () => {
       button.classList.add("active");
 
       renderGames();
-
     }
   );
 
@@ -639,13 +540,14 @@ document.addEventListener("DOMContentLoaded", () => {
     updateModalFavorite();
 
     gameModal.classList.add("open");
+
     gameModal.setAttribute(
       "aria-hidden",
       "false"
     );
 
-    document.body.style.overflow = "hidden";
-
+    document.body.style.overflow =
+      "hidden";
   }
 
 
@@ -659,7 +561,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     document.body.style.overflow = "";
-
   }
 
 
@@ -673,17 +574,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!selectedGame) return;
 
     if (isFavorite(selectedGame.id)) {
-
       button.textContent =
         "★ Remove from Favorites";
-
     } else {
-
       button.textContent =
         "☆ Add to Favorites";
-
     }
-
   }
 
 
@@ -695,7 +591,6 @@ document.addEventListener("DOMContentLoaded", () => {
       "click",
       closeGameModal
     );
-
   });
 
 
@@ -727,7 +622,6 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast(
           `${selectedGame.name} added to favorites.`
         );
-
       }
 
       saveFavorites();
@@ -735,7 +629,6 @@ document.addEventListener("DOMContentLoaded", () => {
       updateModalFavorite();
 
       renderGames();
-
     }
   );
 
@@ -772,7 +665,6 @@ document.addEventListener("DOMContentLoaded", () => {
         String(value).padStart(2, "0")
       )
       .join(":");
-
   }
 
 
@@ -852,19 +744,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       dashboardTitle.textContent =
         "Waiting to start...";
-
     }
-
   }
 
 
   function startStream() {
 
     if (isLive) {
-
       stopStream();
       return;
-
     }
 
 
@@ -914,7 +802,6 @@ document.addEventListener("DOMContentLoaded", () => {
     showToast(
       "🔴 Stream started!"
     );
-
   }
 
 
@@ -930,7 +817,6 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       streamTimerId = null;
-
     }
 
 
@@ -946,7 +832,6 @@ document.addEventListener("DOMContentLoaded", () => {
     showToast(
       "Stream stopped."
     );
-
   }
 
 
@@ -979,7 +864,6 @@ document.addEventListener("DOMContentLoaded", () => {
       "sideLikeCount"
     ).textContent =
       likeCount.toLocaleString();
-
   }
 
 
@@ -999,7 +883,6 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast(
         "❤️ Like added!"
       );
-
     }
   );
 
@@ -1025,9 +908,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
 
-        if (
-          navigator.share
-        ) {
+        if (navigator.share) {
 
           await navigator.share(
             shareData
@@ -1037,9 +918,7 @@ document.addEventListener("DOMContentLoaded", () => {
             "Thanks for sharing!"
           );
 
-        } else if (
-          navigator.clipboard
-        ) {
+        } else if (navigator.clipboard) {
 
           await navigator.clipboard.writeText(
             window.location.href
@@ -1054,7 +933,6 @@ document.addEventListener("DOMContentLoaded", () => {
           showToast(
             "Sharing isn't available here."
           );
-
         }
 
       } catch (error) {
@@ -1067,11 +945,8 @@ document.addEventListener("DOMContentLoaded", () => {
           showToast(
             "Couldn't share right now."
           );
-
         }
-
       }
-
     }
   );
 
@@ -1097,7 +972,6 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
         return;
-
       }
 
 
@@ -1107,7 +981,6 @@ document.addEventListener("DOMContentLoaded", () => {
       showToast(
         "Vote submitted!"
       );
-
     }
   );
 
@@ -1153,7 +1026,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "✓ Shared reactions"
       ]
     }
-
   };
 
 
@@ -1219,12 +1091,9 @@ document.addEventListener("DOMContentLoaded", () => {
           span.textContent = point;
 
           points.appendChild(span);
-
         });
-
       }
     );
-
   });
 
 
@@ -1261,7 +1130,6 @@ document.addEventListener("DOMContentLoaded", () => {
       description:
         "A stream can help viewers discover Roblox games and experiences they may not have tried before."
     }
-
   };
 
 
@@ -1309,10 +1177,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         document.body.style.overflow =
           "hidden";
-
       }
     );
-
   });
 
 
@@ -1329,7 +1195,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     document.body.style.overflow =
       "";
-
   }
 
 
@@ -1341,7 +1206,6 @@ document.addEventListener("DOMContentLoaded", () => {
       "click",
       closeNeedModal
     );
-
   });
 
 
@@ -1367,10 +1231,8 @@ document.addEventListener("DOMContentLoaded", () => {
         item.classList.toggle(
           "open"
         );
-
       }
     );
-
   });
 
 
@@ -1405,7 +1267,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "active",
         rating <= savedRating
       );
-
     });
 
 
@@ -1419,7 +1280,6 @@ document.addEventListener("DOMContentLoaded", () => {
       savedRating
         ? `${savedRating}/5 — Thanks for rating!`
         : "Not rated yet";
-
   }
 
 
@@ -1446,10 +1306,8 @@ document.addEventListener("DOMContentLoaded", () => {
         showToast(
           `Rated ${savedRating}/5!`
         );
-
       }
     );
-
   });
 
 
@@ -1514,7 +1372,6 @@ document.addEventListener("DOMContentLoaded", () => {
         "BOT";
 
       name.appendChild(badge);
-
     }
 
 
@@ -1539,15 +1396,12 @@ document.addEventListener("DOMContentLoaded", () => {
     while (
       chatMessages.children.length > 60
     ) {
-
       chatMessages.firstElementChild.remove();
-
     }
 
 
     chatMessages.scrollTop =
       chatMessages.scrollHeight;
-
   }
 
 
@@ -1570,84 +1424,122 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       chatInput.value = "";
-
     }
   );
 
 
   /* =======================================================
-     BOT CHAT
+     BOT CHAT CONVERSATIONS
      ======================================================= */
 
-  const botMessages = [
+  const botConversations = [
 
-    {
-      username: "Jaymat1210",
-      message: "I'm the goat"
-    },
+    [
+      ["Aylmer", "okay buddy"],
+      ["Ash", "ay weh"],
+      ["Jayden", "hahahahhaha"],
+      ["Aylmer", "oh my days this guy"],
+      ["Denise", "bro what is happening 😭"]
+    ],
 
-    {
-      username: "Drossog",
-      message: "tuff"
-    },
+    [
+      ["Ash", "Six seven"],
+      ["Jaymat1210", "I'm the goat"],
+      ["Drossog", "tuff"],
+      ["Denise", "you actually said that 😭"],
+      ["Ash", "ay weh"]
+    ],
 
-    {
-      username: "Frenchfries",
-      message: "rating this a 6.7"
-    },
+    [
+      ["Frenchfries", "rating this a 6.7"],
+      ["Jayden", "hahahahhaha"],
+      ["Aylmer", "okay buddy"],
+      ["Drossog", "tuff"],
+      ["Denise", "6.7 is crazy bro"]
+    ],
 
-    {
-      username: "Scrappy",
-      message: "monchayster city"
-    }
+    [
+      ["Scrappy", "monchayster city"],
+      ["Ash", "Six seven"],
+      ["Jayden", "hahahahhaha"],
+      ["Aylmer", "oh my days this guy"],
+      ["Denise", "I'm just watching at this point"]
+    ],
 
+    [
+      ["Keysha", "Samiel John Ebora called this 'slop'"],
+      ["Aylmer", "okay buddy"],
+      ["Keysha", "Stop staring at me"],
+      ["Jayden", "hahahahhaha"],
+      ["Denise", "nah this chat is cooked"]
+    ],
+
+    [
+      ["Drossog", "tuff"],
+      ["Ash", "ay weh"],
+      ["Denise", "why are you two like this 😭"],
+      ["Aylmer", "oh my days this guy"],
+      ["Jaymat1210", "I'm the goat"]
+    ],
+
+    [
+      ["Denise", "wait what game are we even playing"],
+      ["Ash", "Six seven"],
+      ["Denise", "that did not answer my question 😭"],
+      ["Jayden", "hahahahhaha"],
+      ["Aylmer", "okay buddy"]
+    ],
+
+    [
+      ["Jaymat1210", "I'm the goat"],
+      ["Denise", "bro you said that already"],
+      ["Drossog", "tuff"],
+      ["Jaymat1210", "still the goat"],
+      ["Denise", "💀"]
+    ],
+
+    [
+      ["Frenchfries", "rating this a 6.7"],
+      ["Keysha", "Stop staring at me"],
+      ["Denise", "nobody was even looking 😭"],
+      ["Aylmer", "oh my days this guy"],
+      ["Jayden", "hahahahhaha"]
+    ],
+
+    [
+      ["Scrappy", "monchayster city"],
+      ["Drossog", "tuff"],
+      ["Denise", "what does that even mean"],
+      ["Ash", "ay weh"],
+      ["Aylmer", "okay buddy"]
+    ],
+
+    [
+      ["Denise", "this stream is actually getting chaotic"],
+      ["Jayden", "hahahahhaha"],
+      ["Drossog", "tuff"],
+      ["Ash", "ay weh"],
+      ["Denise", "exactly 😭"]
+    ],
+
+    [
+      ["Keysha", "Stop staring at me"],
+      ["Denise", "I'm literally not 😭"],
+      ["Aylmer", "okay buddy"],
+      ["Jayden", "hahahahhaha"],
+      ["Keysha", "Samiel John Ebora called this 'slop'"]
+    ]
   ];
 
 
+  let currentConversation = null;
+  let currentMessageIndex = 0;
   let botTimeout = null;
 
 
-  function sendBotMessage() {
-
-    if (!isLive) return;
-
-    const randomIndex =
-      Math.floor(
-        Math.random() *
-        botMessages.length
-      );
-
-    const bot =
-      botMessages[randomIndex];
-
-    addChatMessage(
-      bot.username,
-      bot.message,
-      true
-    );
-
-  }
-
-
-  function scheduleBotMessage() {
-
-    if (!isLive) return;
-
-    botTimeout =
-      setTimeout(() => {
-
-        botTimeout = null;
-
-        if (!isLive) return;
-
-        sendBotMessage();
-
-        scheduleBotMessage();
-
-      }, 3000 + Math.random() * 3000);
-
-  }
-
+  /* =======================================================
+     START BOT CHAT
+     ======================================================= */
 
   function startBotChat() {
 
@@ -1658,12 +1550,122 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    sendBotMessage();
-
-    scheduleBotMessage();
-
+    startNewConversation();
   }
 
+
+  /* =======================================================
+     START NEW CONVERSATION
+     ======================================================= */
+
+  function startNewConversation() {
+
+    if (!isLive) return;
+
+    currentConversation =
+      botConversations[
+        Math.floor(
+          Math.random() *
+          botConversations.length
+        )
+      ];
+
+    currentMessageIndex = 0;
+
+    sendNextBotMessage();
+  }
+
+
+  /* =======================================================
+     SEND NEXT BOT MESSAGE
+     ======================================================= */
+
+  function sendNextBotMessage() {
+
+    if (
+      !isLive ||
+      !currentConversation
+    ) {
+      return;
+    }
+
+
+    const currentMessage =
+      currentConversation[
+        currentMessageIndex
+      ];
+
+    if (!currentMessage) {
+      currentConversation = null;
+      return;
+    }
+
+
+    const username =
+      currentMessage[0];
+
+    const message =
+      currentMessage[1];
+
+
+    addChatMessage(
+      username,
+      message,
+      true
+    );
+
+
+    currentMessageIndex++;
+
+
+    /*
+       If the conversation is finished,
+       wait before starting another one.
+    */
+
+    if (
+      currentMessageIndex >=
+      currentConversation.length
+    ) {
+
+      currentConversation = null;
+
+      botTimeout =
+        setTimeout(() => {
+
+          botTimeout = null;
+
+          if (isLive) {
+            startNewConversation();
+          }
+
+        }, 4500 + Math.random() * 5000);
+
+      return;
+    }
+
+
+    /*
+       Continue the current conversation.
+       Different delay makes it feel less robotic.
+    */
+
+    botTimeout =
+      setTimeout(() => {
+
+        botTimeout = null;
+
+        if (isLive) {
+          sendNextBotMessage();
+        }
+
+      }, 1800 + Math.random() * 2500);
+  }
+
+
+  /* =======================================================
+     STOP BOT CHAT
+     ======================================================= */
 
   function stopBotChat() {
 
@@ -1674,9 +1676,10 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       botTimeout = null;
-
     }
 
+    currentConversation = null;
+    currentMessageIndex = 0;
   }
 
 
@@ -1694,7 +1697,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       closeGameModal();
       closeNeedModal();
-
     }
   );
 
