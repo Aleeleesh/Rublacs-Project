@@ -1,32 +1,73 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     /* =========================
-       DARK / LIGHT MODE
+       THEME
     ========================= */
 
-    const themeBtn = document.getElementById("themeBtn");
+    const themeBtn =
+        document.getElementById("themeBtn");
 
-    const savedTheme = localStorage.getItem("robloxTheme");
+    const savedTheme =
+        localStorage.getItem("roblox-stream-theme");
 
     if (savedTheme === "light") {
+
         document.body.classList.add("light-mode");
+
         themeBtn.textContent = "☀️";
+
     }
+
 
     themeBtn.addEventListener("click", () => {
 
         document.body.classList.toggle("light-mode");
 
-        const light = document.body.classList.contains("light-mode");
+        const lightMode =
+            document.body.classList.contains("light-mode");
 
-        themeBtn.textContent = light ? "☀️" : "🌙";
+        themeBtn.textContent =
+            lightMode ? "☀️" : "🌙";
 
         localStorage.setItem(
-            "robloxTheme",
-            light ? "light" : "dark"
+            "roblox-stream-theme",
+            lightMode ? "light" : "dark"
         );
 
-        showToast(light ? "Light mode enabled" : "Dark mode enabled");
+        showToast(
+            lightMode
+                ? "Light mode enabled"
+                : "Dark mode enabled"
+        );
+
+    });
+
+
+    /* =========================
+       SMOOTH SCROLL BUTTONS
+    ========================= */
+
+    document.querySelectorAll(
+        "[data-scroll]"
+    ).forEach(button => {
+
+        button.addEventListener("click", () => {
+
+            const target =
+                document.querySelector(
+                    button.dataset.scroll
+                );
+
+            if (target) {
+
+                target.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            }
+
+        });
+
     });
 
 
@@ -34,221 +75,347 @@ document.addEventListener("DOMContentLoaded", () => {
        GAME INFORMATION
     ========================= */
 
-    const gameInfo = {
+    const games = {
 
         "Brookhaven RP": {
+
             icon: "🏙️",
+
+            value: "Social interaction",
+
+            type: "Roleplay",
+
             description:
-                "Brookhaven RP is a roleplaying experience where players can explore the town, customize their characters, interact with others, and create their own stories."
+                "Brookhaven RP gives the stream opportunities for roleplay, exploration, funny situations, and interactions with other players. This can work well when the goal is to create social and entertaining moments."
+
         },
 
         "Adopt Me!": {
+
             icon: "🐶",
+
+            value: "Casual entertainment",
+
+            type: "Social",
+
             description:
-                "Adopt Me! focuses on collecting and caring for pets, customizing spaces, trading, and social interaction."
+                "Adopt Me! focuses on pets, customization, exploration, trading, and social interaction. These elements can give a stream different activities to discuss and explore."
+
         },
 
         "Blox Fruits": {
+
             icon: "⚔️",
+
+            value: "Adventure & progression",
+
+            type: "Action",
+
             description:
-                "Blox Fruits is an adventure-focused Roblox experience featuring exploration, combat, abilities, islands, and character progression."
+                "Blox Fruits provides adventure, combat, abilities, exploration, islands, and character progression. These features can create gameplay moments that are easy to comment on and react to."
+
         },
 
         "Murder Mystery 2": {
-            icon: "🔍",
+
+            icon: "🔎",
+
+            value: "Reactions & strategy",
+
+            type: "Round-based",
+
             description:
-                "Murder Mystery 2 uses short rounds where players take different roles and must figure out what is happening while surviving the round."
+                "Murder Mystery 2 uses short rounds with different roles. The investigation and uncertainty can create opportunities for reactions, discussion, and interaction between players."
+
         },
 
         "DOORS": {
+
             icon: "🚪",
+
+            value: "Reactions",
+
+            type: "Exploration",
+
             description:
-                "DOORS is an exploration and suspense experience where players progress through rooms while reacting to unexpected events."
+                "DOORS focuses on exploration and suspense. Unexpected events can create natural reactions, making it a useful choice when the stream wants more expressive gameplay."
+
         },
 
         "Dress To Impress": {
+
             icon: "👗",
+
+            value: "Creativity & competition",
+
+            type: "Fashion",
+
             description:
-                "Dress To Impress is a fashion competition experience where players create outfits around themes and receive ratings from other players."
+                "Dress To Impress combines themes, outfit creation, competition, and player ratings. It can create opportunities for commentary, discussion, and audience participation."
+
         }
 
     };
 
-    const modal = document.getElementById("gameModal");
-    const modalTitle = document.getElementById("modalTitle");
-    const modalDescription = document.getElementById("modalDescription");
-    const modalIcon = document.getElementById("modalIcon");
 
-    document.querySelectorAll(".info-btn").forEach(button => {
+    const modal =
+        document.getElementById("gameModal");
+
+    const modalTitle =
+        document.getElementById("modalTitle");
+
+    const modalDescription =
+        document.getElementById("modalDescription");
+
+    const modalIcon =
+        document.getElementById("modalIcon");
+
+    const modalValue =
+        document.getElementById("modalValue");
+
+    const modalType =
+        document.getElementById("modalType");
+
+
+    document.querySelectorAll(
+        ".game-info-button"
+    ).forEach(button => {
 
         button.addEventListener("click", () => {
 
-            const card = button.closest(".game-card");
-            const gameName = card.dataset.game;
-            const data = gameInfo[gameName];
+            const card =
+                button.closest(".game-card");
 
-            if (!data) return;
+            const gameName =
+                card.dataset.game;
 
-            modalTitle.textContent = gameName;
-            modalDescription.textContent = data.description;
-            modalIcon.textContent = data.icon;
+            const game =
+                games[gameName];
+
+            if (!game) return;
+
+            modalTitle.textContent =
+                gameName;
+
+            modalDescription.textContent =
+                game.description;
+
+            modalIcon.textContent =
+                game.icon;
+
+            modalValue.textContent =
+                game.value;
+
+            modalType.textContent =
+                game.type;
 
             modal.classList.add("show");
+
+            modal.setAttribute(
+                "aria-hidden",
+                "false"
+            );
+
+            document.body.style.overflow =
+                "hidden";
+
         });
 
     });
 
 
     function closeModal() {
+
         modal.classList.remove("show");
+
+        modal.setAttribute(
+            "aria-hidden",
+            "true"
+        );
+
+        document.body.style.overflow =
+            "";
+
     }
 
-    document.getElementById("closeModal")
-        .addEventListener("click", closeModal);
 
-    document.getElementById("modalCloseButton")
-        .addEventListener("click", closeModal);
+    document.getElementById(
+        "closeModal"
+    ).addEventListener(
+        "click",
+        closeModal
+    );
 
-    modal.addEventListener("click", event => {
 
-        if (event.target === modal) {
-            closeModal();
+    document.getElementById(
+        "modalDone"
+    ).addEventListener(
+        "click",
+        closeModal
+    );
+
+
+    modal.addEventListener(
+        "click",
+        event => {
+
+            if (event.target === modal) {
+
+                closeModal();
+
+            }
+
         }
+    );
 
-    });
 
-    document.addEventListener("keydown", event => {
+    document.addEventListener(
+        "keydown",
+        event => {
 
-        if (event.key === "Escape") {
-            closeModal();
+            if (
+                event.key === "Escape" &&
+                modal.classList.contains("show")
+            ) {
+
+                closeModal();
+
+            }
+
         }
-
-    });
+    );
 
 
     /* =========================
-       VIEWER NEEDS ACCORDION
+       VIEWER NEEDS
     ========================= */
 
-    document.querySelectorAll(".need-item").forEach(item => {
+    document.querySelectorAll(
+        ".need-item"
+    ).forEach(item => {
 
-        item.addEventListener("click", () => {
+        item.addEventListener(
+            "click",
+            () => {
 
-            item.classList.toggle("open");
+                const alreadyOpen =
+                    item.classList.contains(
+                        "open"
+                    );
 
-        });
+                document.querySelectorAll(
+                    ".need-item"
+                ).forEach(other => {
 
-    });
+                    other.classList.remove(
+                        "open"
+                    );
 
+                });
 
-    /* =========================
-       STREAM SIMULATOR
-    ========================= */
+                if (!alreadyOpen) {
 
-    const startBtn = document.getElementById("startBtn");
-    const likeBtn = document.getElementById("likeBtn");
-    const shareBtn = document.getElementById("shareBtn");
+                    item.classList.add(
+                        "open"
+                    );
 
-    const status = document.getElementById("streamStatus");
-    const viewerCount = document.getElementById("viewerCount");
-    const heroViewers = document.getElementById("heroViewers");
-    const timer = document.getElementById("streamTimer");
-    const likeCount = document.getElementById("likeCount");
-
-    const screenTitle = document.getElementById("screenTitle");
-    const screenText = document.getElementById("screenText");
-
-    let streaming = false;
-    let seconds = 0;
-    let viewers = 0;
-    let likes = 0;
-    let timerInterval = null;
-    let viewerInterval = null;
-
-    startBtn.addEventListener("click", () => {
-
-        streaming = !streaming;
-
-        if (streaming) {
-
-            status.textContent = "● LIVE";
-            status.classList.remove("offline");
-            status.classList.add("online");
-
-            startBtn.textContent = "■ Stop Stream";
-
-            screenTitle.textContent = "Roblox Stream is LIVE!";
-            screenText.textContent =
-                "Gameplay, reactions, challenges and viewer interaction.";
-
-            viewers = 1284;
-            seconds = 0;
-
-            updateViewers();
-            updateTimer();
-
-            timerInterval = setInterval(() => {
-
-                seconds++;
-                updateTimer();
-
-            }, 1000);
-
-            viewerInterval = setInterval(() => {
-
-                viewers += Math.floor(Math.random() * 21) - 8;
-
-                if (viewers < 1) {
-                    viewers = 1;
                 }
 
-                updateViewers();
-
-            }, 2500);
-
-            showToast("Stream started!");
-
-        } else {
-
-            clearInterval(timerInterval);
-            clearInterval(viewerInterval);
-
-            status.textContent = "● OFFLINE";
-            status.classList.remove("online");
-            status.classList.add("offline");
-
-            startBtn.textContent = "▶ Start Stream";
-
-            screenTitle.textContent = "Stream is offline";
-            screenText.textContent =
-                "Press Start Stream to begin the simulation.";
-
-            viewerCount.textContent = "0";
-            heroViewers.textContent = "1,284";
-
-            showToast("Stream stopped.");
-
-        }
+            }
+        );
 
     });
 
 
-    function updateTimer() {
+    /* =========================
+       STREAM DASHBOARD
+    ========================= */
 
-        const minutes = Math.floor(seconds / 60)
-            .toString()
-            .padStart(2, "0");
+    const startBtn =
+        document.getElementById(
+            "startBtn"
+        );
 
-        const secs = (seconds % 60)
-            .toString()
-            .padStart(2, "0");
+    const likeBtn =
+        document.getElementById(
+            "likeBtn"
+        );
 
-        timer.textContent = `${minutes}:${secs}`;
+    const shareBtn =
+        document.getElementById(
+            "shareBtn"
+        );
 
-    }
+    const streamStatus =
+        document.getElementById(
+            "streamStatus"
+        );
+
+    const sideStatus =
+        document.getElementById(
+            "sideStatus"
+        );
+
+    const viewerCount =
+        document.getElementById(
+            "viewerCount"
+        );
+
+    const heroViewers =
+        document.getElementById(
+            "heroViewers"
+        );
+
+    const streamTimer =
+        document.getElementById(
+            "streamTimer"
+        );
+
+    const likeCount =
+        document.getElementById(
+            "likeCount"
+        );
+
+    const screenTitle =
+        document.getElementById(
+            "screenTitle"
+        );
+
+    const screenText =
+        document.getElementById(
+            "screenText"
+        );
+
+    const offlineContent =
+        document.getElementById(
+            "offlineContent"
+        );
+
+    const liveContent =
+        document.getElementById(
+            "liveContent"
+        );
+
+    const chatOnline =
+        document.getElementById(
+            "chatOnline"
+        );
 
 
-    function updateViewers() {
+    let streaming = false;
+
+    let seconds = 0;
+
+    let viewers = 0;
+
+    let likes = 0;
+
+    let timerInterval = null;
+
+    let viewerInterval = null;
+
+
+    function updateViewerDisplay() {
 
         viewerCount.textContent =
             viewers.toLocaleString();
@@ -256,142 +423,780 @@ document.addEventListener("DOMContentLoaded", () => {
         heroViewers.textContent =
             viewers.toLocaleString();
 
+        chatOnline.textContent =
+            `${viewers.toLocaleString()} online`;
+
+    }
+
+
+    function updateTimer() {
+
+        const minutes =
+            Math.floor(seconds / 60)
+                .toString()
+                .padStart(2, "0");
+
+        const secs =
+            (seconds % 60)
+                .toString()
+                .padStart(2, "0");
+
+        streamTimer.textContent =
+            `${minutes}:${secs}`;
+
+    }
+
+
+    startBtn.addEventListener(
+        "click",
+        () => {
+
+            streaming = !streaming;
+
+
+            if (streaming) {
+
+                startStream();
+
+            } else {
+
+                stopStream();
+
+            }
+
+        }
+    );
+
+
+    function startStream() {
+
+        streamStatus.textContent =
+            "● LIVE";
+
+        streamStatus.classList.remove(
+            "offline"
+        );
+
+        streamStatus.classList.add(
+            "online"
+        );
+
+        sideStatus.textContent =
+            "Live";
+
+        startBtn.textContent =
+            "■ Stop Stream";
+
+        screenTitle.textContent =
+            "Roblox Stream is LIVE!";
+
+        screenText.textContent =
+            "Gameplay, reactions, commentary and interaction.";
+
+        offlineContent.classList.add(
+            "hidden"
+        );
+
+        liveContent.classList.remove(
+            "hidden"
+        );
+
+        seconds = 0;
+
+        viewers = 1284;
+
+        updateTimer();
+
+        updateViewerDisplay();
+
+
+        timerInterval =
+            setInterval(
+                () => {
+
+                    seconds++;
+
+                    updateTimer();
+
+                },
+                1000
+            );
+
+
+        viewerInterval =
+            setInterval(
+                () => {
+
+                    const change =
+                        Math.floor(
+                            Math.random() * 31
+                        ) - 12;
+
+                    viewers += change;
+
+                    if (viewers < 1) {
+
+                        viewers = 1;
+
+                    }
+
+                    updateViewerDisplay();
+
+                },
+                2500
+            );
+
+
+        addChatMessage(
+            "System",
+            "The stream is now live! Welcome everyone."
+        );
+
+        showToast(
+            "🔵 Stream started!"
+        );
+
+    }
+
+
+    function stopStream() {
+
+        clearInterval(
+            timerInterval
+        );
+
+        clearInterval(
+            viewerInterval
+        );
+
+        timerInterval = null;
+
+        viewerInterval = null;
+
+        streamStatus.textContent =
+            "● OFFLINE";
+
+        streamStatus.classList.remove(
+            "online"
+        );
+
+        streamStatus.classList.add(
+            "offline"
+        );
+
+        sideStatus.textContent =
+            "Offline";
+
+        startBtn.textContent =
+            "▶ Start Stream";
+
+        screenTitle.textContent =
+            "Stream is offline";
+
+        screenText.textContent =
+            "Start the stream to activate the dashboard.";
+
+        offlineContent.classList.remove(
+            "hidden"
+        );
+
+        liveContent.classList.add(
+            "hidden"
+        );
+
+        viewers = 0;
+
+        updateViewerDisplay();
+
+        addChatMessage(
+            "System",
+            "The stream has ended."
+        );
+
+        showToast(
+            "Stream stopped."
+        );
+
     }
 
 
     /* =========================
-       LIKE BUTTON
+       LIKE SYSTEM
     ========================= */
 
-    likeBtn.addEventListener("click", () => {
+    likeBtn.addEventListener(
+        "click",
+        () => {
 
-        likes++;
+            likes++;
 
-        likeCount.textContent =
-            likes.toLocaleString();
+            likeCount.textContent =
+                likes.toLocaleString();
 
-        likeBtn.textContent = "❤️ Liked!";
+            likeBtn.textContent =
+                "❤️ Liked!";
 
-        setTimeout(() => {
-            likeBtn.textContent = "❤️ Like Stream";
-        }, 900);
+            setTimeout(
+                () => {
 
-        showToast("Thanks for the like!");
+                    likeBtn.textContent =
+                        "❤️ Like Stream";
 
-    });
+                },
+                1000
+            );
 
+            showToast(
+                "Thanks for the like!"
+            );
 
-    /* =========================
-       SHARE BUTTON
-    ========================= */
-
-    shareBtn.addEventListener("click", async () => {
-
-        const shareText =
-            "Check out our Roblox Streaming Project!";
-
-        try {
-
-            if (navigator.share) {
-
-                await navigator.share({
-                    title: "Roblox Stream",
-                    text: shareText
-                });
-
-            } else if (navigator.clipboard) {
-
-                await navigator.clipboard.writeText(
-                    window.location.href
-                );
-
-                showToast("Website link copied!");
-
-            } else {
-
-                showToast("Share this website with your friends!");
-
-            }
-
-        } catch (error) {
-
-            // User cancelled sharing.
         }
-
-    });
-
-
-    /* =========================
-       COMMUNITY POLL
-    ========================= */
-
-    const pollButtons =
-        document.querySelectorAll(".poll-btn");
-
-    const pollResult =
-        document.getElementById("pollResult");
-
-    pollButtons.forEach(button => {
-
-        button.addEventListener("click", () => {
-
-            pollButtons.forEach(btn => {
-                btn.classList.remove("selected");
-            });
-
-            button.classList.add("selected");
-
-            const choice = button.dataset.choice;
-
-            pollResult.textContent =
-                `You chose "${choice}"! Thanks for voting.`;
-
-        });
-
-    });
+    );
 
 
     /* =========================
-       NAVIGATION ACTIVE STATE
+       SHARE
     ========================= */
 
-    const navLinks =
-        document.querySelectorAll(".nav-link");
+    shareBtn.addEventListener(
+        "click",
+        async () => {
 
-    const sections =
-        document.querySelectorAll("main section[id]");
+            const shareData = {
 
-    const observer =
-        new IntersectionObserver(entries => {
+                title:
+                    "Roblox Stream Hub",
 
-            entries.forEach(entry => {
+                text:
+                    "Check out our Roblox Streaming Project!",
 
-                if (entry.isIntersecting) {
+                url:
+                    window.location.href
 
-                    navLinks.forEach(link => {
-                        link.classList.remove("active");
-                    });
+            };
 
-                    const active =
-                        document.querySelector(
-                            `.nav-link[href="#${entry.target.id}"]`
-                        );
 
-                    if (active) {
-                        active.classList.add("active");
-                    }
+            try {
+
+                if (
+                    navigator.share
+                ) {
+
+                    await navigator.share(
+                        shareData
+                    );
+
+                    showToast(
+                        "Shared successfully!"
+                    );
+
+                } else if (
+                    navigator.clipboard
+                ) {
+
+                    await navigator.clipboard.writeText(
+                        window.location.href
+                    );
+
+                    showToast(
+                        "Website link copied!"
+                    );
+
+                } else {
+
+                    showToast(
+                        "Share this website with your friends!"
+                    );
 
                 }
 
-            });
+            } catch (error) {
 
-        }, {
-            rootMargin: "-30% 0px -60% 0px"
-        });
+                if (
+                    error &&
+                    error.name === "AbortError"
+                ) {
 
-    sections.forEach(section => {
-        observer.observe(section);
-    });
+                    return;
+
+                }
+
+                showToast(
+                    "Sharing cancelled."
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       CHAT
+    ========================= */
+
+    const chatInput =
+        document.getElementById(
+            "chatInput"
+        );
+
+    const sendChat =
+        document.getElementById(
+            "sendChat"
+        );
+
+    const chatMessages =
+        document.getElementById(
+            "chatMessages"
+        );
+
+    const chatCount =
+        document.getElementById(
+            "chatCount"
+        );
+
+
+    let messagesSent = 0;
+
+
+    function addChatMessage(
+        username,
+        message
+    ) {
+
+        const wrapper =
+            document.createElement(
+                "div"
+            );
+
+        wrapper.className =
+            "chat-message";
+
+
+        const name =
+            document.createElement(
+                "span"
+            );
+
+        name.textContent =
+            username;
+
+
+        const text =
+            document.createElement(
+                "p"
+            );
+
+        text.textContent =
+            message;
+
+
+        wrapper.appendChild(name);
+
+        wrapper.appendChild(text);
+
+        chatMessages.appendChild(
+            wrapper
+        );
+
+
+        chatMessages.scrollTop =
+            chatMessages.scrollHeight;
+
+    }
+
+
+    function sendMessage() {
+
+        const message =
+            chatInput.value.trim();
+
+
+        if (!message) {
+
+            return;
+
+        }
+
+
+        if (!streaming) {
+
+            showToast(
+                "Start the stream first!"
+            );
+
+            return;
+
+        }
+
+
+        messagesSent++;
+
+        chatCount.textContent =
+            messagesSent;
+
+
+        addChatMessage(
+            "You",
+            message
+        );
+
+
+        chatInput.value = "";
+
+
+        setTimeout(
+            () => {
+
+                const responses = [
+
+                    "That was actually funny 😂",
+
+                    "Let's gooo! 🎮",
+
+                    "What game should we play next?",
+
+                    "This stream is getting good!",
+
+                    "W choice 👀"
+
+                ];
+
+
+                const response =
+                    responses[
+                        Math.floor(
+                            Math.random() *
+                            responses.length
+                        )
+                    ];
+
+
+                addChatMessage(
+                    "Viewer",
+                    response
+                );
+
+
+                messagesSent++;
+
+                chatCount.textContent =
+                    messagesSent;
+
+            },
+            800
+        );
+
+    }
+
+
+    sendChat.addEventListener(
+        "click",
+        sendMessage
+    );
+
+
+    chatInput.addEventListener(
+        "keydown",
+        event => {
+
+            if (
+                event.key === "Enter"
+            ) {
+
+                sendMessage();
+
+            }
+
+        }
+    );
+
+
+    /* =========================
+       POLL
+    ========================= */
+
+    const pollButtons =
+        document.querySelectorAll(
+            ".poll-option"
+        );
+
+    const pollResult =
+        document.getElementById(
+            "pollResult"
+        );
+
+
+    pollButtons.forEach(
+        button => {
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    pollButtons.forEach(
+                        option => {
+
+                            option.classList.remove(
+                                "selected"
+                            );
+
+                        }
+                    );
+
+
+                    button.classList.add(
+                        "selected"
+                    );
+
+
+                    const choice =
+                        button.dataset.choice;
+
+
+                    pollResult.textContent =
+                        `✓ You voted for "${choice}". Thanks for participating!`;
+
+                    showToast(
+                        `Vote recorded: ${choice}`
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =========================
+       RESEARCH TABS
+    ========================= */
+
+    const researchTabs =
+        document.querySelectorAll(
+            ".research-tab"
+        );
+
+    const researchPanels =
+        document.querySelectorAll(
+            ".research-panel"
+        );
+
+
+    researchTabs.forEach(
+        tab => {
+
+            tab.addEventListener(
+                "click",
+                () => {
+
+                    const target =
+                        tab.dataset.research;
+
+
+                    researchTabs.forEach(
+                        item => {
+
+                            item.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+
+                    researchPanels.forEach(
+                        panel => {
+
+                            panel.classList.remove(
+                                "active"
+                            );
+
+                        }
+                    );
+
+
+                    tab.classList.add(
+                        "active"
+                    );
+
+
+                    const panel =
+                        document.querySelector(
+                            `[data-panel="${target}"]`
+                        );
+
+
+                    if (panel) {
+
+                        panel.classList.add(
+                            "active"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =========================
+       STAR RATING
+    ========================= */
+
+    const stars =
+        document.querySelectorAll(
+            ".stars button"
+        );
+
+    const ratingText =
+        document.getElementById(
+            "ratingText"
+        );
+
+
+    stars.forEach(
+        star => {
+
+            star.addEventListener(
+                "click",
+                () => {
+
+                    const rating =
+                        Number(
+                            star.dataset.rating
+                        );
+
+
+                    stars.forEach(
+                        item => {
+
+                            const itemRating =
+                                Number(
+                                    item.dataset.rating
+                                );
+
+
+                            item.classList.toggle(
+                                "selected",
+                                itemRating <= rating
+                            );
+
+                        }
+                    );
+
+
+                    const messages = {
+
+                        1:
+                            "Needs improvement",
+
+                        2:
+                            "Could be better",
+
+                        3:
+                            "Pretty good",
+
+                        4:
+                            "Very good!",
+
+                        5:
+                            "Excellent concept! ⭐"
+
+                    };
+
+
+                    ratingText.textContent =
+                        `${rating}/5 — ${messages[rating]}`;
+
+
+                    showToast(
+                        `You rated the stream ${rating}/5`
+                    );
+
+                }
+            );
+
+        }
+    );
+
+
+    /* =========================
+       NAVIGATION
+    ========================= */
+
+    const navLinks =
+        document.querySelectorAll(
+            ".nav-link"
+        );
+
+
+    const observedSections =
+        document.querySelectorAll(
+            "main section[id]"
+        );
+
+
+    const sectionObserver =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(
+                    entry => {
+
+                        if (
+                            entry.isIntersecting
+                        ) {
+
+                            navLinks.forEach(
+                                link => {
+
+                                    link.classList.remove(
+                                        "active"
+                                    );
+
+                                }
+                            );
+
+
+                            const activeLink =
+                                document.querySelector(
+                                    `.nav-link[href="#${entry.target.id}"]`
+                                );
+
+
+                            if (activeLink) {
+
+                                activeLink.classList.add(
+                                    "active"
+                                );
+
+                            }
+
+                        }
+
+                    }
+                );
+
+            },
+            {
+                rootMargin:
+                    "-25% 0px -65% 0px"
+            }
+        );
+
+
+    observedSections.forEach(
+        section => {
+
+            sectionObserver.observe(
+                section
+            );
+
+        }
+    );
 
 
     /* =========================
@@ -399,27 +1204,54 @@ document.addEventListener("DOMContentLoaded", () => {
     ========================= */
 
     const toast =
-        document.getElementById("toast");
+        document.getElementById(
+            "toast"
+        );
 
     const toastMessage =
-        document.getElementById("toastMessage");
+        document.getElementById(
+            "toastMessage"
+        );
 
     let toastTimeout;
 
+
     function showToast(message) {
 
-        toastMessage.textContent = message;
+        toastMessage.textContent =
+            message;
 
-        toast.classList.add("show");
+        toast.classList.add(
+            "show"
+        );
 
-        clearTimeout(toastTimeout);
 
-        toastTimeout = setTimeout(() => {
+        clearTimeout(
+            toastTimeout
+        );
 
-            toast.classList.remove("show");
 
-        }, 2200);
+        toastTimeout =
+            setTimeout(
+                () => {
+
+                    toast.classList.remove(
+                        "show"
+                    );
+
+                },
+                2300
+            );
 
     }
+
+
+    /* =========================
+       INITIAL STATE
+    ========================= */
+
+    updateViewerDisplay();
+
+    updateTimer();
 
 });
