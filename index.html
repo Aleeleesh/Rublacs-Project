@@ -1,152 +1,571 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="GameVault — discover your next favorite game.">
-  <title>GameVault — Discover Your Next Game</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Roblox Streaming Hub</title>
+
+    <!-- Denise will work on the CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-  <div class="bg-grid"></div>
-  <div class="orb orb-one"></div>
-  <div class="orb orb-two"></div>
 
-  <header class="site-header">
-    <a href="#home" class="logo">GAME<span>VAULT</span></a>
-    <button class="menu-toggle" id="menuToggle" aria-label="Open navigation">☰</button>
-    <nav id="nav">
-      <a href="#home" class="nav-link active">Home</a>
-      <a href="#discover" class="nav-link">Discover</a>
-      <a href="#genres" class="nav-link">Genres</a>
-      <a href="#about" class="nav-link">About</a>
-      <a href="#discover" class="nav-cta">Explore Games ↗</a>
-    </nav>
-  </header>
+    <!-- ================= HEADER ================= -->
+    <header>
+        <nav>
+            <div class="logo">
+                🎮 Roblox Streaming Hub
+            </div>
 
-  <main id="home">
-    <section class="hero">
-      <div class="hero-copy">
-        <p class="eyebrow">THE NEXT LEVEL OF DISCOVERY</p>
-        <h1>Find your next <span>favorite game.</span></h1>
-        <p class="hero-text">Explore games across different genres, discover hidden gems, and find something worth playing next.</p>
-        <div class="hero-actions">
-          <a class="button primary" href="#discover">Explore Games</a>
-          <a class="button secondary" href="#genres">Browse Genres</a>
-        </div>
-        <div class="stats">
-          <div><strong>24+</strong><small>Games listed</small></div>
-          <div><strong>08</strong><small>Genres</small></div>
-          <div><strong>∞</strong><small>Ways to play</small></div>
-        </div>
-      </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#content">Content</a></li>
+                <li><a href="#audience">Audience</a></li>
+                <li><a href="#needs">Viewer Needs</a></li>
+                <li><a href="#good-stream">Good Stream</a></li>
+                <li><a href="#research">Research</a></li>
+            </ul>
+        </nav>
+    </header>
 
-      <div class="featured">
-        <div class="featured-art">
-          <div class="moon"></div>
-          <div class="character">HK</div>
-        </div>
-        <div class="featured-info">
-          <p class="eyebrow">FEATURED GAME</p>
-          <h2>Hollow Knight</h2>
-          <p>Explore a mysterious underground kingdom filled with challenging combat, secrets, and unforgettable places.</p>
-          <div class="tags"><span>Indie</span><span>Adventure</span><span>Action</span></div>
-          <button class="text-button" id="featureButton">Why play it? →</button>
-        </div>
-      </div>
-    </section>
 
-    <section class="section" id="discover">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">DISCOVER</p>
-          <h2>Games worth checking out.</h2>
-        </div>
-        <p class="section-note">Search or filter the collection.</p>
-      </div>
+    <!-- ================= HOME ================= -->
+    <main>
 
-      <div class="toolbar">
-        <label class="search">
-          <span>⌕</span>
-          <input id="searchInput" type="search" placeholder="Search games..." autocomplete="off">
-        </label>
-        <div class="filters" id="filters">
-          <button class="filter active" data-filter="all">All</button>
-          <button class="filter" data-filter="action">Action</button>
-          <button class="filter" data-filter="adventure">Adventure</button>
-          <button class="filter" data-filter="sandbox">Sandbox</button>
-          <button class="filter" data-filter="horror">Horror</button>
-          <button class="filter" data-filter="indie">Indie</button>
-        </div>
-      </div>
+        <section id="home" class="hero">
 
-      <div class="game-grid" id="gameGrid">
-        <article class="game-card" data-title="Hollow Knight" data-genre="indie adventure action">
-          <div class="game-art art-hollow"><span>HK</span></div>
-          <div class="card-body"><div><p class="card-type">INDIE • ACTION</p><h3>Hollow Knight</h3></div><span class="arrow">↗</span></div>
-          <p>Explore a beautifully mysterious underground world.</p>
-        </article>
+            <div class="hero-content">
 
-        <article class="game-card" data-title="Minecraft" data-genre="sandbox adventure">
-          <div class="game-art art-minecraft"><span>MC</span></div>
-          <div class="card-body"><div><p class="card-type">SANDBOX</p><h3>Minecraft</h3></div><span class="arrow">↗</span></div>
-          <p>Build, explore, survive, and create almost anything.</p>
-        </article>
+                <p class="subtitle">WELCOME TO THE STREAM</p>
 
-        <article class="game-card" data-title="Roblox" data-genre="sandbox adventure">
-          <div class="game-art art-roblox"><span>RBX</span></div>
-          <div class="card-body"><div><p class="card-type">SANDBOX</p><h3>Roblox</h3></div><span class="arrow">↗</span></div>
-          <p>A huge collection of experiences made by players.</p>
-        </article>
+                <h1>ROBLOX<br>STREAMING</h1>
 
-        <article class="game-card" data-title="Undertale" data-genre="indie adventure">
-          <div class="game-art art-undertale"><span>UT</span></div>
-          <div class="card-body"><div><p class="card-type">INDIE • RPG</p><h3>Undertale</h3></div><span class="arrow">↗</span></div>
-          <p>A strange journey where your choices actually matter.</p>
-        </article>
+                <p>
+                    A fun and interactive Roblox gameplay streaming
+                    experience where we explore games, take on challenges,
+                    and connect with viewers.
+                </p>
 
-        <article class="game-card" data-title="Dead Cells" data-genre="indie action">
-          <div class="game-art art-deadcells"><span>DC</span></div>
-          <div class="card-body"><div><p class="card-type">INDIE • ACTION</p><h3>Dead Cells</h3></div><span class="arrow">↗</span></div>
-          <p>Fast combat, exploration, and a different run every time.</p>
-        </article>
+                <a href="#content" class="button">
+                    Explore Our Stream
+                </a>
 
-        <article class="game-card" data-title="Phasmophobia" data-genre="horror indie">
-          <div class="game-art art-phasma"><span>PH</span></div>
-          <div class="card-body"><div><p class="card-type">HORROR • CO-OP</p><h3>Phasmophobia</h3></div><span class="arrow">↗</span></div>
-          <p>Investigate haunted locations with friends.</p>
-        </article>
-      </div>
-      <p class="empty" id="emptyState">No games found. Try another search or filter.</p>
-    </section>
+            </div>
 
-    <section class="section" id="genres">
-      <div class="section-heading">
-        <div><p class="eyebrow">GENRES</p><h2>Pick a mood.</h2></div>
-      </div>
-      <div class="genre-grid">
-        <button class="genre-tile" data-genre-jump="action"><strong>Action</strong><span>Fast & intense →</span></button>
-        <button class="genre-tile" data-genre-jump="adventure"><strong>Adventure</strong><span>Explore worlds →</span></button>
-        <button class="genre-tile" data-genre-jump="sandbox"><strong>Sandbox</strong><span>Make your own fun →</span></button>
-        <button class="genre-tile" data-genre-jump="horror"><strong>Horror</strong><span>Good luck sleeping →</span></button>
-      </div>
-    </section>
+        </section>
 
-    <section class="about section" id="about">
-      <div>
-        <p class="eyebrow">ABOUT GAMEVAULT</p>
-        <h2>Less scrolling.<br><span>More playing.</span></h2>
-      </div>
-      <p>GameVault is a simple gaming discovery website made to help players find games without getting lost in endless lists. Browse by genre, search for a title, and find something new to play.</p>
-    </section>
-  </main>
 
-  <footer>
-    <div class="logo">GAME<span>VAULT</span></div>
-    <p>Made for gamers • GameVault v1.0</p>
-  </footer>
+        <!-- ================= STREAMING CONTENT ================= -->
+        <section id="content" class="section">
 
-  <div class="toast" id="toast"></div>
-  <script src="script.js"></script>
+            <div class="section-heading">
+                <p>01</p>
+                <h2>Our Streaming Content</h2>
+            </div>
+
+            <div class="roblox-intro">
+
+                <p>
+                    Our stream will be all about <strong>Roblox gameplay</strong>.
+                    We can jump into different games, take on fun challenges,
+                    explore new experiences, and chat with viewers along the way.
+                </p>
+
+                <p>
+                    We can also add our own commentary, reactions, and a few
+                    spontaneous moments to make the stream feel more lively
+                    and enjoyable for our viewers.
+                </p>
+
+            </div>
+
+
+            <div class="content-grid">
+
+                <article class="content-card">
+                    <h3>🎮 Gameplay</h3>
+
+                    <p>
+                        We will play different Roblox experiences and
+                        explore what each game has to offer.
+                    </p>
+                </article>
+
+
+                <article class="content-card">
+                    <h3>🏆 Challenges</h3>
+
+                    <p>
+                        Fun challenges can make the stream more exciting
+                        and give viewers something interesting to watch.
+                    </p>
+                </article>
+
+
+                <article class="content-card">
+                    <h3>🌎 Exploration</h3>
+
+                    <p>
+                        We can discover new Roblox games and experiences
+                        that our viewers may also enjoy.
+                    </p>
+                </article>
+
+
+                <article class="content-card">
+                    <h3>💬 Interaction</h3>
+
+                    <p>
+                        We will communicate with viewers while playing
+                        and include them in the stream.
+                    </p>
+                </article>
+
+            </div>
+
+
+            <!-- Jayden's Roblox Research -->
+
+            <div class="roblox-info">
+
+                <h3>What is Roblox?</h3>
+
+                <p>
+                    Roblox is an online platform that is globally available
+                    and can be played by people around the world. Instead
+                    of being a single game, Roblox functions as a massive
+                    library of user-created experiences, ranging from
+                    obstacle courses and simulators to role-playing games
+                    and many more.
+                </p>
+
+                <p>
+                    Players can also create their own games using
+                    <strong>Roblox Studio</strong>. It allows creators to
+                    code, build, and publish interactive 3D worlds for
+                    other players to enjoy. Creators can earn real money
+                    by designing popular games or selling virtual goods
+                    to other users.
+                </p>
+
+                <h3>👤 Avatar Customization</h3>
+
+                <p>
+                    Players can design their own <strong>Avatar</strong>
+                    with different hairstyles, faces, bodies, accessories,
+                    and clothes. Some items are free, while others can be
+                    bought using <strong>Robux</strong>.
+                </p>
+
+                <h3>💰 Robux</h3>
+
+                <p>
+                    Robux is Roblox's virtual currency. It can be purchased
+                    with real money and used to buy avatar items or game
+                    upgrades such as special powers, tools, or VIP access
+                    inside individual games.
+                </p>
+
+                <h3>👥 Social Features</h3>
+
+                <p>
+                    Players can join sessions with friends, communicate
+                    through text chat, and use voice features while
+                    exploring virtual experiences together.
+                </p>
+
+                <div class="safety-card">
+
+                    <h3>🛡️ Player Safety</h3>
+
+                    <p>
+                        Roblox uses <strong>Maturity Content Filters</strong>
+                        to help protect younger players. These filters
+                        restrict access to experiences based on age ratings,
+                        such as All Ages, 9+, 13+, and 17+.
+                    </p>
+
+                    <p>
+                        Roblox also applies additional restrictions for
+                        younger users and filters things such as numbers,
+                        links, and personal information to help keep
+                        younger players safer while using the platform.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= TARGET AUDIENCE ================= -->
+        <section id="audience" class="section">
+
+            <div class="section-heading">
+                <p>02</p>
+                <h2>Target Audience</h2>
+            </div>
+
+            <div class="audience-container">
+
+                <div class="audience-main">
+
+                    <h3>Who are we streaming for?</h3>
+
+                    <p>
+                        Our target audience is people aged
+                        <strong>13 and up</strong>, especially teenagers
+                        who enjoy playing or watching Roblox.
+                    </p>
+
+                    <p>
+                        We want our stream to feel fun, engaging, and
+                        like something viewers can enjoy with the people
+                        they are closest to.
+                    </p>
+
+                </div>
+
+
+                <div class="audience-list">
+
+                    <div class="audience-item">
+                        <span>01</span>
+                        <p>Teenagers aged 13 and up</p>
+                    </div>
+
+                    <div class="audience-item">
+                        <span>02</span>
+                        <p>People who enjoy Roblox</p>
+                    </div>
+
+                    <div class="audience-item">
+                        <span>03</span>
+                        <p>People who enjoy watching gaming content</p>
+                    </div>
+
+                    <div class="audience-item">
+                        <span>04</span>
+                        <p>Viewers who enjoy interactive streams</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= VIEWER NEEDS ================= -->
+        <section id="needs" class="section">
+
+            <div class="section-heading">
+                <p>03</p>
+                <h2>Viewer Needs</h2>
+            </div>
+
+            <p class="section-intro">
+                Our viewers might want a stream that feels fun,
+                interesting, and easy to follow. They may also want
+                to feel included in the experience.
+            </p>
+
+
+            <div class="needs-grid">
+
+                <article class="need-card">
+
+                    <div class="number">01</div>
+
+                    <h3>Fun & Interesting</h3>
+
+                    <p>
+                        Viewers want content that is enjoyable,
+                        entertaining, and interesting to watch.
+                    </p>
+
+                </article>
+
+
+                <article class="need-card">
+
+                    <div class="number">02</div>
+
+                    <h3>Easy to Follow</h3>
+
+                    <p>
+                        The stream should be understandable and
+                        organized so viewers can easily follow along.
+                    </p>
+
+                </article>
+
+
+                <article class="need-card">
+
+                    <div class="number">03</div>
+
+                    <h3>Feeling Included</h3>
+
+                    <p>
+                        Viewers want to feel like they are part of
+                        the stream rather than simply watching.
+                    </p>
+
+                </article>
+
+
+                <article class="need-card">
+
+                    <div class="number">04</div>
+
+                    <h3>Interaction</h3>
+
+                    <p>
+                        We can read comments, answer questions,
+                        and listen to viewers' suggestions.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= GOOD STREAM ================= -->
+        <section id="good-stream" class="section">
+
+            <div class="section-heading">
+                <p>04</p>
+                <h2>Characteristics of a Good Stream</h2>
+            </div>
+
+            <p class="section-intro">
+                A good stream should feel welcoming and engaging
+                while giving viewers an enjoyable experience.
+            </p>
+
+
+            <div class="qualities">
+
+                <div class="quality">
+
+                    <h3>🎙️ Clear Audio & Video</h3>
+
+                    <p>
+                        Clear audio and video help viewers understand
+                        and enjoy what is happening during the stream.
+                    </p>
+
+                </div>
+
+
+                <div class="quality">
+
+                    <h3>🎮 Interesting Content</h3>
+
+                    <p>
+                        Gameplay, challenges, exploration, and
+                        spontaneous moments can keep viewers interested.
+                    </p>
+
+                </div>
+
+
+                <div class="quality">
+
+                    <h3>💬 Genuine Interaction</h3>
+
+                    <p>
+                        Reading comments, answering questions, and
+                        listening to suggestions help viewers feel involved.
+                    </p>
+
+                </div>
+
+
+                <div class="quality">
+
+                    <h3>⚡ Energetic</h3>
+
+                    <p>
+                        The streamer should help keep the conversation
+                        lively and the audience interested.
+                    </p>
+
+                </div>
+
+
+                <div class="quality">
+
+                    <h3>😊 Friendly</h3>
+
+                    <p>
+                        Being welcoming and friendly can make viewers
+                        feel more comfortable participating.
+                    </p>
+
+                </div>
+
+
+                <div class="quality">
+
+                    <h3>👀 Attentive</h3>
+
+                    <p>
+                        Paying attention to viewers and responding to
+                        them can make the stream feel more personal.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= RESEARCH JOURNEY ================= -->
+        <section id="research" class="section">
+
+            <div class="section-heading">
+                <p>05</p>
+                <h2>Our Research Journey</h2>
+            </div>
+
+
+            <div class="research-content">
+
+                <p>
+                    Our experience guides and worksheets helped us
+                    figure out what type of streaming content would
+                    work best for us.
+                </p>
+
+                <p>
+                    Through the activities, we looked at different
+                    kinds of streams, thought about our interests
+                    and experiences, and eventually realized that
+                    gaming, especially Roblox, would be a good choice
+                    for us.
+                </p>
+
+                <p>
+                    We chose Roblox because we already know how to play
+                    it and think it would be fun to share that experience
+                    with viewers.
+                </p>
+
+
+                <div class="research-steps">
+
+                    <div class="research-step">
+
+                        <span>01</span>
+
+                        <h3>Exploring</h3>
+
+                        <p>
+                            We looked at different kinds of streaming
+                            content and considered what could work for us.
+                        </p>
+
+                    </div>
+
+
+                    <div class="research-step">
+
+                        <span>02</span>
+
+                        <h3>Understanding Our Interests</h3>
+
+                        <p>
+                            We thought about our own interests,
+                            experiences, and the types of content
+                            we would enjoy creating.
+                        </p>
+
+                    </div>
+
+
+                    <div class="research-step">
+
+                        <span>03</span>
+
+                        <h3>Choosing Roblox</h3>
+
+                        <p>
+                            We realized that gaming, especially Roblox,
+                            would be a good choice because we already
+                            know how to play it.
+                        </p>
+
+                    </div>
+
+
+                    <div class="research-step">
+
+                        <span>04</span>
+
+                        <h3>Planning the Stream</h3>
+
+                        <p>
+                            We planned a stream focused on gameplay,
+                            challenges, exploration, reactions,
+                            commentary, and viewer interaction.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= FINAL SECTION ================= -->
+        <section class="final-section">
+
+            <h2>Let's Start Streaming!</h2>
+
+            <p>
+                Roblox gives us many different experiences to explore.
+                By combining gameplay, challenges, reactions, and
+                interaction, we can create a stream that is fun
+                and engaging for our audience.
+            </p>
+
+            <a href="#home" class="button">
+                Back to Top
+            </a>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+    <footer>
+
+        <p>
+            © 2026 Roblox Streaming Hub
+        </p>
+
+        <p>
+            Created for our streaming project
+        </p>
+
+    </footer>
+
+
+    <!-- Aylmer will work on the JavaScript -->
+    <script src="script.js"></script>
+
 </body>
 </html>
+```
