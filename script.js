@@ -1,16 +1,20 @@
 /* =========================================================
    BLOCKLIVE
    ROBLOX STREAMING PROJECT
+   MAIN JAVASCRIPT
    ========================================================= */
 
 document.addEventListener("DOMContentLoaded", () => {
 
   /* =======================================================
-     ELEMENT HELPER
+     HELPERS
   ======================================================= */
 
   const $ = (id) => document.getElementById(id);
-  const $$ = (selector) => [...document.querySelectorAll(selector)];
+
+  const $$ = (selector) => [
+    ...document.querySelectorAll(selector)
+  ];
 
 
   /* =======================================================
@@ -18,30 +22,45 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================================= */
 
   let live = false;
-  let muted = false;
 
   let seconds = 0;
+
   let viewers = 0;
 
-  let likes = Number(localStorage.getItem("blockliveLikes")) || 42;
+  let likes = Number(
+    localStorage.getItem("blockliveLikes") || 42
+  );
 
-  let messageCount = 0;
+  let messagesSent = 0;
 
-  let streamTimer = null;
+  let timer = null;
+
   let chatTimer = null;
 
-  let currentGame = "Brookhaven";
+  let typingTimer = null;
+
+  let muted = false;
+
+  let selectedGame = "Brookhaven";
 
 
   /* =======================================================
-     CHAT DATA
-     ======================================================= */
+     PEOPLE
+  ======================================================= */
 
-  const conversations = [
+  const humanMessages = [
 
     {
-      name: "Aylmer",
-      role: "presenter",
+      name: "Denise",
+      messages: [
+        "I voted risk 😭",
+        "someone clip that",
+        "this is getting chaotic"
+      ]
+    },
+
+    {
+      name: "Alymer",
       messages: [
         "BRO the lobby is already wild",
         "we are NOT surviving this",
@@ -51,8 +70,16 @@ document.addEventListener("DOMContentLoaded", () => {
     },
 
     {
+      name: "Jayden",
+      messages: [
+        "nah this is about to go bad",
+        "HAHAHAHA",
+        "bro what just happened"
+      ]
+    },
+
+    {
       name: "Keysha",
-      role: "presenter",
       messages: [
         "let chat choose the next move",
         "Ash look behind you",
@@ -61,34 +88,21 @@ document.addEventListener("DOMContentLoaded", () => {
     },
 
     {
-      name: "Jayden",
-      role: "presenter",
-      messages: [
-        "nah this is about to go bad",
-        "HAHAHAHA"
-      ]
-    },
-
-    {
-      name: "Denise",
-      role: "presenter",
-      messages: [
-        "I voted risk 😭",
-        "someone clip that"
-      ]
-    },
-
-    {
       name: "Ash",
-      role: "presenter",
       messages: [
-        "this is actually crazy"
+        "six seven",
+        "nah we're actually cooking",
+        "okay this is crazy"
       ]
-    },
+    }
+
+  ];
+
+
+  const botMessages = [
 
     {
       name: "Drossog",
-      role: "bot",
       messages: [
         "wait that actually worked",
         "tuff",
@@ -99,30 +113,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
     {
       name: "Frenchfries",
-      role: "bot",
       messages: [
         "chat is cooking today",
         "rating this a 6.7",
-        "this stream is getting better"
+        "this stream is tuff"
       ]
     },
 
     {
       name: "Jaymat1210",
-      role: "bot",
       messages: [
-        "BRO 💀",
         "I'm the goat",
-        "nahhhh"
+        "BRO 💀",
+        "nahhhhh"
       ]
     },
 
     {
       name: "Scrappy",
-      role: "bot",
       messages: [
         "classic stream moment",
-        "dream of the year watch jobs minecraft"
+        "dream of the year watch jobs minecraft",
+        "this is peak"
       ]
     }
 
@@ -134,13 +146,13 @@ document.addEventListener("DOMContentLoaded", () => {
   ======================================================= */
 
   const pollVotes = {
-    Brookhaven: 34,
+    "Brookhaven": 34,
     "Obby Challenge": 28,
-    Simulator: 21,
-    Adventure: 17
+    "Simulator": 21,
+    "Adventure": 17
   };
 
-  let pollRevealed = false;
+  let pollHasBeenRevealed = false;
 
 
   /* =======================================================
@@ -151,7 +163,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const container = $("toastContainer");
 
-    if (!container) return;
+    if (!container) {
+      return;
+    }
 
     const toast = document.createElement("div");
 
@@ -165,144 +179,289 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => {
       toast.remove();
-    }, 2500);
+    }, 2700);
   }
 
 
   /* =======================================================
-     SAFE TEXT
+     SAFE HTML
   ======================================================= */
 
-  function escapeHTML(text) {
+  function escapeHTML(value) {
 
-    return String(text).replace(/[&<>"']/g, (character) => {
+    return String(value).replace(
+      /[&<>"']/g,
+      (character) => {
 
-      const entities = {
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#039;"
-      };
+        const map = {
+          "&": "&amp;",
+          "<": "&lt;",
+          ">": "&gt;",
+          '"': "&quot;",
+          "'": "&#039;"
+        };
 
-      return entities[character];
-    });
+        return map[character];
+      }
+    );
 
   }
 
 
   /* =======================================================
-     UPDATE GENERAL UI
+     FORMAT TIME
+  ======================================================= */
+
+  function formatTime(totalSeconds) {
+
+    const hours = Math.floor(totalSeconds / 3600);
+
+    const minutes = Math.floor(
+      (totalSeconds % 3600) / 60
+    );
+
+    const secondsPart = totalSeconds % 60;
+
+    return [
+      hours,
+      minutes,
+      secondsPart
+    ]
+      .map((value) =>
+        String(value).padStart(2, "0")
+      )
+      .join(":");
+  }
+
+
+  /* =======================================================
+     UPDATE UI
   ======================================================= */
 
   function updateUI() {
 
-    $("heroStatus").textContent = live ? "LIVE" : "OFFLINE";
+    const statusText = live ? "LIVE" : "OFFLINE";
 
-    $("streamStatus").textContent =
-      live ? "● LIVE" : "● OFFLINE";
+    const viewerText = live
+      ? `${viewers.toLocaleString()} viewers`
+      : "0 viewers";
 
-    $("chatStatus").textContent =
-      live ? "Stream is active" : "Stream is offline";
 
-    $("viewerCount").textContent =
-      `${live ? viewers.toLocaleString() : 0} viewers`;
+    /* TOP STATUS */
 
-    $("statStatus").textContent =
-      live ? "Live" : "Offline";
+    if ($("topStatus")) {
+      $("topStatus").textContent = statusText;
+    }
 
-    $("statViewers").textContent =
-      live ? viewers.toLocaleString() : "0";
 
-    $("statLikes").textContent =
-      likes;
+    const systemStatus =
+      document.querySelector(".system-status");
 
-    $("statMessages").textContent =
-      messageCount;
+    if (systemStatus) {
+      systemStatus.classList.toggle(
+        "live",
+        live
+      );
+    }
 
-    $("startStreamButton").textContent =
-      live ? "Stream is Live" : "Start Stream";
 
-    $("chatInput").disabled = !live;
+    /* STREAM STATUS */
 
-    $("chatInput").placeholder =
-      live
-        ? "Say something..."
-        : "Start the stream to chat...";
+    if ($("streamStatus")) {
 
-    $("offlineMessage").classList.toggle(
-      "hidden",
-      live
-    );
+      $("streamStatus").innerHTML = `
+        <span></span>
+        ${statusText}
+      `;
 
-    $("liveOverlay").classList.toggle(
-      "visible",
-      live
-    );
+      $("streamStatus").classList.toggle(
+        "live",
+        live
+      );
+    }
+
+
+    if ($("videoLive")) {
+      $("videoLive").textContent = statusText;
+    }
+
+
+    if ($("viewerCount")) {
+      $("viewerCount").textContent = viewerText;
+    }
+
+
+    if ($("chatStatus")) {
+      $("chatStatus").textContent = statusText;
+
+      $("chatStatus").classList.toggle(
+        "live",
+        live
+      );
+    }
+
+
+    /* STREAM TIMER */
+
+    if ($("streamTimer")) {
+      $("streamTimer").textContent =
+        formatTime(seconds);
+    }
+
+
+    /* CURRENT GAME */
+
+    if ($("currentGame")) {
+      $("currentGame").textContent =
+        selectedGame;
+    }
+
+    if ($("heroGameName")) {
+      $("heroGameName").textContent =
+        selectedGame.toUpperCase();
+    }
+
+
+    if ($("selectedGameLabel")) {
+      $("selectedGameLabel").textContent =
+        selectedGame;
+    }
+
+
+    /* COUNTERS */
+
+    if ($("likeCount")) {
+      $("likeCount").textContent =
+        likes.toLocaleString();
+    }
+
+    if ($("statLikes")) {
+      $("statLikes").textContent =
+        likes.toLocaleString();
+    }
+
+    if ($("statViewers")) {
+      $("statViewers").textContent =
+        live ? viewers.toLocaleString() : "0";
+    }
+
+    if ($("statMessages")) {
+      $("statMessages").textContent =
+        messagesSent.toLocaleString();
+    }
+
+    if ($("statStatus")) {
+      $("statStatus").textContent =
+        statusText;
+    }
+
+
+    /* OFFLINE COVER */
+
+    if ($("offlineMessage")) {
+
+      $("offlineMessage").classList.toggle(
+        "hidden",
+        live
+      );
+    }
+
+
+    /* LIVE DOT */
+
+    const liveDot =
+      document.querySelector(".live-dot");
+
+    if (liveDot) {
+      liveDot.classList.toggle(
+        "active",
+        live
+      );
+    }
+
+
+    /* CHAT INPUT */
+
+    if ($("chatInput")) {
+
+      $("chatInput").disabled = !live;
+
+      $("chatInput").placeholder =
+        live
+          ? "Say something to the room..."
+          : "Go live to chat...";
+    }
+
+
+    if ($("sendChatButton")) {
+      $("sendChatButton").disabled = !live;
+    }
+
+
+    /* START BUTTON */
+
+    if ($("startStreamButton")) {
+
+      $("startStreamButton").disabled = live;
+
+      $("startStreamButton").innerHTML = live
+        ? `
+          <span class="button-dot"></span>
+          Stream is Live
+        `
+        : `
+          <span class="button-dot"></span>
+          Start Stream
+        `;
+    }
 
   }
 
 
   /* =======================================================
-     STREAM TIMER
-  ======================================================= */
-
-  function updateTimer() {
-
-    const minutes = Math.floor(seconds / 60)
-      .toString()
-      .padStart(2, "0");
-
-    const secs = (seconds % 60)
-      .toString()
-      .padStart(2, "0");
-
-    $("streamTimer").textContent =
-      `${minutes}:${secs}`;
-
-  }
-
-
-  /* =======================================================
-     RESET CHAT
+     CHAT
   ======================================================= */
 
   function resetChat() {
 
-    clearTimeout(chatTimer);
+    const chat = $("chatMessages");
 
-    messageCount = 0;
+    if (!chat) {
+      return;
+    }
 
-    $("chatMessages").innerHTML = `
+    chat.innerHTML = `
       <div class="chat-empty" id="chatEmpty">
 
         <span>✦</span>
 
-        <strong>Chat is quiet.</strong>
+        <strong>No messages yet</strong>
 
         <small>
-          Start the stream to see the conversation.
+          Start the stream to open the chat.
         </small>
 
       </div>
     `;
 
-    $("typingIndicator").classList.remove("visible");
+    messagesSent = 0;
 
     updateUI();
-
   }
 
-
-  /* =======================================================
-     ADD CHAT MESSAGE
-  ======================================================= */
 
   function addChatMessage(
     name,
     message,
-    role = "presenter"
+    type = "human"
   ) {
+
+    const chat = $("chatMessages");
+
+    if (!chat) {
+      return;
+    }
+
 
     const empty = $("chatEmpty");
 
@@ -310,51 +469,55 @@ document.addEventListener("DOMContentLoaded", () => {
       empty.remove();
     }
 
+
     const messageElement =
       document.createElement("div");
 
     messageElement.className =
       "chat-message";
 
-    const roleText =
-      role === "bot"
-        ? "BOT"
-        : "Presenter";
 
-    const roleClass =
-      role === "bot"
-        ? "chat-role bot"
-        : "chat-role";
+    const badge =
+      type === "bot"
+        ? `<span class="bot-badge">BOT</span>`
+        : `<span class="presenter-badge">Presenter</span>`;
+
 
     messageElement.innerHTML = `
-
       <div class="chat-name">
-
         ${escapeHTML(name)}
-
-        <span class="${roleClass}">
-          ${roleText}
-        </span>
-
+        ${badge}
       </div>
 
       <div class="chat-text">
         ${escapeHTML(message)}
       </div>
-
     `;
 
-    $("chatMessages").appendChild(
-      messageElement
-    );
 
-    $("chatMessages").scrollTop =
-      $("chatMessages").scrollHeight;
+    chat.appendChild(messageElement);
 
-    messageCount++;
+    chat.scrollTop = chat.scrollHeight;
+
+    messagesSent++;
 
     updateUI();
+  }
 
+
+  function showTyping(show) {
+
+    const indicator =
+      $("typingIndicator");
+
+    if (!indicator) {
+      return;
+    }
+
+    indicator.classList.toggle(
+      "show",
+      show
+    );
   }
 
 
@@ -362,56 +525,63 @@ document.addEventListener("DOMContentLoaded", () => {
      SIMULATED CHAT
   ======================================================= */
 
-  let conversationIndex = 0;
-  let messageIndex = 0;
+  function randomFrom(array) {
 
-  function nextChatMessage() {
+    return array[
+      Math.floor(
+        Math.random() * array.length
+      )
+    ];
+  }
 
-    if (!live) return;
 
-    const person =
-      conversations[conversationIndex];
+  function sendNextSimulatedMessage() {
 
-    const message =
-      person.messages[messageIndex];
-
-    addChatMessage(
-      person.name,
-      message,
-      person.role
-    );
-
-    messageIndex++;
-
-    if (
-      messageIndex >=
-      person.messages.length
-    ) {
-
-      messageIndex = 0;
-
-      conversationIndex++;
-
-      if (
-        conversationIndex >=
-        conversations.length
-      ) {
-        conversationIndex = 0;
-      }
-
+    if (!live) {
+      return;
     }
 
-    $("typingIndicator")
-      .classList.add("visible");
 
-    chatTimer = setTimeout(() => {
+    const useBot =
+      Math.random() > 0.42;
 
-      $("typingIndicator")
-        .classList.remove("visible");
+    const people =
+      useBot
+        ? botMessages
+        : humanMessages;
 
-      nextChatMessage();
+    const person =
+      randomFrom(people);
 
-    }, 2200);
+    const message =
+      randomFrom(person.messages);
+
+
+    showTyping(true);
+
+
+    setTimeout(() => {
+
+      if (!live) {
+        showTyping(false);
+        return;
+      }
+
+      showTyping(false);
+
+      addChatMessage(
+        person.name,
+        message,
+        useBot ? "bot" : "human"
+      );
+
+    }, 600);
+
+
+    chatTimer = setTimeout(
+      sendNextSimulatedMessage,
+      1900 + Math.random() * 2200
+    );
 
   }
 
@@ -422,49 +592,100 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function startStream() {
 
-    if (live) return;
+    if (live) {
+      return;
+    }
+
 
     live = true;
 
     seconds = 0;
 
     viewers =
-      1180 +
-      Math.floor(Math.random() * 350);
+      1100 +
+      Math.floor(
+        Math.random() * 450
+      );
 
-    conversationIndex = 0;
-    messageIndex = 0;
 
     resetChat();
 
-    live = true;
-
     updateUI();
 
-    showToast("Stream started.");
+    showToast(
+      "Stream room is now live."
+    );
 
-    clearInterval(streamTimer);
 
-    streamTimer = setInterval(() => {
+    timer = setInterval(() => {
+
+      if (!live) {
+        return;
+      }
+
 
       seconds++;
 
+
       viewers +=
-        Math.floor(Math.random() * 19) - 7;
+        Math.floor(
+          Math.random() * 25
+        ) - 10;
+
 
       viewers =
-        Math.max(100, viewers);
+        Math.max(
+          850,
+          viewers
+        );
 
-      updateTimer();
+
       updateUI();
 
     }, 1000);
 
-    setTimeout(() => {
 
-      nextChatMessage();
+    chatTimer = setTimeout(
+      sendNextSimulatedMessage,
+      900
+    );
 
-    }, 700);
+  }
+
+
+  /* =======================================================
+     STOP STREAM
+  ======================================================= */
+
+  function stopStream() {
+
+    live = false;
+
+    clearInterval(timer);
+
+    clearTimeout(chatTimer);
+
+    clearTimeout(typingTimer);
+
+    timer = null;
+
+    chatTimer = null;
+
+    typingTimer = null;
+
+    seconds = 0;
+
+    viewers = 0;
+
+    showTyping(false);
+
+    resetChat();
+
+    updateUI();
+
+    showToast(
+      "Stream stopped."
+    );
 
   }
 
@@ -473,169 +694,121 @@ document.addEventListener("DOMContentLoaded", () => {
      START STREAM BUTTON
   ======================================================= */
 
-  $("startStreamButton")
-    .addEventListener("click", () => {
+  if ($("startStreamButton")) {
 
-      if (!live) {
+    $("startStreamButton")
+      .addEventListener(
+        "click",
+        startStream
+      );
 
-        startStream();
-
-      } else {
-
-        document
-          .querySelector("#stream")
-          .scrollIntoView({
-            behavior: "smooth"
-          });
-
-        showToast("The stream is already live.");
-
-      }
-
-    });
+  }
 
 
   /* =======================================================
      LIKE BUTTON
-     ======================================================= */
-
-  $("likeButton")
-    .addEventListener("click", () => {
-
-      if (!live) {
-
-        showToast(
-          "Start the stream before reacting."
-        );
-
-        return;
-      }
-
-      /* Every click adds another like. */
-
-      likes++;
-
-      localStorage.setItem(
-        "blockliveLikes",
-        likes
-      );
-
-      $("likeButton").classList.add("active");
-
-      setTimeout(() => {
-
-        $("likeButton")
-          .classList.remove("active");
-
-      }, 160);
-
-      updateUI();
-
-    });
-
-
-  /* =======================================================
-     SHARE
+     SPAM-ABLE — NEVER DECREASES
   ======================================================= */
 
-  $("shareButton")
-    .addEventListener("click", async () => {
+  if ($("likeButton")) {
 
-      try {
+    $("likeButton")
+      .addEventListener(
+        "click",
+        () => {
 
-        await navigator.clipboard.writeText(
-          window.location.href
-        );
+          if (!live) {
 
-        showToast("Page link copied.");
+            showToast(
+              "Start the stream before reacting."
+            );
 
-      } catch {
-
-        showToast(
-          "You can copy the page link from your browser."
-        );
-
-      }
-
-    });
+            return;
+          }
 
 
-  /* =======================================================
-     NOTIFY
-  ======================================================= */
+          likes++;
 
-  $("notifyButton")
-    .addEventListener("click", () => {
-
-      $("notifyButton")
-        .classList.toggle("active");
-
-      const active =
-        $("notifyButton")
-          .classList.contains("active");
-
-      showToast(
-        active
-          ? "Notifications enabled."
-          : "Notifications disabled."
-      );
-
-    });
+          localStorage.setItem(
+            "blockliveLikes",
+            likes
+          );
 
 
-  /* =======================================================
-     MUTE
-  ======================================================= */
-
-  $("muteButton")
-    .addEventListener("click", () => {
-
-      muted = !muted;
-
-      $("muteButton").textContent =
-        muted
-          ? "🔇 Unmute"
-          : "🔊 Mute";
-
-      showToast(
-        muted
-          ? "Audio muted."
-          : "Audio unmuted."
-      );
-
-    });
+          $("likeButton")
+            .classList.remove("pop");
 
 
-  /* =======================================================
-     FULLSCREEN
-  ======================================================= */
+          void $("likeButton").offsetWidth;
 
-  $("fullscreenButton")
-    .addEventListener("click", async () => {
 
-      const screen = $("videoScreen");
+          $("likeButton")
+            .classList.add("pop");
 
-      try {
 
-        if (!document.fullscreenElement) {
-
-          await screen.requestFullscreen();
-
-        } else {
-
-          await document.exitFullscreen();
+          updateUI();
 
         }
+      );
 
-      } catch {
+  }
 
-        showToast(
-          "Fullscreen is not available here."
-        );
 
-      }
+  /* =======================================================
+     CHAT FORM
+  ======================================================= */
 
-    });
+  if ($("chatForm")) {
+
+    $("chatForm")
+      .addEventListener(
+        "submit",
+        (event) => {
+
+          event.preventDefault();
+
+
+          if (!live) {
+
+            showToast(
+              "Start the stream before chatting."
+            );
+
+            return;
+          }
+
+
+          const input =
+            $("chatInput");
+
+          const message =
+            input.value.trim();
+
+
+          if (!message) {
+            return;
+          }
+
+
+          /*
+             IMPORTANT:
+             Actual user's identity is "You",
+             while simulated Ash remains Ash.
+          */
+
+          addChatMessage(
+            "You",
+            message,
+            "human"
+          );
+
+
+          input.value = "";
+
+        }
+      );
+
+  }
 
 
   /* =======================================================
@@ -649,6 +822,10 @@ document.addEventListener("DOMContentLoaded", () => {
         "click",
         () => {
 
+          selectedGame =
+            button.dataset.game;
+
+
           $$(".game-button")
             .forEach((item) => {
 
@@ -658,22 +835,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             });
 
-          button.classList.add("active");
 
-          currentGame =
-            button.dataset.game;
+          button.classList.add(
+            "active"
+          );
 
-          $("currentGame").textContent =
-            currentGame;
 
-          $("heroGame").textContent =
-            currentGame;
+          updateUI();
 
-          $("streamTitle").textContent =
-            `${currentGame} · Roblox Gameplay & Viewer Interaction`;
 
           showToast(
-            `${currentGame} selected.`
+            `${selectedGame} selected.`
           );
 
         }
@@ -683,72 +855,131 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     CHAT SEND
+     POLL
+     RESULTS ONLY APPEAR AFTER CLICK
   ======================================================= */
 
-  $("chatForm")
-    .addEventListener("submit", (event) => {
+  function updatePollResults() {
 
-      event.preventDefault();
-
-      if (!live) {
-
-        showToast(
-          "Chat is locked while offline."
+    const total =
+      Object.values(pollVotes)
+        .reduce(
+          (sum, value) => sum + value,
+          0
         );
 
-        return;
 
-      }
+    Object.entries(pollVotes)
+      .forEach(([option, votes]) => {
 
-      const input =
-        $("chatInput");
+        const percentage =
+          total === 0
+            ? 0
+            : Math.round(
+                (votes / total) * 100
+              );
 
-      const text =
-        input.value.trim();
 
-      if (!text) return;
+        const result =
+          document.querySelector(
+            `[data-result="${CSS.escape(option)}"]`
+          );
 
-      /*
-        Important:
-        Actual user messages display as
-        "You", not "Ash".
-      */
 
-      addChatMessage(
-        "You",
-        text,
-        "presenter"
+        const bar =
+          document.querySelector(
+            `[data-bar="${CSS.escape(option)}"]`
+          );
+
+
+        if (result) {
+          result.textContent =
+            `${percentage}%`;
+        }
+
+
+        if (bar) {
+          bar.style.width =
+            `${percentage}%`;
+        }
+
+      });
+
+
+    if ($("pollHint")) {
+
+      $("pollHint").textContent =
+        `${total} votes recorded · Live poll`;
+
+    }
+
+  }
+
+
+  function revealPoll() {
+
+    if (pollHasBeenRevealed) {
+      return;
+    }
+
+    pollHasBeenRevealed = true;
+
+    updatePollResults();
+
+  }
+
+
+  $$(".poll-option")
+    .forEach((button) => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          if (!live) {
+
+            showToast(
+              "Start the stream before voting."
+            );
+
+            return;
+          }
+
+
+          const option =
+            button.dataset.poll;
+
+
+          pollVotes[option]++;
+
+
+          $$(".poll-option")
+            .forEach((item) => {
+
+              item.classList.remove(
+                "selected"
+              );
+
+            });
+
+
+          button.classList.add(
+            "selected"
+          );
+
+
+          revealPoll();
+
+
+          updatePollResults();
+
+
+          showToast(
+            `Vote counted for ${option}.`
+          );
+
+        }
       );
-
-      input.value = "";
-
-    });
-
-
-  /* =======================================================
-     CLEAR CHAT
-  ======================================================= */
-
-  $("clearChatButton")
-    .addEventListener("click", () => {
-
-      if (!live) {
-
-        resetChat();
-
-        showToast("Chat cleared.");
-
-        return;
-      }
-
-      $("chatMessages").innerHTML = "";
-
-      messageCount = 0;
-
-      updateUI();
-
-      showToast("Chat cleared.");
 
     });
 
@@ -769,24 +1000,22 @@ document.addEventListener("DOMContentLoaded", () => {
               ".research-card"
             );
 
-          const content =
-            card.querySelector(
-              ".expand-content"
+
+          if (!card) {
+            return;
+          }
+
+
+          const expanded =
+            card.classList.toggle(
+              "expanded"
             );
 
-          const isOpen =
-            content.classList.contains(
-              "open"
-            );
 
-          content.classList.toggle(
-            "open"
-          );
-
-          button.textContent =
-            isOpen
-              ? "Read More"
-              : "Read Less";
+          button.firstChild.textContent =
+            expanded
+              ? "Read less "
+              : "Read more ";
 
         }
       );
@@ -795,131 +1024,166 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   /* =======================================================
-     POLL
+     SHARE
   ======================================================= */
 
-  function updatePoll() {
+  if ($("shareButton")) {
 
-    const total =
-      Object.values(pollVotes)
-        .reduce(
-          (sum, value) =>
-            sum + value,
-          0
-        );
+    $("shareButton")
+      .addEventListener(
+        "click",
+        async () => {
 
-    $$(".poll-option")
-      .forEach((option) => {
+          const url =
+            window.location.href;
 
-        const game =
-          option.dataset.poll;
 
-        const percentage =
-          Math.round(
-            (pollVotes[game] / total) * 100
-          );
+          try {
 
-        const percentElement =
-          option.querySelector(
-            ".poll-percent"
-          );
+            if (
+              navigator.clipboard &&
+              window.isSecureContext
+            ) {
 
-        const bar =
-          option.querySelector(
-            ".poll-bar span"
-          );
+              await navigator.clipboard
+                .writeText(url);
 
-        percentElement.textContent =
-          `${percentage}%`;
+              showToast(
+                "Stream link copied."
+              );
 
-        bar.style.width =
-          `${percentage}%`;
+            } else {
 
-      });
+              showToast(
+                "Share link ready."
+              );
+
+            }
+
+          } catch {
+
+            showToast(
+              "Share link ready."
+            );
+
+          }
+
+        }
+      );
 
   }
 
 
-  $$(".poll-option")
-    .forEach((option) => {
+  /* =======================================================
+     MUTE
+  ======================================================= */
 
-      option.addEventListener(
+  if ($("muteButton")) {
+
+    $("muteButton")
+      .addEventListener(
         "click",
         () => {
 
-          /*
-            Percentages are hidden until
-            the user actually chooses.
-          */
+          muted = !muted;
 
-          const selected =
-            option.dataset.poll;
 
-          pollVotes[selected]++;
+          $("muteButton")
+            .textContent =
+            muted ? "🔇" : "🔊";
 
-          pollRevealed = true;
-
-          $$(".poll-option")
-            .forEach((item) => {
-
-              item.classList.remove(
-                "selected"
-              );
-
-            });
-
-          option.classList.add("selected");
-
-          $("pollCard")?.classList.add(
-            "poll-results-visible"
-          );
-
-          const pollCard =
-            document.querySelector(
-              ".poll-card"
-            );
-
-          pollCard.classList.add(
-            "poll-results-visible"
-          );
-
-          $("pollStatus").textContent =
-            "Live results";
-
-          updatePoll();
 
           showToast(
-            `Vote counted for ${selected}.`
+            muted
+              ? "Stream audio muted."
+              : "Stream audio unmuted."
           );
 
         }
       );
 
-    });
+  }
+
+
+  /* =======================================================
+     FULLSCREEN
+  ======================================================= */
+
+  if ($("fullscreenButton")) {
+
+    $("fullscreenButton")
+      .addEventListener(
+        "click",
+        async () => {
+
+          const video =
+            $("videoPanel");
+
+
+          if (!video) {
+            return;
+          }
+
+
+          try {
+
+            if (!document.fullscreenElement) {
+
+              await video.requestFullscreen();
+
+            } else {
+
+              await document.exitFullscreen();
+
+            }
+
+          } catch {
+
+            showToast(
+              "Fullscreen is unavailable."
+            );
+
+          }
+
+        }
+      );
+
+  }
 
 
   /* =======================================================
      THEME
   ======================================================= */
 
-  function updateThemeButton() {
+  function applyTheme(theme) {
 
     const light =
-      document.body
-        .classList.contains(
-          "light-mode"
-        );
+      theme === "light";
 
-    $("themeToggle").textContent =
-      light
-        ? "☀"
-        : "☾";
 
-    $("themeToggle").setAttribute(
-      "aria-label",
+    document.body.classList.toggle(
+      "light-mode",
       light
-        ? "Switch to dark mode"
-        : "Switch to light mode"
+    );
+
+
+    if ($("themeToggle")) {
+
+      $("themeToggle").textContent =
+        light ? "☀" : "☾";
+
+
+      $("themeToggle").title =
+        light
+          ? "Switch to dark mode"
+          : "Switch to light mode";
+
+    }
+
+
+    localStorage.setItem(
+      "blockliveTheme",
+      light ? "light" : "dark"
     );
 
   }
@@ -930,66 +1194,145 @@ document.addEventListener("DOMContentLoaded", () => {
       "blockliveTheme"
     );
 
-  if (savedTheme === "light") {
 
-    document.body.classList.add(
-      "light-mode"
-    );
+  applyTheme(
+    savedTheme === "light"
+      ? "light"
+      : "dark"
+  );
+
+
+  if ($("themeToggle")) {
+
+    $("themeToggle")
+      .addEventListener(
+        "click",
+        () => {
+
+          const isLight =
+            document.body.classList
+              .contains("light-mode");
+
+
+          applyTheme(
+            isLight
+              ? "dark"
+              : "light"
+          );
+
+
+          showToast(
+            isLight
+              ? "Dark mode enabled."
+              : "Light mode enabled."
+          );
+
+        }
+      );
 
   }
 
-  updateThemeButton();
 
+  /* =======================================================
+     MOBILE NAV
+  ======================================================= */
 
-  $("themeToggle")
-    .addEventListener("click", () => {
+  if ($("mobileToggle")) {
 
-      document.body.classList.toggle(
-        "light-mode"
+    $("mobileToggle")
+      .addEventListener(
+        "click",
+        () => {
+
+          $("mainNav")
+            .classList.toggle(
+              "open"
+            );
+
+        }
       );
 
-      const light =
-        document.body
-          .classList.contains(
-            "light-mode"
-          );
+  }
 
-      localStorage.setItem(
-        "blockliveTheme",
-        light
-          ? "light"
-          : "dark"
-      );
 
-      updateThemeButton();
+  $$("#mainNav a")
+    .forEach((link) => {
 
-      showToast(
-        light
-          ? "Light mode enabled."
-          : "Dark mode enabled."
+      link.addEventListener(
+        "click",
+        () => {
+
+          $("mainNav")
+            .classList.remove(
+              "open"
+            );
+
+        }
       );
 
     });
 
 
   /* =======================================================
-     INITIAL STATE
+     ACTIVE NAVIGATION
   ======================================================= */
 
-  /*
-    Make absolutely sure the poll begins
-    with NO percentages visible.
-  */
+  const sections =
+    $$(".section-anchor");
 
-  document
-    .querySelector(".poll-card")
-    .classList.remove(
-      "poll-results-visible"
+
+  const navLinks =
+    $$("#mainNav a");
+
+
+  const observer =
+    new IntersectionObserver(
+      (entries) => {
+
+        entries.forEach(
+          (entry) => {
+
+            if (!entry.isIntersecting) {
+              return;
+            }
+
+
+            const id =
+              entry.target.id;
+
+
+            navLinks
+              .forEach((link) => {
+
+                link.classList.toggle(
+                  "active",
+                  link.getAttribute(
+                    "href"
+                  ) === `#${id}`
+                );
+
+              });
+
+          }
+        );
+
+      },
+      {
+        rootMargin:
+          "-30% 0px -55% 0px"
+      }
     );
 
-  updatePoll();
 
-  updateTimer();
+  sections.forEach(
+    (section) =>
+      observer.observe(section)
+  );
+
+
+  /* =======================================================
+     INITIAL STATE
+  ======================================================= */
 
   updateUI();
 
