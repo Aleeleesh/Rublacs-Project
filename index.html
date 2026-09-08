@@ -3,21 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>BlockLive | Roblox Streaming Project</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
   <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
 </head>
 
 <body>
 
+  <!-- =====================================================
+       NAVIGATION
+  ====================================================== -->
+
   <header class="topbar">
+
     <a href="#home" class="brand">
       <span class="brand-mark">B</span>
+
       <span>
         <strong>BLOCKLIVE</strong>
         <small>ROBLOX STREAMING</small>
@@ -34,28 +36,35 @@
     </nav>
 
     <div class="top-actions">
-      <span class="status-pill" id="globalStatus">
+
+      <span class="status-pill" id="topStatus">
         <i></i>
         <span>OFFLINE</span>
       </span>
 
-      <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle theme">
+      <button class="icon-button" id="themeButton" aria-label="Toggle theme">
         ☾
       </button>
 
-      <button class="icon-button mobile-button" id="mobileToggle" type="button" aria-label="Open menu">
+      <button class="mobile-button" id="mobileButton" aria-label="Open navigation">
         ☰
       </button>
+
     </div>
+
   </header>
 
 
   <main>
 
-    <!-- HOME -->
-    <section class="hero section-pad" id="home">
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
 
-      <div class="hero-copy">
+    <section class="section-pad hero" id="home">
+
+      <div>
+
         <p class="eyebrow">ROBLOX STREAMING PROJECT</p>
 
         <h1>
@@ -70,16 +79,19 @@
         </p>
 
         <div class="hero-buttons">
-          <button class="primary-button" id="startStreamButton" type="button">
+
+          <button class="primary-button" id="startStreamButton">
             Start Stream
           </button>
 
           <a class="secondary-button" href="#research">
             View Research ↗
           </a>
+
         </div>
 
         <div class="project-meta">
+
           <div>
             <small>PROJECT</small>
             <strong>Roblox Gaming</strong>
@@ -99,44 +111,77 @@
             <small>WEB</small>
             <strong>HTML / CSS / JS</strong>
           </div>
+
         </div>
+
       </div>
 
 
+      <!-- STREAM PREVIEW -->
+
       <div class="hero-preview">
+
         <div class="preview-top">
-          <span>BLOCKLIVE / STREAM PREVIEW</span>
+
+          <strong>BLOCKLIVE / STREAM PREVIEW</strong>
 
           <div class="window-dots">
             <i></i>
             <i></i>
             <i></i>
           </div>
+
         </div>
+
 
         <div class="preview-screen">
+
           <div class="preview-label">
-            ROBLOX EXPERIENCE
-            <strong id="previewGame">BROOKHAVEN</strong>
+            <strong>ROBLOX EXPERIENCE</strong>
+            <small>BROOKHAVEN</small>
           </div>
 
-          <div class="roblox-character">♟</div>
 
-          <div class="keyboard">
-            <span>W</span>
-            <div>
-              <span>A</span>
-              <span>S</span>
-              <span>D</span>
+          <div class="roblox-character"></div>
+
+
+          <!-- ACTUAL CONTROL DISPLAY -->
+
+          <div class="control-display" id="previewControls">
+
+            <div class="control-row">
+              <button class="key-control" data-key="w">W</button>
             </div>
+
+            <div class="control-row">
+              <button class="key-control" data-key="a">A</button>
+              <button class="key-control" data-key="s">S</button>
+              <button class="key-control" data-key="d">D</button>
+            </div>
+
+            <div class="control-row">
+              <button class="key-control space-key" data-key="space">
+                SPACE
+              </button>
+            </div>
+
           </div>
 
-          <div class="preview-live" id="previewLive">
-            STREAM OFFLINE
+
+          <div class="keyboard-status" id="keyboardStatus">
+            READY
           </div>
+
         </div>
 
+
         <div class="preview-bottom">
+
+          <div>
+            <strong>LIVE PREVIEW</strong>
+            <small>5 project members · Everyone contributes</small>
+          </div>
+
           <div class="member-stack">
             <span>D</span>
             <span>A</span>
@@ -145,89 +190,114 @@
             <span>A</span>
           </div>
 
-          <div>
-            <strong>5 project members</strong>
-            <small>Everyone contributes to the project</small>
-          </div>
         </div>
+
       </div>
 
     </section>
 
 
-    <!-- STREAM -->
+    <!-- =====================================================
+         LIVE STREAM
+    ====================================================== -->
+
     <section class="section-pad" id="stream">
 
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">LIVE STREAM</p>
-          <h2>See the stream in action.</h2>
-        </div>
+
+        <p class="eyebrow">LIVE STREAM</p>
+
+        <h2>See the stream in action.</h2>
 
         <p>
           This interactive prototype demonstrates how our Roblox stream
           could work with gameplay, live chat, audience reactions, and polls.
         </p>
+
       </div>
 
 
       <div class="stream-layout">
 
-        <div class="stream-card">
+        <!-- STREAM CARD -->
+
+        <article class="stream-card">
 
           <div class="stream-window">
 
             <div class="stream-window-top">
+
               <span>
-                <i class="live-dot"></i>
-                <b id="streamStatus">OFFLINE</b>
+                <i class="live-dot" id="streamDot"></i>
+                <span id="streamStatusText">OFFLINE</span>
               </span>
 
-              <span id="viewerCount">0 viewers</span>
+              <span id="viewerDisplay">
+                0 viewers
+              </span>
+
             </div>
 
-            <div class="stream-stage" id="videoLive">
+
+            <div class="stream-stage" id="streamStage">
 
               <div class="stage-grid"></div>
 
               <div class="game-scene">
-                <span class="scene-title" id="currentGame">
+
+                <div class="scene-title" id="sceneTitle">
                   BROOKHAVEN
+                </div>
+
+                <div class="scene-player"></div>
+
+              </div>
+
+
+              <div class="offline-message" id="offlineMessage">
+
+                <strong>STREAM OFFLINE</strong>
+
+                <span>
+                  Start the stream to open the interactive room.
                 </span>
 
-                <span class="scene-player">♟</span>
-
-                <div class="scene-controls">
-                  <span>W</span>
-                  <span>A</span>
-                  <span>S</span>
-                  <span>D</span>
-                </div>
               </div>
 
-              <div class="offline-message" id="videoMessage">
-                <strong>STREAM OFFLINE</strong>
-                <span>Start the stream to open the interactive room.</span>
-              </div>
 
               <div class="stream-live-overlay" id="liveOverlay">
-                <span>● LIVE</span>
+                ● LIVE
               </div>
 
             </div>
 
+
             <div class="stream-controls">
-              <span id="streamTimer">00:00:00</span>
 
               <div>
-                <button id="muteButton" type="button" aria-label="Mute stream">
+
+                <button id="playButton" aria-label="Start stream">
+                  ▶
+                </button>
+
+                <span id="timer">
+                  00:00:00
+                </span>
+
+              </div>
+
+              <div>
+
+                <button id="muteButton" aria-label="Mute">
                   🔊
                 </button>
 
-                <button id="fullscreenButton" type="button" aria-label="Fullscreen">
+                <button id="fullscreenButton" aria-label="Fullscreen">
                   ⛶
                 </button>
+
               </div>
+
             </div>
 
           </div>
@@ -235,27 +305,36 @@
 
           <div class="stream-info">
 
-            <div>
-              <small>CURRENT STREAM</small>
-              <h3>Roblox Gameplay &amp; Viewer Challenges</h3>
+            <small>CURRENT EXPERIENCE</small>
 
-              <p>Hosted by BlockLive Team</p>
+            <h3 id="currentExperience">
+              Brookhaven
+            </h3>
 
-              <div class="tag-row">
-                <span>Roblox Gameplay</span>
-                <span>Challenges</span>
-                <span>Viewer Interaction</span>
-              </div>
+            <p>
+              Hosted by BlockLive Team
+            </p>
+
+
+            <div class="tag-row">
+
+              <span>Roblox Gameplay</span>
+              <span>Challenges</span>
+              <span>Viewer Interaction</span>
+
             </div>
 
+
             <div class="stream-actions">
-              <button class="like-button" id="likeButton" type="button">
+
+              <button class="like-button" id="likeButton">
                 ♡ <span id="likeCount">42</span> Likes
               </button>
 
-              <button class="small-button" id="shareButton" type="button">
+              <button class="small-button" id="shareButton">
                 ↗ Share
               </button>
+
             </div>
 
           </div>
@@ -264,78 +343,99 @@
           <div class="stream-content">
 
             <div class="content-heading">
+
               <small>STREAM CONTENT</small>
+
               <h3>Choose an experience</h3>
+
             </div>
 
+
             <div class="game-buttons">
-              <button class="game-button active" data-game="Brookhaven" type="button">
+
+              <button class="game-button active" data-game="Brookhaven">
                 Brookhaven
               </button>
 
-              <button class="game-button" data-game="Obby Challenge" type="button">
+              <button class="game-button" data-game="Obby Challenge">
                 Obby Challenge
               </button>
 
-              <button class="game-button" data-game="Simulator" type="button">
+              <button class="game-button" data-game="Simulator">
                 Simulator
               </button>
 
-              <button class="game-button" data-game="Adventure" type="button">
+              <button class="game-button" data-game="Adventure">
                 Adventure
               </button>
+
             </div>
 
           </div>
 
-        </div>
+        </article>
 
 
         <!-- CHAT -->
+
         <aside class="chat-card">
 
           <div class="chat-header">
-            <div>
-              <small>LIVE CHAT</small>
-              <h3>Audience interaction</h3>
-            </div>
 
-            <span id="chatStatus">OFFLINE</span>
+            <small>LIVE CHAT</small>
+
+            <h3>Audience interaction</h3>
+
+            <span id="chatStatus">
+              OFFLINE
+            </span>
+
           </div>
+
 
           <div class="chat-messages" id="chatMessages">
 
             <div class="chat-empty" id="chatEmpty">
+
               <span>✦</span>
+
               <strong>No messages yet</strong>
-              <small>Start the stream to open the chat.</small>
+
+              <small>
+                Start the stream to open the chat.
+              </small>
+
             </div>
 
           </div>
 
+
           <div class="typing" id="typingIndicator">
+            Someone is typing
             <span></span>
             <span></span>
             <span></span>
-            Someone is typing...
           </div>
 
+
           <form class="chat-form" id="chatForm">
+
             <input
               id="chatInput"
               type="text"
-              maxlength="120"
-              autocomplete="off"
               placeholder="Go live to chat..."
+              autocomplete="off"
               disabled
             >
 
-            <button id="sendChatButton" type="submit">
+            <button type="submit" disabled>
               Send
             </button>
+
           </form>
 
-          <button class="clear-chat" id="clearChatButton" type="button">
+
+          <button class="clear-chat" id="clearChat">
             Clear chat
           </button>
 
@@ -345,28 +445,29 @@
 
 
       <!-- STATS -->
+
       <div class="stats-grid">
 
         <div class="stat-card">
-          <small>STATUS</small>
+          <small>Status</small>
           <strong id="statStatus">OFFLINE</strong>
           <span>Stream session</span>
         </div>
 
         <div class="stat-card">
-          <small>VIEWERS</small>
+          <small>Viewers</small>
           <strong id="statViewers">0</strong>
           <span>Watching now</span>
         </div>
 
         <div class="stat-card">
-          <small>LIKES</small>
+          <small>Likes</small>
           <strong id="statLikes">42</strong>
           <span>Audience reactions</span>
         </div>
 
         <div class="stat-card">
-          <small>MESSAGES</small>
+          <small>Messages</small>
           <strong id="statMessages">0</strong>
           <span>Chat activity</span>
         </div>
@@ -375,46 +476,94 @@
 
 
       <!-- POLL -->
+
       <div class="poll-card">
 
         <div class="poll-heading">
+
           <div>
             <small>AUDIENCE POLL</small>
             <h3>What should we play next?</h3>
           </div>
 
           <span>LIVE</span>
-        </div>
-
-        <div class="poll-options">
-
-          <button class="poll-option" data-poll="Brookhaven" type="button">
-            <span class="poll-name">Brookhaven</span>
-            <span class="poll-result">—</span>
-            <span class="poll-bar"><i></i></span>
-          </button>
-
-          <button class="poll-option" data-poll="Obby Challenge" type="button">
-            <span class="poll-name">Obby Challenge</span>
-            <span class="poll-result">—</span>
-            <span class="poll-bar"><i></i></span>
-          </button>
-
-          <button class="poll-option" data-poll="Simulator" type="button">
-            <span class="poll-name">Simulator</span>
-            <span class="poll-result">—</span>
-            <span class="poll-bar"><i></i></span>
-          </button>
-
-          <button class="poll-option" data-poll="Adventure" type="button">
-            <span class="poll-name">Adventure</span>
-            <span class="poll-result">—</span>
-            <span class="poll-bar"><i></i></span>
-          </button>
 
         </div>
 
-        <p class="poll-hint" id="pollHint">
+
+        <div class="poll-options" id="pollOptions">
+
+          <button class="poll-option" data-option="Brookhaven">
+
+            <span class="poll-bar">
+              <i></i>
+            </span>
+
+            <span class="poll-name">
+              Brookhaven
+            </span>
+
+            <span class="poll-result">
+              —
+            </span>
+
+          </button>
+
+
+          <button class="poll-option" data-option="Obby Challenge">
+
+            <span class="poll-bar">
+              <i></i>
+            </span>
+
+            <span class="poll-name">
+              Obby Challenge
+            </span>
+
+            <span class="poll-result">
+              —
+            </span>
+
+          </button>
+
+
+          <button class="poll-option" data-option="Simulator">
+
+            <span class="poll-bar">
+              <i></i>
+            </span>
+
+            <span class="poll-name">
+              Simulator
+            </span>
+
+            <span class="poll-result">
+              —
+            </span>
+
+          </button>
+
+
+          <button class="poll-option" data-option="Adventure">
+
+            <span class="poll-bar">
+              <i></i>
+            </span>
+
+            <span class="poll-name">
+              Adventure
+            </span>
+
+            <span class="poll-result">
+              —
+            </span>
+
+          </button>
+
+        </div>
+
+
+        <p class="poll-hint">
           Vote for an option to reveal the live percentages.
         </p>
 
@@ -423,205 +572,256 @@
     </section>
 
 
-    <!-- RESEARCH -->
+    <!-- =====================================================
+         RESEARCH
+    ====================================================== -->
+
     <section class="section-pad" id="research">
 
-      <div class="section-heading research-heading">
-        <div>
-          <p class="eyebrow">RESEARCH</p>
-          <h2>Why Roblox works for streaming.</h2>
-        </div>
+      <div class="section-heading">
+
+        <p class="eyebrow">RESEARCH</p>
+
+        <h2>Why Roblox works for streaming.</h2>
 
         <p>
-          Our research connects Roblox, our intended viewers, and the
-          characteristics that make a stream interesting and interactive.
+          Our research connects Roblox, our intended viewers,
+          and the characteristics that make a stream interesting
+          and interactive.
         </p>
+
       </div>
 
 
       <div class="research-list">
 
         <article class="research-card">
+
           <div class="research-number">01</div>
 
           <div class="research-main">
+
             <small>STREAMING TOPIC / CONTENT</small>
+
             <h3>Why Roblox?</h3>
 
             <p class="research-preview">
-              Roblox gives players access to a huge variety of user-created
-              experiences. This gives our stream many possibilities for
-              gameplay, challenges, reactions, and audience interaction.
+              Roblox gives players access to a huge variety of
+              user-created experiences.
             </p>
 
             <div class="expand-content">
+
               <p>
-                Roblox is more than one game. Players can explore obstacle
-                courses, simulators, role-playing experiences, adventure
-                games, and many other types of content. This variety makes
-                it easier to change the direction of a stream without leaving
-                the platform.
+                Roblox is more than one game. Players can explore
+                obstacle courses, simulators, role-playing experiences,
+                adventure games, and many other types of content.
+                This variety gives our stream many possibilities for
+                gameplay, challenges, reactions, and audience interaction.
               </p>
+
+              <div class="research-checks">
+                <span>Explore</span>
+                <span>Challenge</span>
+                <span>React</span>
+                <span>Connect</span>
+              </div>
+
             </div>
 
-            <button class="read-more" type="button">
-              Read more +
-            </button>
           </div>
+
+          <button class="read-more">
+            Read more +
+          </button>
+
         </article>
 
 
         <article class="research-card">
+
           <div class="research-number">02</div>
 
           <div class="research-main">
+
             <small>TARGET AUDIENCE</small>
+
             <h3>Teen Roblox Viewers</h3>
 
             <p class="research-preview">
-              Our target audience is people aged 13 and up, especially
-              teenagers who enjoy playing or watching Roblox.
+              Our target audience is people aged 13 and up,
+              especially teenagers who enjoy playing or watching Roblox.
             </p>
 
             <div class="expand-content">
+
               <p>
-                We want the stream to feel fun, engaging, and easy to enjoy.
-                Viewers should understand what is happening without needing
-                complicated explanations, while still having opportunities
-                to participate.
+                We want the stream to feel fun, engaging, and easy
+                to enjoy. Viewers should understand what is happening
+                without needing complicated explanations while still
+                having opportunities to participate.
               </p>
+
             </div>
 
-            <button class="read-more" type="button">
-              Read more +
-            </button>
           </div>
+
+          <button class="read-more">
+            Read more +
+          </button>
+
         </article>
 
 
         <article class="research-card">
+
           <div class="research-number">03</div>
 
           <div class="research-main">
+
             <small>VIEWER NEEDS</small>
+
             <h3>What viewers need</h3>
 
             <p class="research-preview">
-              Viewers need entertaining content, clear gameplay, and ways
-              to feel involved with what is happening.
+              Viewers need entertaining content, clear gameplay,
+              and ways to feel involved.
             </p>
 
-            <div class="research-tags">
-              <span>Fun Content</span>
-              <span>Easy to Follow</span>
-              <span>Involvement</span>
-              <span>Interaction</span>
-            </div>
-
             <div class="expand-content">
+
               <p>
-                A stream should not just show gameplay. Viewers should have
-                reasons to keep watching and opportunities to communicate,
-                vote, suggest ideas, and react to moments in the stream.
+                A stream should not just show gameplay. Viewers
+                should have reasons to keep watching and opportunities
+                to communicate, vote, suggest ideas, and react to
+                moments in the stream.
               </p>
+
+              <div class="research-checks">
+                <span>Fun Content</span>
+                <span>Easy to Follow</span>
+                <span>Involvement</span>
+                <span>Interaction</span>
+              </div>
+
             </div>
 
-            <button class="read-more" type="button">
-              Read more +
-            </button>
           </div>
+
+          <button class="read-more">
+            Read more +
+          </button>
+
         </article>
 
 
         <article class="research-card">
+
           <div class="research-number">04</div>
 
           <div class="research-main">
+
             <small>CHARACTERISTICS</small>
+
             <h3>What makes a good stream?</h3>
 
             <p class="research-preview">
-              A good stream should keep viewers interested while making
-              them feel welcome and involved.
+              A good stream should keep viewers interested while
+              making them feel welcome and involved.
             </p>
 
-            <div class="research-checks">
-              <span>✓ Clear audio &amp; video</span>
-              <span>✓ Interesting content</span>
-              <span>✓ Genuine interaction</span>
-              <span>✓ Friendly &amp; attentive</span>
-            </div>
-
             <div class="expand-content">
+
               <p>
-                These characteristics help a stream become easier to follow
-                and more enjoyable. Interaction is especially important
-                because viewers should feel like they are participating
-                instead of simply watching.
+                These characteristics help a stream become easier
+                to follow and more enjoyable. Interaction is especially
+                important because viewers should feel like they are
+                participating instead of simply watching.
               </p>
+
+              <div class="research-checks">
+                <span>✓ Clear audio & video</span>
+                <span>✓ Interesting content</span>
+                <span>✓ Genuine interaction</span>
+                <span>✓ Friendly & attentive</span>
+              </div>
+
             </div>
 
-            <button class="read-more" type="button">
-              Read more +
-            </button>
           </div>
+
+          <button class="read-more">
+            Read more +
+          </button>
+
         </article>
 
 
-        <article class="research-card journey-card">
+        <article class="research-card">
+
           <div class="research-number">05</div>
 
           <div class="research-main">
+
             <small>OUR RESEARCH JOURNEY</small>
+
             <h3>From an idea to BlockLive</h3>
 
             <p class="research-preview">
-              Our worksheets, guides, and background research helped us
-              connect our interests with the needs of our intended audience.
+              Our worksheets, guides, and background research helped
+              us connect our interests with the needs of our audience.
             </p>
 
-            <div class="journey-grid">
-              <div>
-                <b>01</b>
-                <strong>Reflect</strong>
-                <span>
-                  We thought about our interests, experiences, and games
-                  we already know.
-                </span>
-              </div>
-
-              <div>
-                <b>02</b>
-                <strong>Choose</strong>
-                <span>
-                  We realized gaming, especially Roblox, was a strong choice
-                  because we already know and enjoy it.
-                </span>
-              </div>
-
-              <div>
-                <b>03</b>
-                <strong>Plan</strong>
-                <span>
-                  We combined gameplay with challenges, reactions,
-                  commentary, and interaction.
-                </span>
-              </div>
-            </div>
-
             <div class="expand-content">
-              <p>
-                Through the research process, we learned that our topic
-                should connect with both what we enjoy and what viewers
-                need. Roblox gave us enough variety to build a stream
-                concept that could stay interactive and entertaining.
-              </p>
+
+              <div class="journey-grid">
+
+                <div>
+                  <b>01</b>
+                  <strong>Reflect</strong>
+                  <span>
+                    We thought about our interests,
+                    experiences, and games we already know.
+                  </span>
+                </div>
+
+                <div>
+                  <b>02</b>
+                  <strong>Choose</strong>
+                  <span>
+                    Gaming, especially Roblox, was a strong
+                    choice because we already know and enjoy it.
+                  </span>
+                </div>
+
+                <div>
+                  <b>03</b>
+                  <strong>Plan</strong>
+                  <span>
+                    We combined gameplay with challenges,
+                    reactions, commentary, and interaction.
+                  </span>
+                </div>
+
+                <div>
+                  <b>04</b>
+                  <strong>Learn</strong>
+                  <span>
+                    We connected our topic with both our
+                    interests and what viewers need.
+                  </span>
+                </div>
+
+              </div>
+
             </div>
 
-            <button class="read-more" type="button">
-              Read more +
-            </button>
           </div>
+
+          <button class="read-more">
+            Read more +
+          </button>
+
         </article>
 
       </div>
@@ -629,19 +829,23 @@
     </section>
 
 
-    <!-- SETUP -->
+    <!-- =====================================================
+         SETUP
+    ====================================================== -->
+
     <section class="section-pad" id="setup">
 
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">STREAMING PLATFORM / TOOLS</p>
-          <h2>What we need to make it work.</h2>
-        </div>
+
+        <p class="eyebrow">STREAMING PLATFORM / TOOLS</p>
+
+        <h2>What we need to make it work.</h2>
 
         <p>
-          Our project uses familiar hardware and web technologies to
-          demonstrate the concept.
+          Our project uses familiar hardware and web technologies
+          to demonstrate the concept.
         </p>
+
       </div>
 
 
@@ -652,8 +856,8 @@
           <small>PLATFORM</small>
           <h3>Roblox</h3>
           <p>
-            The main platform where our gameplay and streaming content
-            takes place.
+            The main platform where our gameplay and streaming
+            content takes place.
           </p>
         </article>
 
@@ -662,28 +866,28 @@
           <small>WEBSITE TOOLS</small>
           <h3>HTML / CSS / JS</h3>
           <p>
-            HTML structures the website, CSS creates the design, and
-            JavaScript handles the interactive features.
+            HTML structures the website, CSS creates the design,
+            and JavaScript handles the interactive features.
           </p>
         </article>
 
         <article class="tool-card">
           <span>03</span>
           <small>EQUIPMENT</small>
-          <h3>Computer &amp; Internet</h3>
+          <h3>Computer & Internet</h3>
           <p>
-            A computer and reliable internet connection are needed for
-            gameplay and streaming.
+            A computer and reliable internet connection are needed
+            for gameplay and streaming.
           </p>
         </article>
 
         <article class="tool-card">
           <span>04</span>
           <small>AUDIO</small>
-          <h3>Microphone &amp; Headphones</h3>
+          <h3>Microphone & Headphones</h3>
           <p>
-            Audio equipment helps make commentary and communication easier
-            for viewers to hear.
+            Audio equipment helps make commentary and communication
+            easier for viewers to hear.
           </p>
         </article>
 
@@ -692,19 +896,23 @@
     </section>
 
 
-    <!-- WALKTHROUGH -->
+    <!-- =====================================================
+         WALKTHROUGH
+    ====================================================== -->
+
     <section class="section-pad" id="walkthrough">
 
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">WEBSITE WALKTHROUGH</p>
-          <h2>How the website works.</h2>
-        </div>
+
+        <p class="eyebrow">WEBSITE WALKTHROUGH</p>
+
+        <h2>How the website works.</h2>
 
         <p>
-          Each part of BlockLive has a purpose connected to our streaming
-          project.
+          Each part of BlockLive has a purpose connected
+          to our streaming project.
         </p>
+
       </div>
 
 
@@ -726,8 +934,8 @@
           <div>
             <h3>Live Stream</h3>
             <p>
-              Demonstrates a simulated stream with gameplay, viewers,
-              likes, controls, and stream information.
+              Demonstrates a simulated stream with gameplay,
+              viewers, likes, controls, and stream information.
             </p>
           </div>
         </article>
@@ -737,8 +945,8 @@
           <div>
             <h3>Live Chat</h3>
             <p>
-              Shows how presenters, bots, and viewers can communicate
-              during the stream.
+              Shows how presenters, bots, and viewers can
+              communicate during the stream.
             </p>
           </div>
         </article>
@@ -748,8 +956,8 @@
           <div>
             <h3>Audience Poll</h3>
             <p>
-              Lets viewers vote for an experience and reveals percentages
-              after they interact with the poll.
+              Lets viewers vote for an experience and reveals
+              percentages after they interact with the poll.
             </p>
           </div>
         </article>
@@ -759,8 +967,8 @@
           <div>
             <h3>Research</h3>
             <p>
-              Explains our topic, audience, viewer needs, stream qualities,
-              and research journey.
+              Explains our topic, audience, viewer needs,
+              stream qualities, and research journey.
             </p>
           </div>
         </article>
@@ -768,10 +976,10 @@
         <article>
           <span>06</span>
           <div>
-            <h3>Setup &amp; Future Plans</h3>
+            <h3>Setup & Future Plans</h3>
             <p>
-              Shows the tools we would use and how the project could be
-              improved in the future.
+              Shows the tools we would use and how the project
+              could be improved in the future.
             </p>
           </div>
         </article>
@@ -781,20 +989,24 @@
     </section>
 
 
-    <!-- FUTURE -->
+    <!-- =====================================================
+         FUTURE
+    ====================================================== -->
+
     <section class="section-pad" id="future">
 
       <div class="section-heading">
-        <div>
-          <p class="eyebrow">GOALS &amp; FUTURE PLANS</p>
-          <h2>This prototype can go further.</h2>
-        </div>
+
+        <p class="eyebrow">GOALS & FUTURE PLANS</p>
+
+        <h2>This prototype can go further.</h2>
 
         <p>
-          The current website demonstrates our concept. If we developed
-          it further, we could add more experiences, stronger viewer
-          interaction, and a better overall streaming experience.
+          The current website demonstrates our concept.
+          If we developed it further, we could add more experiences,
+          stronger viewer interaction, and a better overall streaming experience.
         </p>
+
       </div>
 
 
@@ -803,40 +1015,57 @@
         <article>
           <span>01</span>
           <h3>More Roblox Experiences</h3>
-          <p>Add more games and challenges to the stream.</p>
+          <p>
+            Add more games and challenges to the stream.
+          </p>
         </article>
 
         <article>
           <span>02</span>
           <h3>Better Viewer Interaction</h3>
-          <p>Expand polls, reactions, comments, and audience choices.</p>
+          <p>
+            Expand polls, reactions, comments, and audience choices.
+          </p>
         </article>
 
         <article>
           <span>03</span>
           <h3>Improve Stream Experience</h3>
-          <p>Continue improving the presentation, controls, and usability.</p>
+          <p>
+            Continue improving the presentation, controls, and usability.
+          </p>
         </article>
 
         <article>
           <span>04</span>
           <h3>Build on the Prototype</h3>
-          <p>Turn the concept into a more complete streaming website.</p>
+          <p>
+            Turn the concept into a more complete streaming website.
+          </p>
         </article>
 
       </div>
 
+    </section>
+
+
+    <!-- =====================================================
+         TEAM
+    ====================================================== -->
+
+    <section class="section-pad">
 
       <div class="team-section">
 
-        <div>
-          <p class="eyebrow">PROJECT TEAM</p>
-          <h2>Built together.</h2>
-          <p>
-            Everyone contributes to the project as part of the presentation
-            and development process.
-          </p>
-        </div>
+        <p class="eyebrow">PROJECT TEAM</p>
+
+        <h2>Built together.</h2>
+
+        <p>
+          Everyone contributes to the project as part of
+          the presentation and development process.
+        </p>
+
 
         <div class="team-grid">
 
@@ -880,13 +1109,20 @@
 
 
   <footer>
+
     <strong>BLOCKLIVE</strong>
-    <span>Roblox Streaming Project</span>
-    <span>HTML · CSS · JavaScript</span>
+
+    <span>
+      Roblox Streaming Project · HTML · CSS · JavaScript
+    </span>
+
   </footer>
 
 
   <div class="toast" id="toast"></div>
+
+
+  <script src="script.js"></script>
 
 </body>
 </html>
