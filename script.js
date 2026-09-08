@@ -31,6 +31,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const chatForm = document.getElementById("chatForm");
   const chatInput = document.getElementById("chatInput");
+  const chatSendButton = chatForm
+    ? chatForm.querySelector("button")
+    : null;
 
   const messageCount = document.getElementById("messageCount");
   const viewerCount = document.getElementById("viewerCount");
@@ -48,6 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const toast = document.getElementById("toast");
 
+
   /* =======================================================
      STATE
      ======================================================= */
@@ -55,11 +59,17 @@ document.addEventListener("DOMContentLoaded", () => {
   let isLive = false;
   let streamSeconds = 0;
   let streamInterval = null;
-  let likeTotal = 42;
 
+  let likeTotal = 42;
   let messageTotal = 0;
 
   let pollVoted = false;
+
+  /*
+    This ID prevents an old bot-chat sequence from
+    continuing after the stream has been restarted.
+  */
+  let chatRunId = 0;
 
   const pollVotes = {
     "Brookhaven": 0,
@@ -67,6 +77,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Simulator": 0,
     "Adventure": 0
   };
+
 
   const chatSequence = [
     {
@@ -169,7 +180,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function formatTime(totalSeconds) {
 
     const hours = Math.floor(totalSeconds / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const minutes =
+      Math.floor((totalSeconds % 3600) / 60);
     const seconds = totalSeconds % 60;
 
     return [
@@ -188,41 +200,83 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (isLive) {
 
-      streamStatus.innerHTML = "<i></i> LIVE";
-      navStatus.innerHTML =
-        '<span class="status-dot"></span> LIVE';
+      if (streamStatus) {
+        streamStatus.innerHTML = "<i></i> LIVE";
+      }
 
-      chatStatus.textContent = "LIVE";
+      if (navStatus) {
+        navStatus.innerHTML =
+          '<span class="status-dot"></span> LIVE';
+      }
 
-      statStatus.textContent = "LIVE";
+      if (chatStatus) {
+        chatStatus.textContent = "LIVE";
+      }
 
-      playButton.textContent = "Ⅱ";
+      if (statStatus) {
+        statStatus.textContent = "LIVE";
+      }
 
-      chatInput.disabled = false;
-      chatForm.querySelector("button").disabled = false;
+      if (playButton) {
+        playButton.textContent = "Ⅱ";
+        playButton.setAttribute(
+          "aria-label",
+          "Stop stream"
+        );
+      }
 
-      chatInput.placeholder = "Say something...";
+      if (chatInput) {
+        chatInput.disabled = false;
+        chatInput.placeholder = "Say something...";
+      }
 
-      viewerCount.textContent = "12";
+      if (chatSendButton) {
+        chatSendButton.disabled = false;
+      }
+
+      if (viewerCount) {
+        viewerCount.textContent = "12";
+      }
 
     } else {
 
-      streamStatus.innerHTML = "<i></i> OFFLINE";
-      navStatus.innerHTML =
-        '<span class="status-dot"></span> OFFLINE';
+      if (streamStatus) {
+        streamStatus.innerHTML = "<i></i> OFFLINE";
+      }
 
-      chatStatus.textContent = "OFFLINE";
+      if (navStatus) {
+        navStatus.innerHTML =
+          '<span class="status-dot"></span> OFFLINE';
+      }
 
-      statStatus.textContent = "OFFLINE";
+      if (chatStatus) {
+        chatStatus.textContent = "OFFLINE";
+      }
 
-      playButton.textContent = "▶";
+      if (statStatus) {
+        statStatus.textContent = "OFFLINE";
+      }
 
-      chatInput.disabled = true;
-      chatForm.querySelector("button").disabled = true;
+      if (playButton) {
+        playButton.textContent = "▶";
+        playButton.setAttribute(
+          "aria-label",
+          "Start stream"
+        );
+      }
 
-      chatInput.placeholder = "Go live to chat...";
+      if (chatInput) {
+        chatInput.disabled = true;
+        chatInput.placeholder = "Go live to chat...";
+      }
 
-      viewerCount.textContent = "0";
+      if (chatSendButton) {
+        chatSendButton.disabled = true;
+      }
+
+      if (viewerCount) {
+        viewerCount.textContent = "0";
+      }
     }
   }
 
@@ -231,19 +285,25 @@ document.addEventListener("DOMContentLoaded", () => {
      THEME
      ======================================================= */
 
-  themeToggle.addEventListener("click", () => {
+  if (themeToggle) {
 
-    body.classList.toggle("light");
+    themeToggle.addEventListener("click", () => {
 
-    const isLight = body.classList.contains("light");
+      body.classList.toggle("light");
 
-    themeToggle.textContent = isLight ? "☀" : "☾";
+      const isLight =
+        body.classList.contains("light");
 
-    localStorage.setItem(
-      "blocklive-theme",
-      isLight ? "light" : "dark"
-    );
-  });
+      themeToggle.textContent =
+        isLight ? "☀" : "☾";
+
+      localStorage.setItem(
+        "blocklive-theme",
+        isLight ? "light" : "dark"
+      );
+    });
+
+  }
 
 
   const savedTheme =
@@ -253,7 +313,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     body.classList.add("light");
 
-    themeToggle.textContent = "☀";
+    if (themeToggle) {
+      themeToggle.textContent = "☀";
+    }
   }
 
 
@@ -261,26 +323,31 @@ document.addEventListener("DOMContentLoaded", () => {
      MOBILE NAV
      ======================================================= */
 
-  menuToggle.addEventListener("click", () => {
+  if (menuToggle && mobileNav) {
 
-    mobileNav.classList.toggle("open");
+    menuToggle.addEventListener("click", () => {
 
-    menuToggle.textContent =
-      mobileNav.classList.contains("open")
-        ? "×"
-        : "☰";
-  });
+      mobileNav.classList.toggle("open");
 
-
-  document.querySelectorAll(".mobile-nav a").forEach(link => {
-
-    link.addEventListener("click", () => {
-
-      mobileNav.classList.remove("open");
-
-      menuToggle.textContent = "☰";
+      menuToggle.textContent =
+        mobileNav.classList.contains("open")
+          ? "×"
+          : "☰";
     });
-  });
+
+
+    document
+      .querySelectorAll(".mobile-nav a")
+      .forEach(link => {
+
+        link.addEventListener("click", () => {
+
+          mobileNav.classList.remove("open");
+          menuToggle.textContent = "☰";
+        });
+
+      });
+  }
 
 
   /* =======================================================
@@ -294,6 +361,17 @@ document.addEventListener("DOMContentLoaded", () => {
     isLive = true;
     streamSeconds = 0;
 
+    /*
+      Always reset the timer/progress when a new session starts.
+    */
+    if (streamTimer) {
+      streamTimer.textContent = "00:00:00";
+    }
+
+    if (progressBar) {
+      progressBar.style.width = "0%";
+    }
+
     updateStreamUI();
 
     clearInterval(streamInterval);
@@ -302,16 +380,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
       streamSeconds++;
 
-      streamTimer.textContent =
-        formatTime(streamSeconds);
+      if (streamTimer) {
+        streamTimer.textContent =
+          formatTime(streamSeconds);
+      }
 
       const progress =
-        Math.min((streamSeconds % 60) / 60 * 100, 100);
+        ((streamSeconds % 60) / 60) * 100;
 
-      progressBar.style.width =
-        `${progress}%`;
+      if (progressBar) {
+        progressBar.style.width =
+          `${progress}%`;
+      }
 
     }, 1000);
+
 
     addChatMessage({
       name: "System",
@@ -321,10 +404,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     showToast("BlockLive is now live.");
 
+
+    chatRunId++;
+
+    const currentRun = chatRunId;
+
     setTimeout(() => {
-
-      runBotChat();
-
+      runBotChat(currentRun);
     }, 900);
   }
 
@@ -338,6 +424,11 @@ document.addEventListener("DOMContentLoaded", () => {
     clearInterval(streamInterval);
 
     streamInterval = null;
+
+    /*
+      Invalidate any currently running bot sequence.
+    */
+    chatRunId++;
 
     updateStreamUI();
 
@@ -355,19 +446,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  heroStart.addEventListener("click", () => {
+  if (heroStart) {
 
-    startStream();
+    heroStart.addEventListener("click", () => {
 
-    document
-      .getElementById("live-stream")
-      .scrollIntoView({
-        behavior: "smooth"
-      });
-  });
+      startStream();
+
+      const liveSection =
+        document.getElementById("live-stream");
+
+      if (liveSection) {
+        liveSection.scrollIntoView({
+          behavior: "smooth"
+        });
+      }
+    });
+  }
 
 
-  playButton.addEventListener("click", toggleStream);
+  if (playButton) {
+    playButton.addEventListener(
+      "click",
+      toggleStream
+    );
+  }
 
 
   /* =======================================================
@@ -376,7 +478,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function addChatMessage(message) {
 
-    if (emptyChat) {
+    if (!chatMessages) return;
+
+    if (emptyChat && emptyChat.isConnected) {
       emptyChat.remove();
     }
 
@@ -385,65 +489,85 @@ document.addEventListener("DOMContentLoaded", () => {
 
     wrapper.className = "chat-message";
 
+
     const name =
       document.createElement("div");
 
     name.className = "chat-name";
+
 
     const nameText =
       document.createElement("span");
 
     nameText.textContent = message.name;
 
+
     const role =
       document.createElement("span");
 
     role.className = "chat-role";
-
     role.textContent = message.role;
+
 
     name.appendChild(nameText);
     name.appendChild(role);
+
 
     const text =
       document.createElement("div");
 
     text.className = "chat-text";
-
     text.textContent = message.text;
+
 
     wrapper.appendChild(name);
     wrapper.appendChild(text);
 
     chatMessages.appendChild(wrapper);
 
+
     chatMessages.scrollTop =
       chatMessages.scrollHeight;
 
+
     messageTotal++;
 
-    messageCount.textContent =
-      messageTotal;
+    if (messageCount) {
+      messageCount.textContent =
+        messageTotal;
+    }
   }
 
 
-  function runBotChat() {
+  function runBotChat(runId) {
 
-    if (!isLive) return;
+    if (!isLive || runId !== chatRunId) {
+      return;
+    }
 
     let index = 0;
 
+
     const nextMessage = () => {
 
-      if (!isLive) return;
+      if (
+        !isLive ||
+        runId !== chatRunId
+      ) {
+        return;
+      }
 
       if (index >= chatSequence.length) {
         return;
       }
 
-      addChatMessage(chatSequence[index]);
+
+      addChatMessage(
+        chatSequence[index]
+      );
 
       index++;
+
 
       setTimeout(
         nextMessage,
@@ -451,81 +575,131 @@ document.addEventListener("DOMContentLoaded", () => {
       );
     };
 
+
     nextMessage();
   }
 
 
-  chatForm.addEventListener("submit", event => {
+  if (chatForm) {
 
-    event.preventDefault();
+    chatForm.addEventListener(
+      "submit",
+      event => {
 
-    if (!isLive) return;
+        event.preventDefault();
 
-    const text =
-      chatInput.value.trim();
+        if (!isLive || !chatInput) {
+          return;
+        }
 
-    if (!text) return;
+        const text =
+          chatInput.value.trim();
 
-    addChatMessage({
-      name: "You",
-      role: "Presenter",
-      text
-    });
+        if (!text) return;
 
-    chatInput.value = "";
-  });
+
+        addChatMessage({
+          name: "You",
+          role: "Presenter",
+          text
+        });
+
+
+        chatInput.value = "";
+      }
+    );
+  }
 
 
   /* =======================================================
      LIKES
      ======================================================= */
 
-  likeButton.addEventListener("click", () => {
+  if (likeButton) {
 
-    likeTotal++;
+    likeButton.addEventListener(
+      "click",
+      () => {
 
-    likeCount.textContent =
-      likeTotal;
+        likeTotal++;
 
-    statLikes.textContent =
-      likeTotal;
-  });
+        if (likeCount) {
+          likeCount.textContent =
+            likeTotal;
+        }
+
+        if (statLikes) {
+          statLikes.textContent =
+            likeTotal;
+        }
+      }
+    );
+  }
 
 
   /* =======================================================
      SHARE
      ======================================================= */
 
-  shareButton.addEventListener("click", async () => {
+  if (shareButton) {
 
-    const shareData = {
-      title: "BlockLive | Roblox Streaming Project",
-      text: "Check out our BlockLive Roblox streaming project.",
-      url: window.location.href
-    };
+    shareButton.addEventListener(
+      "click",
+      async () => {
 
-    try {
+        const shareData = {
+          title:
+            "BlockLive | Roblox Streaming Project",
 
-      if (navigator.share) {
+          text:
+            "Check out our BlockLive Roblox streaming project.",
 
-        await navigator.share(shareData);
+          url:
+            window.location.href
+        };
 
-      } else {
 
-        await navigator.clipboard.writeText(
-          window.location.href
-        );
+        try {
 
-        showToast("Project link copied.");
+          if (navigator.share) {
+
+            await navigator.share(
+              shareData
+            );
+
+          } else if (
+            navigator.clipboard
+          ) {
+
+            await navigator.clipboard.writeText(
+              window.location.href
+            );
+
+            showToast(
+              "Project link copied."
+            );
+
+          } else {
+
+            showToast(
+              "Sharing is unavailable here."
+            );
+          }
+
+        } catch (error) {
+
+          if (
+            error.name !== "AbortError"
+          ) {
+
+            showToast(
+              "Could not share right now."
+            );
+          }
+        }
       }
-
-    } catch (error) {
-
-      if (error.name !== "AbortError") {
-        showToast("Could not share right now.");
-      }
-    }
-  });
+    );
+  }
 
 
   /* =======================================================
@@ -537,19 +711,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let muted = false;
 
-  muteButton.addEventListener("click", () => {
+  if (muteButton) {
 
-    muted = !muted;
+    muteButton.addEventListener(
+      "click",
+      () => {
 
-    muteButton.textContent =
-      muted ? "🔇" : "🔊";
+        muted = !muted;
 
-    showToast(
-      muted
-        ? "Stream audio muted."
-        : "Stream audio unmuted."
+        muteButton.textContent =
+          muted ? "🔇" : "🔊";
+
+        muteButton.setAttribute(
+          "aria-label",
+          muted
+            ? "Unmute"
+            : "Mute"
+        );
+
+        showToast(
+          muted
+            ? "Stream audio muted."
+            : "Stream audio unmuted."
+        );
+      }
     );
-  });
+  }
 
 
   /* =======================================================
@@ -557,29 +744,45 @@ document.addEventListener("DOMContentLoaded", () => {
      ======================================================= */
 
   const fullscreenButton =
-    document.getElementById("fullscreenButton");
+    document.getElementById(
+      "fullscreenButton"
+    );
 
   const streamScreen =
-    document.getElementById("streamScreen");
+    document.getElementById(
+      "streamScreen"
+    );
 
-  fullscreenButton.addEventListener("click", async () => {
 
-    try {
+  if (
+    fullscreenButton &&
+    streamScreen
+  ) {
 
-      if (!document.fullscreenElement) {
+    fullscreenButton.addEventListener(
+      "click",
+      async () => {
 
-        await streamScreen.requestFullscreen();
+        try {
 
-      } else {
+          if (!document.fullscreenElement) {
 
-        await document.exitFullscreen();
+            await streamScreen.requestFullscreen();
+
+          } else {
+
+            await document.exitFullscreen();
+          }
+
+        } catch {
+
+          showToast(
+            "Fullscreen is unavailable here."
+          );
+        }
       }
-
-    } catch {
-
-      showToast("Fullscreen is unavailable here.");
-    }
-  });
+    );
+  }
 
 
   /* =======================================================
@@ -590,26 +793,41 @@ document.addEventListener("DOMContentLoaded", () => {
     .querySelectorAll(".experience-button")
     .forEach(button => {
 
-      button.addEventListener("click", () => {
+      button.addEventListener(
+        "click",
+        () => {
 
-        document
-          .querySelectorAll(".experience-button")
-          .forEach(item => {
-            item.classList.remove("active");
-          });
+          document
+            .querySelectorAll(
+              ".experience-button"
+            )
+            .forEach(item => {
 
-        button.classList.add("active");
+              item.classList.remove(
+                "active"
+              );
+            });
 
-        const game =
-          button.dataset.game;
 
-        currentExperience.textContent =
-          game;
+          button.classList.add("active");
 
-        showToast(
-          `Experience changed to ${game}.`
-        );
-      });
+
+          const game =
+            button.dataset.game;
+
+
+          if (currentExperience) {
+
+            currentExperience.textContent =
+              game;
+          }
+
+
+          showToast(
+            `Experience changed to ${game}.`
+          );
+        }
+      );
     });
 
 
@@ -621,27 +839,47 @@ document.addEventListener("DOMContentLoaded", () => {
     .querySelectorAll(".poll-option")
     .forEach(button => {
 
-      button.addEventListener("click", () => {
+      button.addEventListener(
+        "click",
+        () => {
 
-        const selected =
-          button.dataset.option;
+          const selected =
+            button.dataset.option;
 
-        pollVotes[selected]++;
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              pollVotes,
+              selected
+            )
+          ) {
+            return;
+          }
 
-        pollVoted = true;
 
-        document
-          .querySelectorAll(".poll-option")
-          .forEach(option => {
-            option.classList.remove("selected");
-          });
+          pollVotes[selected]++;
+          pollVoted = true;
 
-        button.classList.add("selected");
 
-        updatePoll();
+          document
+            .querySelectorAll(
+              ".poll-option"
+            )
+            .forEach(option => {
 
-      });
+              option.classList.remove(
+                "selected"
+              );
+            });
 
+
+          button.classList.add(
+            "selected"
+          );
+
+
+          updatePoll();
+        }
+      );
     });
 
 
@@ -649,7 +887,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const total =
       Object.values(pollVotes)
-        .reduce((sum, value) => sum + value, 0);
+        .reduce(
+          (sum, value) =>
+            sum + value,
+          0
+        );
+
 
     document
       .querySelectorAll(".poll-option")
@@ -660,24 +903,41 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let percentage = 0;
 
+
         if (total > 0) {
 
           percentage =
             Math.round(
-              (pollVotes[option] / total) * 100
+              (
+                pollVotes[option] /
+                total
+              ) * 100
             );
         }
 
-        button.querySelector("b")
-          .textContent =
-          `${percentage}%`;
+
+        const percentageElement =
+          button.querySelector("b");
+
+
+        if (percentageElement) {
+
+          percentageElement.textContent =
+            `${percentage}%`;
+        }
       });
 
 
     const pollNote =
-      document.getElementById("pollNote");
+      document.getElementById(
+        "pollNote"
+      );
 
-    if (pollVoted) {
+
+    if (
+      pollNote &&
+      pollVoted
+    ) {
 
       pollNote.textContent =
         "Live percentages update as viewers vote.";
@@ -693,25 +953,44 @@ document.addEventListener("DOMContentLoaded", () => {
     .querySelectorAll(".read-more")
     .forEach(button => {
 
-      button.addEventListener("click", () => {
+      button.addEventListener(
+        "click",
+        () => {
 
-        const card =
-          button.closest(".research-card");
+          const card =
+            button.closest(
+              ".research-card"
+            );
 
-        const expanded =
-          card.classList.toggle("expanded");
+          if (!card) return;
 
-        button.innerHTML =
-          expanded
-            ? 'Read less <span>+</span>'
-            : 'Read more <span>+</span>';
-      });
+
+          const expanded =
+            card.classList.toggle(
+              "expanded"
+            );
+
+
+          button.innerHTML =
+            expanded
+              ? 'Read less <span>+</span>'
+              : 'Read more <span>+</span>';
+        }
+      );
     });
 
 
   /* =======================================================
      INITIAL STATE
      ======================================================= */
+
+  if (streamTimer) {
+    streamTimer.textContent = "00:00:00";
+  }
+
+  if (progressBar) {
+    progressBar.style.width = "0%";
+  }
 
   updateStreamUI();
 
