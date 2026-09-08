@@ -1,673 +1,585 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    console.log("BlockLive loaded successfully");
+  const $ = (id) => document.getElementById(id);
 
+  const startStream = $("startStream");
+  const themeToggle = $("themeToggle");
+  const gameSelect = $("gameSelect");
 
-    /* =========================
-       ELEMENTS
-    ========================= */
+  const chatMessages = $("chatMessages");
+  const chatForm = $("chatForm");
+  const chatInput = $("chatInput");
+  const emptyChat = $("emptyChat");
 
-    const $ = (id) => document.getElementById(id);
+  const likeBtn = $("likeBtn");
+  const clearChat = $("clearChat");
 
-    const startStreamButton = $("startStreamButton");
-    const streamStatus = $("streamStatus");
-    const videoLive = $("videoLive");
-    const videoMessage = $("videoMessage");
-    const streamTimer = $("streamTimer");
+  const heroViewers = $("heroViewers");
+  const heroLikes = $("heroLikes");
+  const previewViewers = $("previewViewers");
 
-    const viewerCount = $("viewerCount");
-    const statStatus = $("statStatus");
-    const statViewers = $("statViewers");
-    const statLikes = $("statLikes");
-    const statMessages = $("statMessages");
+  const streamViewers = $("streamViewers");
+  const streamLikes = $("streamLikes");
 
-    const likeButton = $("likeButton");
-    const likeCount = $("likeCount");
+  const chatUsers = $("chatUsers");
 
-    const shareButton = $("shareButton");
-    const notifyButton = $("notifyButton");
-    const notificationButton = $("notificationButton");
+  const streamStatus = $("streamStatus");
+  const streamLiveLabel = $("streamLiveLabel");
+  const screenText = $("screenText");
+  const screenSubtext = $("screenSubtext");
+  const selectedGame = $("selectedGame");
+  const streamTitle = $("streamTitle");
 
-    const muteButton = $("muteButton");
-    const fullscreenButton = $("fullscreenButton");
+  const muteBtn = $("muteBtn");
+  const fullscreenBtn = $("fullscreenBtn");
+  const shareBtn = $("shareBtn");
 
-    const chatMessages = $("chatMessages");
-    const chatInput = $("chatInput");
-    const sendChatButton = $("sendChatButton");
-    const clearChatButton = $("clearChatButton");
+  let live = false;
+  let viewers = 0;
+  let likes = Number(localStorage.getItem("blockliveLikes")) || 0;
 
-    const typingIndicator = $("typingIndicator");
+  let chatTimer = null;
+  let viewerTimer = null;
 
-    const pollResult = $("pollResult");
+  const pollVotes = {
+    risk: 0,
+    safe: 0,
+    chat: 0
+  };
 
-    const toastContainer = $("toastContainer");
+  /*
+    These are the simulated stream participants.
+    They are all PRESENTERS and have equal status.
+  */
 
+  const presenters = [
+    {
+      name: "Denise",
+      type: "human",
+      messages: [
+        "I voted risk 😭",
+        "someone clip that"
+      ]
+    },
+    {
+      name: "Aylmer",
+      type: "human",
+      messages: [
+        "BRO the lobby is already wild",
+        "we are NOT surviving this",
+        "okay buddy",
+        "six seven"
+      ]
+    },
+    {
+      name: "Jayden",
+      type: "human",
+      messages: [
+        "nah this is about to go bad",
+        "HAHAHAHA"
+      ]
+    },
+    {
+      name: "Keysha",
+      type: "human",
+      messages: [
+        "let chat choose the next move",
+        "Ash look behind you",
+        "stop staring at me"
+      ]
+    },
 
-    /* =========================
-       STATE
-    ========================= */
+    /*
+      Ash is a simulated presenter.
+      This is different from the real user typing.
+    */
+    {
+      name: "Ash",
+      type: "human",
+      messages: [
+        "chat what are we doing",
+        "nahhh",
+        "wait what 😭"
+      ]
+    }
+  ];
 
-    let streamStarted = false;
-    let streamSeconds = 0;
-    let streamInterval = null;
+  const bots = [
+    {
+      name: "Drossog",
+      messages: [
+        "wait that actually worked",
+        "bro no way"
+      ]
+    },
+    {
+      name: "Frenchfries",
+      messages: [
+        "chat is cooking today",
+        "this stream is crazy"
+      ]
+    },
+    {
+      name: "Jaymat1210",
+      messages: [
+        "BRO 💀",
+        "nah"
+      ]
+    },
+    {
+      name: "Scrappy",
+      messages: [
+        "classic stream moment",
+        "this is actually funny"
+      ]
+    }
+  ];
 
-    let viewers = 128;
-    let likes = 42;
-    let messages = 6;
+  const allParticipants = [...presenters, ...bots];
 
-    let liked = false;
-    let muted = false;
-    let notifications = false;
+  function updateStats() {
+    heroViewers.textContent = viewers.toLocaleString();
+    previewViewers.textContent = `${viewers.toLocaleString()} watching`;
 
+    streamViewers.textContent = viewers.toLocaleString();
 
-    /* =========================
-       TOAST
-    ========================= */
+    heroLikes.textContent = likes.toLocaleString();
+    streamLikes.textContent = likes.toLocaleString();
+  }
 
-    function toast(message) {
+  function setLiveUI() {
+    streamStatus.textContent = live ? "LIVE" : "OFFLINE";
+    streamLiveLabel.textContent = live ? "● LIVE" : "OFFLINE";
 
-        if (!toastContainer) return;
+    streamLiveLabel.classList.toggle("active", live);
 
-        const item = document.createElement("div");
+    if (live) {
+      screenText.textContent = "You're live.";
+      screenSubtext.textContent = "Chat is open — let's see what happens.";
 
-        item.className = "toast";
-        item.textContent = message;
+      chatInput.disabled = false;
+      chatInput.placeholder = "Say something...";
+      startStream.textContent = "Stop Stream";
+    } else {
+      screenText.textContent = "Stream is offline";
+      screenSubtext.textContent = "Press Start Stream when you're ready.";
 
-        toastContainer.appendChild(item);
+      chatInput.disabled = true;
+      chatInput.placeholder = "Go live to chat...";
+      startStream.textContent = "Start Stream";
+    }
+  }
 
-        setTimeout(() => {
-            item.classList.add("hide");
+  function addChatMessage(name, message, type = "human") {
 
-            setTimeout(() => {
-                item.remove();
-            }, 250);
-
-        }, 2200);
+    if (emptyChat) {
+      emptyChat.remove();
     }
 
-
-    /* =========================
-       STREAM TIMER
-    ========================= */
-
-    function formatTime(seconds) {
-
-        const minutes = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-
-        return (
-            String(minutes).padStart(2, "0") +
-            ":" +
-            String(secs).padStart(2, "0")
-        );
-    }
-
-
-    function startTimer() {
-
-        clearInterval(streamInterval);
-
-        streamInterval = setInterval(() => {
-
-            streamSeconds++;
-
-            if (streamTimer) {
-                streamTimer.textContent =
-                    formatTime(streamSeconds);
-            }
-
-        }, 1000);
-    }
-
-
-    function stopTimer() {
-
-        clearInterval(streamInterval);
-        streamInterval = null;
-    }
-
-
-    /* =========================
-       START / END STREAM
-    ========================= */
-
-    if (startStreamButton) {
-
-        startStreamButton.addEventListener("click", () => {
-
-            streamStarted = !streamStarted;
-
-            if (streamStarted) {
-
-                startStreamButton.classList.add("streaming");
-
-                startStreamButton.innerHTML =
-                    "<span>End Stream</span>";
-
-                streamStatus.textContent = "LIVE";
-                streamStatus.classList.add("live");
-
-                videoLive.classList.add("active");
-
-                videoMessage.style.display = "none";
-
-                statStatus.textContent = "Live";
-
-                streamSeconds = 0;
-
-                streamTimer.textContent = "00:00";
-
-                startTimer();
-
-                viewers = 128;
-
-                viewerCount.textContent = viewers;
-                statViewers.textContent = viewers;
-
-                toast("Stream started");
-
-            } else {
-
-                startStreamButton.classList.remove("streaming");
-
-                startStreamButton.innerHTML =
-                    "<span>Start Stream</span>";
-
-                streamStatus.textContent = "OFFLINE";
-                streamStatus.classList.remove("live");
-
-                videoLive.classList.remove("active");
-
-                videoMessage.style.display = "flex";
-
-                statStatus.textContent = "Offline";
-
-                stopTimer();
-
-                toast("Stream ended");
-            }
-
-        });
-
-    }
-
-
-    /* =========================
-       LIKE
-    ========================= */
-
-    if (likeButton) {
-
-        likeButton.addEventListener("click", () => {
-
-            if (!liked) {
-
-                likes++;
-                liked = true;
-
-                likeButton.innerHTML =
-                    `♥ <span id="likeCount">${likes}</span>`;
-
-                toast("Liked the stream");
-
-            } else {
-
-                likes--;
-                liked = false;
-
-                likeButton.innerHTML =
-                    `♡ <span id="likeCount">${likes}</span>`;
-
-                toast("Like removed");
-            }
-
-            statLikes.textContent = likes;
-        });
-
-    }
-
-
-    /* =========================
-       SHARE
-    ========================= */
-
-    if (shareButton) {
-
-        shareButton.addEventListener("click", async () => {
-
-            const shareData = {
-                title: "BlockLive",
-                text: "Check out the BlockLive Roblox streaming project."
-            };
-
-            try {
-
-                if (navigator.share) {
-
-                    await navigator.share(shareData);
-
-                } else if (navigator.clipboard) {
-
-                    await navigator.clipboard.writeText(
-                        window.location.href
-                    );
-
-                    toast("Link copied");
-
-                } else {
-
-                    toast("Share link ready");
-
-                }
-
-            } catch (error) {
-
-                if (error.name !== "AbortError") {
-                    toast("Couldn't open sharing");
-                }
-
-            }
-
-        });
-
-    }
-
-
-    /* =========================
-       NOTIFICATIONS
-    ========================= */
-
-    function toggleNotifications(button) {
-
-        notifications = !notifications;
-
-        if (notifications) {
-
-            button.textContent = "♧ On";
-            toast("Notifications enabled");
-
-        } else {
-
-            button.textContent = "♧ Notify";
-            toast("Notifications disabled");
-        }
-    }
-
-
-    if (notifyButton) {
-
-        notifyButton.addEventListener("click", () => {
-            toggleNotifications(notifyButton);
-        });
-
-    }
-
-
-    if (notificationButton) {
-
-        notificationButton.addEventListener("click", () => {
-
-            notifications = !notifications;
-
-            toast(
-                notifications
-                    ? "Notifications enabled"
-                    : "Notifications disabled"
-            );
-
-        });
-
-    }
-
-
-    /* =========================
-       MUTE
-    ========================= */
-
-    if (muteButton) {
-
-        muteButton.addEventListener("click", () => {
-
-            muted = !muted;
-
-            muteButton.textContent =
-                muted ? "🔇" : "🔊";
-
-            toast(
-                muted
-                    ? "Audio muted"
-                    : "Audio unmuted"
-            );
-
-        });
-
-    }
-
-
-    /* =========================
-       FULLSCREEN
-    ========================= */
-
-    if (fullscreenButton) {
-
-        fullscreenButton.addEventListener("click", () => {
-
-            const video = document.querySelector(".video");
-
-            if (!video) return;
-
-            if (!document.fullscreenElement) {
-
-                if (video.requestFullscreen) {
-                    video.requestFullscreen();
-                }
-
-            } else {
-
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                }
-
-            }
-
-        });
-
-    }
-
-
-    /* =========================
-       CHAT
-    ========================= */
-
-    function sendMessage() {
-
-        if (!chatInput || !chatMessages) return;
-
-        const text = chatInput.value.trim();
-
-        if (!text) return;
-
-        const message = document.createElement("div");
-
-        message.className =
-            "chat-message human-message";
-
-        message.innerHTML = `
-            <div class="chat-avatar">A</div>
-
-            <div>
-                <div class="chat-name">
-                    Ash
-                    <span class="role">LEADER</span>
-                </div>
-
-                <p></p>
-            </div>
-        `;
-
-        message.querySelector("p").textContent = text;
-
-        chatMessages.appendChild(message);
-
-        chatMessages.scrollTop =
-            chatMessages.scrollHeight;
-
-        chatInput.value = "";
-
-        messages++;
-
-        statMessages.textContent = messages;
-
-        toast("Message sent");
-
-        botReply();
-    }
-
-
-    if (sendChatButton) {
-        sendChatButton.addEventListener(
-            "click",
-            sendMessage
-        );
-    }
-
-
-    if (chatInput) {
-
-        chatInput.addEventListener("keydown", (event) => {
-
-            if (event.key === "Enter") {
-
-                event.preventDefault();
-
-                sendMessage();
-            }
-
-        });
-
-    }
-
-
-    /* =========================
-       BOT REPLY
-    ========================= */
-
-    function botReply() {
-
-        if (typingIndicator) {
-            typingIndicator.style.display = "block";
-        }
-
-        setTimeout(() => {
-
-            if (typingIndicator) {
-                typingIndicator.style.display = "none";
-            }
-
-            const replies = [
-                ["drossog", "tuff"],
-                ["frenchfries", "rating this a 6.7"],
-                ["jaymat1210", "I'm the goat"],
-                ["scrappy", "this stream is cooking"]
-            ];
-
-            const reply =
-                replies[Math.floor(Math.random() * replies.length)];
-
-            const name = reply[0];
-            const text = reply[1];
-
-            const message = document.createElement("div");
-
-            message.className =
-                "chat-message bot-message";
-
-            message.innerHTML = `
-                <div class="chat-avatar bot">
-                    ${name.charAt(0).toUpperCase()}
-                </div>
-
-                <div>
-                    <div class="chat-name">
-                        ${name}
-                        <span class="role bot-role">BOT</span>
-                    </div>
-
-                    <p></p>
-                </div>
-            `;
-
-            message.querySelector("p").textContent = text;
-
-            chatMessages.appendChild(message);
-
-            chatMessages.scrollTop =
-                chatMessages.scrollHeight;
-
-            messages++;
-
-            statMessages.textContent = messages;
-
-        }, 900);
-
-    }
-
-
-    /* =========================
-       CLEAR CHAT
-    ========================= */
-
-    if (clearChatButton) {
-
-        clearChatButton.addEventListener("click", () => {
-
-            chatMessages.innerHTML = "";
-
-            messages = 0;
-
-            statMessages.textContent = "0";
-
-            toast("Chat cleared");
-
-        });
-
-    }
-
-
-    /* =========================
-       POLL
-    ========================= */
-
-    document.querySelectorAll(".poll-option")
-        .forEach((option) => {
-
-            option.addEventListener("click", () => {
-
-                document
-                    .querySelectorAll(".poll-option")
-                    .forEach((item) => {
-                        item.style.borderColor = "";
-                    });
-
-                option.style.borderColor = "#3b82f6";
-
-                const choice =
-                    option.dataset.option;
-
-                pollResult.textContent =
-                    `You voted for ${choice}.`;
-
-                toast(`Vote submitted: ${choice}`);
-
-            });
-
-        });
-
-
-    /* =========================
-       READ MORE
-    ========================= */
-
-    document.querySelectorAll(".read-more")
-        .forEach((button) => {
-
-            button.addEventListener("click", () => {
-
-                const card =
-                    button.closest(".content-card");
-
-                if (!card) return;
-
-                const expanded =
-                    card.classList.toggle("expanded");
-
-                button.innerHTML =
-                    expanded
-                        ? `Read less <span>−</span>`
-                        : `Read more <span>+</span>`;
-
-            });
-
-        });
-
-
-    /* =========================
-       SCROLL BUTTONS
-    ========================= */
-
-    document.querySelectorAll("[data-scroll]")
-        .forEach((button) => {
-
-            button.addEventListener("click", () => {
-
-                const target =
-                    document.querySelector(
-                        button.dataset.scroll
-                    );
-
-                if (target) {
-
-                    target.scrollIntoView({
-                        behavior: "smooth"
-                    });
-
-                }
-
-            });
-
-        });
-
-
-    /* =========================
-       NAVIGATION
-    ========================= */
-
-    document.querySelectorAll(".nav-link")
-        .forEach((link) => {
-
-            link.addEventListener("click", () => {
-
-                document
-                    .querySelectorAll(".nav-link")
-                    .forEach((item) => {
-                        item.classList.remove("active");
-                    });
-
-                link.classList.add("active");
-
-            });
-
-        });
-
-
-    /* =========================
-       VIEWER SIMULATION
-    ========================= */
-
-    setInterval(() => {
-
-        if (!streamStarted) return;
-
-        const change =
-            Math.random() > 0.5 ? 1 : -1;
-
-        viewers = Math.max(
-            1,
-            viewers + change
-        );
-
-        viewerCount.textContent = viewers;
-        statViewers.textContent = viewers;
-
-    }, 5000);
-
-
-    /* =========================
-       FINAL CHECK
-    ========================= */
-
-    console.log(
-        "BlockLive interactive controls ready."
+    const item = document.createElement("div");
+
+    item.className = `chat-message ${type}`;
+
+    const displayName = type === "you" ? "You" : name;
+    const badge = type === "bot" ? "BOT" : "Presenter";
+
+    item.innerHTML = `
+      <div class="chat-message-header">
+        <strong>${escapeHTML(displayName)}</strong>
+        <span class="chat-badge">${badge}</span>
+      </div>
+      <div class="chat-message-text">${escapeHTML(message)}</div>
+    `;
+
+    chatMessages.appendChild(item);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  function escapeHTML(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function randomMessage() {
+
+    if (!live || allParticipants.length === 0) return;
+
+    const participant =
+      allParticipants[Math.floor(Math.random() * allParticipants.length)];
+
+    const message =
+      participant.messages[
+        Math.floor(Math.random() * participant.messages.length)
+      ];
+
+    addChatMessage(
+      participant.name,
+      message,
+      participant.type === "bot" ? "bot" : "human"
     );
+
+    /*
+      Occasionally bump the viewer count so the stream
+      feels alive without going completely insane.
+    */
+    viewers += Math.floor(Math.random() * 7) - 2;
+
+    if (viewers < 1) viewers = 1;
+
+    updateStats();
+  }
+
+  function startChatLoop() {
+    clearTimeout(chatTimer);
+
+    function nextMessage() {
+      if (!live) return;
+
+      randomMessage();
+
+      const delay = 1800 + Math.random() * 4000;
+
+      chatTimer = setTimeout(nextMessage, delay);
+    }
+
+    /*
+      First message is delayed so the room does NOT
+      instantly fill when Start Stream is pressed.
+    */
+    chatTimer = setTimeout(nextMessage, 1800);
+  }
+
+  function startViewerLoop() {
+    clearInterval(viewerTimer);
+
+    viewerTimer = setInterval(() => {
+
+      if (!live) return;
+
+      const change = Math.floor(Math.random() * 9) - 3;
+
+      viewers += change;
+
+      if (viewers < 1) viewers = 1;
+      if (viewers > 999) viewers = 999;
+
+      chatUsers.textContent = `${viewers.toLocaleString()} watching`;
+
+      updateStats();
+
+    }, 3500);
+  }
+
+  function startTheStream() {
+
+    live = true;
+
+    viewers = Math.floor(35 + Math.random() * 45);
+
+    setLiveUI();
+    updateStats();
+
+    chatUsers.textContent = `${viewers.toLocaleString()} watching`;
+
+    startChatLoop();
+    startViewerLoop();
+
+    showToast("Stream started — chat is live.");
+  }
+
+  function stopTheStream() {
+
+    live = false;
+
+    clearTimeout(chatTimer);
+    clearInterval(viewerTimer);
+
+    viewers = 0;
+
+    setLiveUI();
+    updateStats();
+
+    chatUsers.textContent = "0 watching";
+
+    showToast("Stream ended.");
+
+  }
+
+  startStream.addEventListener("click", () => {
+
+    if (live) {
+      stopTheStream();
+    } else {
+      startTheStream();
+    }
+
+  });
+
+
+  /*
+    REAL USER CHAT
+    ----------------
+    This MUST say "You", not "Ash".
+  */
+
+  chatForm.addEventListener("submit", (event) => {
+
+    event.preventDefault();
+
+    if (!live) return;
+
+    const message = chatInput.value.trim();
+
+    if (!message) return;
+
+    addChatMessage("You", message, "you");
+
+    chatInput.value = "";
+
+  });
+
+
+  /*
+    SPAM-ABLE LIKES
+    ----------------
+    Every click adds one like.
+    There is no unlike/toggle.
+  */
+
+  likeBtn.addEventListener("click", () => {
+
+    if (!live) {
+      showToast("Start the stream first.");
+      return;
+    }
+
+    likes += 1;
+
+    localStorage.setItem("blockliveLikes", likes);
+
+    updateStats();
+
+  });
+
+
+  /*
+    GAME SELECTOR
+  */
+
+  gameSelect.addEventListener("change", () => {
+
+    const game = gameSelect.value;
+
+    selectedGame.textContent = game;
+    streamTitle.textContent = game;
+
+    showToast(`Game changed to ${game}`);
+
+  });
+
+
+  /*
+    POLL
+  */
+
+  document.querySelectorAll(".poll-option").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+      if (!live) {
+        showToast("Start the stream before voting.");
+        return;
+      }
+
+      const choice = button.dataset.poll;
+
+      pollVotes[choice]++;
+
+      button.classList.add("selected");
+
+      updatePoll();
+
+      showToast("Vote counted.");
+
+    });
+
+  });
+
+  function updatePoll() {
+
+    const total =
+      pollVotes.risk +
+      pollVotes.safe +
+      pollVotes.chat;
+
+    const percentage = (value) => {
+
+      if (!total) return 0;
+
+      return Math.round((value / total) * 100);
+
+    };
+
+    $("riskPercent").textContent =
+      `${percentage(pollVotes.risk)}%`;
+
+    $("safePercent").textContent =
+      `${percentage(pollVotes.safe)}%`;
+
+    $("chatPercent").textContent =
+      `${percentage(pollVotes.chat)}%`;
+
+    $("pollHint").textContent =
+      `${total} vote${total === 1 ? "" : "s"} cast`;
+
+  }
+
+
+  /*
+    CLEAR CHAT
+  */
+
+  clearChat.addEventListener("click", () => {
+
+    chatMessages.innerHTML = `
+      <div class="empty-chat" id="emptyChat">
+        <div>💬</div>
+        <strong>Room is quiet.</strong>
+        <span>${live
+          ? "Messages will appear again as the stream continues."
+          : "Start the stream and the conversation will begin."
+        }</span>
+      </div>
+    `;
+
+    showToast("Chat cleared.");
+
+  });
+
+
+  /*
+    MUTE
+  */
+
+  let muted = false;
+
+  muteBtn.addEventListener("click", () => {
+
+    muted = !muted;
+
+    muteBtn.textContent = muted ? "🔇" : "🔊";
+
+    showToast(muted ? "Audio muted." : "Audio unmuted.");
+
+  });
+
+
+  /*
+    FULLSCREEN
+  */
+
+  fullscreenBtn.addEventListener("click", async () => {
+
+    const screen = document.querySelector(".stream-screen");
+
+    try {
+
+      if (!document.fullscreenElement) {
+        await screen.requestFullscreen();
+      } else {
+        await document.exitFullscreen();
+      }
+
+    } catch {
+      showToast("Fullscreen isn't available here.");
+    }
+
+  });
+
+
+  /*
+    SHARE
+  */
+
+  shareBtn.addEventListener("click", async () => {
+
+    const shareData = {
+      title: "BlockLive",
+      text: "Check out our Roblox streaming project!"
+    };
+
+    try {
+
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        showToast("Project link copied.");
+      }
+
+    } catch {
+      // User cancelled sharing. Nothing needs to happen.
+    }
+
+  });
+
+
+  /*
+    LIGHT / DARK MODE
+  */
+
+  const savedTheme = localStorage.getItem("blockliveTheme");
+
+  if (savedTheme === "light") {
+    document.body.classList.add("light");
+    themeToggle.textContent = "🌙";
+  }
+
+  themeToggle.addEventListener("click", () => {
+
+    document.body.classList.toggle("light");
+
+    const light =
+      document.body.classList.contains("light");
+
+    localStorage.setItem(
+      "blockliveTheme",
+      light ? "light" : "dark"
+    );
+
+    themeToggle.textContent = light ? "🌙" : "☀";
+
+  });
+
+
+  /*
+    SMALL TOAST SYSTEM
+  */
+
+  let toastTimeout;
+
+  function showToast(message) {
+
+    const toast = $("toast");
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(toastTimeout);
+
+    toastTimeout = setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2200);
+
+  }
+
+
+  /*
+    INITIAL STATE
+  */
+
+  setLiveUI();
+  updateStats();
 
 });
