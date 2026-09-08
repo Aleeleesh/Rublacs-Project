@@ -1,825 +1,65 @@
+/* =========================================================
+   BLOCKLIVE
+   ROBLOX STREAMING PROJECT
+   MAIN JAVASCRIPT
+   ========================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* =====================================================
+  /* =======================================================
      ELEMENTS
-  ====================================================== */
+     ======================================================= */
 
-  const startButton = document.getElementById("startStreamButton");
+  const body = document.body;
+
+  const themeToggle = document.getElementById("themeToggle");
+  const menuToggle = document.getElementById("menuToggle");
+  const mobileNav = document.getElementById("mobileNav");
+
+  const heroStart = document.getElementById("heroStart");
   const playButton = document.getElementById("playButton");
 
-  const topStatus = document.getElementById("topStatus");
-  const streamStatusText = document.getElementById("streamStatusText");
+  const streamStatus = document.getElementById("streamStatus");
+  const navStatus = document.getElementById("navStatus");
+
+  const streamTimer = document.getElementById("streamTimer");
+  const progressBar = document.getElementById("progressBar");
+
   const chatStatus = document.getElementById("chatStatus");
-
-  const streamStage = document.getElementById("streamStage");
-  const streamDot = document.getElementById("streamDot");
-  const liveOverlay = document.getElementById("liveOverlay");
-  const offlineMessage = document.getElementById("offlineMessage");
-
-  const timerDisplay = document.getElementById("timer");
-  const viewerDisplay = document.getElementById("viewerDisplay");
-
-  const statStatus = document.getElementById("statStatus");
-  const statViewers = document.getElementById("statViewers");
-  const statLikes = document.getElementById("statLikes");
-  const statMessages = document.getElementById("statMessages");
-
-  const likeButton = document.getElementById("likeButton");
-  const likeCount = document.getElementById("likeCount");
-
   const chatMessages = document.getElementById("chatMessages");
-  const chatEmpty = document.getElementById("chatEmpty");
+  const emptyChat = document.getElementById("emptyChat");
 
   const chatForm = document.getElementById("chatForm");
   const chatInput = document.getElementById("chatInput");
 
-  const typingIndicator = document.getElementById("typingIndicator");
-  const clearChat = document.getElementById("clearChat");
+  const messageCount = document.getElementById("messageCount");
+  const viewerCount = document.getElementById("viewerCount");
 
-  const themeButton = document.getElementById("themeButton");
-  const mobileButton = document.getElementById("mobileButton");
-  const navLinks = document.getElementById("navLinks");
+  const statStatus = document.getElementById("statStatus");
 
-  const toast = document.getElementById("toast");
+  const likeButton = document.getElementById("likeButton");
+  const likeCount = document.getElementById("likeCount");
+  const statLikes = document.getElementById("statLikes");
 
-  const sceneTitle = document.getElementById("sceneTitle");
+  const shareButton = document.getElementById("shareButton");
+
   const currentExperience =
     document.getElementById("currentExperience");
 
-  const keyboardStatus =
-    document.getElementById("keyboardStatus");
+  const toast = document.getElementById("toast");
 
-  const keyButtons =
-    document.querySelectorAll(".key-control");
-
-  const gameButtons =
-    document.querySelectorAll(".game-button");
-
-  const pollOptions =
-    document.querySelectorAll(".poll-option");
-
-  const researchCards =
-    document.querySelectorAll(".research-card");
-
-
-  /* =====================================================
+  /* =======================================================
      STATE
-  ====================================================== */
+     ======================================================= */
 
-  let streamLive = false;
+  let isLive = false;
+  let streamSeconds = 0;
+  let streamInterval = null;
+  let likeTotal = 42;
 
-  let seconds = 0;
-  let timerInterval = null;
+  let messageTotal = 0;
 
-  let likes = 42;
-  let viewers = 0;
-
-  let chatCount = 0;
-
-  let controlInterval = null;
-  let controlTimeout = null;
-
-  let pollStarted = false;
-
-  let currentGame = "Brookhaven";
-
-
-  /* =====================================================
-     CHAT DATA
-  ====================================================== */
-
-  const chatQueue = [
-
-    {
-      name: "Aylmer",
-      type: "presenter",
-      text: "BRO the lobby is already wild"
-    },
-
-    {
-      name: "Keysha",
-      type: "presenter",
-      text: "let chat choose the next move"
-    },
-
-    {
-      name: "Jayden",
-      type: "presenter",
-      text: "nah this is about to go bad"
-    },
-
-    {
-      name: "Denise",
-      type: "presenter",
-      text: "I voted risk 😭"
-    },
-
-    {
-      name: "Aylmer",
-      type: "presenter",
-      text: "we are NOT surviving this"
-    },
-
-    {
-      name: "Drossog",
-      type: "bot",
-      text: "wait that actually worked"
-    },
-
-    {
-      name: "Frenchfries",
-      type: "bot",
-      text: "chat is cooking today"
-    },
-
-    {
-      name: "Keysha",
-      type: "presenter",
-      text: "Ash look behind you"
-    },
-
-    {
-      name: "Jaymat1210",
-      type: "bot",
-      text: "BRO 💀"
-    },
-
-    {
-      name: "Scrappy",
-      type: "bot",
-      text: "classic stream moment"
-    },
-
-    {
-      name: "Aylmer",
-      type: "presenter",
-      text: "okay buddy"
-    },
-
-    {
-      name: "Ash",
-      type: "presenter",
-      text: "six seven"
-    },
-
-    {
-      name: "Jayden",
-      type: "presenter",
-      text: "HAHAHAHA"
-    },
-
-    {
-      name: "Keysha",
-      type: "presenter",
-      text: "stop staring at me"
-    },
-
-    {
-      name: "Denise",
-      type: "presenter",
-      text: "someone clip that"
-    }
-
-  ];
-
-
-  /* =====================================================
-     TOAST
-  ====================================================== */
-
-  function showToast(message) {
-
-    toast.textContent = message;
-
-    toast.classList.add("show");
-
-    clearTimeout(showToast.timeout);
-
-    showToast.timeout = setTimeout(() => {
-      toast.classList.remove("show");
-    }, 2200);
-  }
-
-
-  /* =====================================================
-     TIMER
-  ====================================================== */
-
-  function formatTime(totalSeconds) {
-
-    const hours =
-      String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-
-    const minutes =
-      String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
-
-    const secondsValue =
-      String(totalSeconds % 60).padStart(2, "0");
-
-    return `${hours}:${minutes}:${secondsValue}`;
-  }
-
-
-  function startTimer() {
-
-    clearInterval(timerInterval);
-
-    timerInterval = setInterval(() => {
-
-      seconds++;
-
-      timerDisplay.textContent =
-        formatTime(seconds);
-
-    }, 1000);
-  }
-
-
-  function stopTimer() {
-    clearInterval(timerInterval);
-  }
-
-
-  /* =====================================================
-     STREAM VIEWERS
-  ====================================================== */
-
-  function updateViewers() {
-
-    if (!streamLive) {
-      viewers = 0;
-    } else {
-
-      viewers =
-        18 +
-        Math.floor(seconds / 8) +
-        Math.floor(Math.random() * 7);
-
-    }
-
-    viewerDisplay.textContent =
-      `${viewers} viewers`;
-
-    statViewers.textContent =
-      viewers;
-  }
-
-
-  /* =====================================================
-     STREAM STATE
-  ====================================================== */
-
-  function setStreamUI(live) {
-
-    streamLive = live;
-
-    if (live) {
-
-      startButton.textContent = "Stop Stream";
-      playButton.textContent = "⏸";
-
-      topStatus.classList.add("live");
-      topStatus.querySelector("span:last-child").textContent = "LIVE";
-
-      streamStatusText.textContent = "LIVE";
-
-      chatStatus.textContent = "LIVE";
-      chatStatus.classList.add("live");
-
-      streamDot.classList.add("live");
-      streamStage.classList.add("live");
-      liveOverlay.classList.add("live");
-
-      statStatus.textContent = "LIVE";
-
-      chatInput.disabled = false;
-      chatForm.querySelector("button").disabled = false;
-
-      chatInput.placeholder = "Say something...";
-
-      startTimer();
-
-      viewers = 21;
-      updateViewers();
-
-      startControlSimulation();
-
-      showToast("BlockLive is now live.");
-
-      beginChatSimulation();
-
-    } else {
-
-      startButton.textContent = "Start Stream";
-      playButton.textContent = "▶";
-
-      topStatus.classList.remove("live");
-      topStatus.querySelector("span:last-child").textContent = "OFFLINE";
-
-      streamStatusText.textContent = "OFFLINE";
-
-      chatStatus.textContent = "OFFLINE";
-      chatStatus.classList.remove("live");
-
-      streamDot.classList.remove("live");
-      streamStage.classList.remove("live");
-      liveOverlay.classList.remove("live");
-
-      statStatus.textContent = "OFFLINE";
-
-      chatInput.disabled = true;
-      chatForm.querySelector("button").disabled = true;
-
-      chatInput.placeholder = "Go live to chat...";
-
-      stopTimer();
-
-      stopControlSimulation();
-
-      clearAllKeys();
-
-      viewers = 0;
-      updateViewers();
-
-      showToast("Stream ended.");
-
-    }
-  }
-
-
-  function toggleStream() {
-
-    setStreamUI(!streamLive);
-
-  }
-
-
-  startButton.addEventListener(
-    "click",
-    toggleStream
-  );
-
-  playButton.addEventListener(
-    "click",
-    toggleStream
-  );
-
-
-  /* =====================================================
-     WASD SYSTEM
-  ====================================================== */
-
-  const movementPatterns = [
-
-    ["w"],
-
-    ["w", "d"],
-
-    ["d"],
-
-    ["d", "s"],
-
-    ["s"],
-
-    ["s", "a"],
-
-    ["a"],
-
-    ["a", "w"],
-
-    ["w"],
-
-    ["space"],
-
-    ["w", "space"],
-
-    ["d"]
-
-  ];
-
-
-  function activateKeys(keys) {
-
-    clearAllKeys();
-
-    keys.forEach(key => {
-
-      const button =
-        document.querySelector(
-          `.key-control[data-key="${key}"]`
-        );
-
-      if (button) {
-        button.classList.add("active");
-      }
-
-    });
-
-    if (keys.length > 0) {
-
-      keyboardStatus.textContent =
-        `INPUT · ${keys.join(" + ").toUpperCase()}`;
-
-      keyboardStatus.classList.add("active");
-
-    }
-
-  }
-
-
-  function clearAllKeys() {
-
-    keyButtons.forEach(button => {
-      button.classList.remove("active");
-    });
-
-    keyboardStatus.textContent =
-      streamLive ? "READY" : "OFFLINE";
-
-    keyboardStatus.classList.toggle(
-      "active",
-      streamLive
-    );
-
-  }
-
-
-  function startControlSimulation() {
-
-    stopControlSimulation();
-
-    let index = 0;
-
-    function nextMovement() {
-
-      if (!streamLive) {
-        return;
-      }
-
-      const pattern =
-        movementPatterns[index];
-
-      activateKeys(pattern);
-
-      index =
-        (index + 1) %
-        movementPatterns.length;
-
-      const delay =
-        650 +
-        Math.floor(Math.random() * 650);
-
-      controlTimeout =
-        setTimeout(nextMovement, delay);
-
-    }
-
-    nextMovement();
-
-  }
-
-
-  function stopControlSimulation() {
-
-    clearInterval(controlInterval);
-    clearTimeout(controlTimeout);
-
-    controlInterval = null;
-    controlTimeout = null;
-
-  }
-
-
-  /* =====================================================
-     REAL KEYBOARD INPUT
-     ===================================================== */
-
-  document.addEventListener("keydown", event => {
-
-    if (!streamLive) {
-      return;
-    }
-
-    const key =
-      event.key.toLowerCase();
-
-    let target = key;
-
-    if (event.code === "Space") {
-      target = "space";
-    }
-
-    const button =
-      document.querySelector(
-        `.key-control[data-key="${target}"]`
-      );
-
-    if (!button) {
-      return;
-    }
-
-    button.classList.add("active");
-
-    keyboardStatus.textContent =
-      `INPUT · ${target.toUpperCase()}`;
-
-    keyboardStatus.classList.add("active");
-
-  });
-
-
-  document.addEventListener("keyup", event => {
-
-    if (!streamLive) {
-      return;
-    }
-
-    const key =
-      event.key.toLowerCase();
-
-    let target = key;
-
-    if (event.code === "Space") {
-      target = "space";
-    }
-
-    const button =
-      document.querySelector(
-        `.key-control[data-key="${target}"]`
-      );
-
-    if (button) {
-      button.classList.remove("active");
-    }
-
-  });
-
-
-  /* =====================================================
-     GAME SWITCHING
-  ====================================================== */
-
-  gameButtons.forEach(button => {
-
-    button.addEventListener("click", () => {
-
-      gameButtons.forEach(item => {
-        item.classList.remove("active");
-      });
-
-      button.classList.add("active");
-
-      currentGame =
-        button.dataset.game;
-
-      currentExperience.textContent =
-        currentGame;
-
-      sceneTitle.textContent =
-        currentGame.toUpperCase();
-
-      showToast(
-        `${currentGame} selected.`
-      );
-
-    });
-
-  });
-
-
-  /* =====================================================
-     LIKES
-     ===================================================== */
-
-  likeButton.addEventListener("click", () => {
-
-    likes++;
-
-    likeCount.textContent =
-      likes;
-
-    statLikes.textContent =
-      likes;
-
-  });
-
-
-  /* =====================================================
-     SHARE
-  ====================================================== */
-
-  document
-    .getElementById("shareButton")
-    .addEventListener("click", async () => {
-
-      const shareData = {
-        title: "BlockLive",
-        text: "Check out our BlockLive Roblox streaming project."
-      };
-
-      try {
-
-        if (
-          navigator.share &&
-          location.protocol !== "file:"
-        ) {
-
-          await navigator.share(shareData);
-
-        } else {
-
-          await navigator.clipboard.writeText(
-            window.location.href
-          );
-
-          showToast(
-            "Project link copied."
-          );
-
-        }
-
-      } catch {
-        showToast("Share cancelled.");
-      }
-
-    });
-
-
-  /* =====================================================
-     CHAT
-  ====================================================== */
-
-  function addChatMessage(
-    name,
-    type,
-    text
-  ) {
-
-    if (chatEmpty) {
-      chatEmpty.remove();
-    }
-
-    const message =
-      document.createElement("div");
-
-    message.className =
-      "chat-message";
-
-    const badge =
-      type === "bot"
-        ? `<span class="bot-badge">BOT</span>`
-        : `<span class="presenter-badge">PRESENTER</span>`;
-
-    const displayName =
-      name === "Ash"
-        ? "Ash"
-        : name;
-
-    message.innerHTML = `
-      <div class="chat-name">
-        ${displayName}
-        ${badge}
-      </div>
-
-      <div class="chat-text">
-        ${escapeHTML(text)}
-      </div>
-    `;
-
-    chatMessages.appendChild(message);
-
-    chatMessages.scrollTop =
-      chatMessages.scrollHeight;
-
-    chatCount++;
-
-    statMessages.textContent =
-      chatCount;
-
-  }
-
-
-  function escapeHTML(text) {
-
-    const div =
-      document.createElement("div");
-
-    div.textContent =
-      text;
-
-    return div.innerHTML;
-
-  }
-
-
-  let chatIndex = 0;
-  let chatTimeout = null;
-
-
-  function beginChatSimulation() {
-
-    chatIndex = 0;
-
-    clearTimeout(chatTimeout);
-
-    scheduleNextChat();
-
-  }
-
-
-  function scheduleNextChat() {
-
-    if (!streamLive) {
-      return;
-    }
-
-    if (chatIndex >= chatQueue.length) {
-      return;
-    }
-
-    typingIndicator.classList.add("show");
-
-    const delay =
-      1100 +
-      Math.floor(Math.random() * 1200);
-
-    chatTimeout =
-      setTimeout(() => {
-
-        typingIndicator.classList.remove("show");
-
-        const message =
-          chatQueue[chatIndex];
-
-        addChatMessage(
-          message.name,
-          message.type,
-          message.text
-        );
-
-        chatIndex++;
-
-        scheduleNextChat();
-
-      }, delay);
-
-  }
-
-
-  chatForm.addEventListener("submit", event => {
-
-    event.preventDefault();
-
-    if (!streamLive) {
-      return;
-    }
-
-    const text =
-      chatInput.value.trim();
-
-    if (!text) {
-      return;
-    }
-
-    addChatMessage(
-      "You",
-      "presenter",
-      text
-    );
-
-    chatInput.value = "";
-
-  });
-
-
-  clearChat.addEventListener("click", () => {
-
-    chatMessages.innerHTML = "";
-
-    chatCount = 0;
-
-    statMessages.textContent = "0";
-
-    if (!streamLive) {
-
-      chatMessages.innerHTML = `
-        <div class="chat-empty" id="chatEmpty">
-          <span>✦</span>
-          <strong>No messages yet</strong>
-          <small>
-            Start the stream to open the chat.
-          </small>
-        </div>
-      `;
-
-    }
-
-  });
-
-
-  /* =====================================================
-     POLL
-  ====================================================== */
+  let pollVoted = false;
 
   const pollVotes = {
     "Brookhaven": 0,
@@ -828,234 +68,651 @@ document.addEventListener("DOMContentLoaded", () => {
     "Adventure": 0
   };
 
-
-  pollOptions.forEach(option => {
-
-    option.addEventListener("click", () => {
-
-      const selected =
-        option.dataset.option;
-
-      pollVotes[selected]++;
-
-      pollStarted = true;
-
-      updatePoll();
-
-    });
-
-  });
-
-
-  function updatePoll() {
-
-    const total =
-      Object.values(pollVotes)
-        .reduce(
-          (sum, value) => sum + value,
-          0
-        );
-
-    if (!total) {
-      return;
+  const chatSequence = [
+    {
+      name: "Aylmer",
+      role: "Presenter",
+      text: "BRO the lobby is already wild"
+    },
+    {
+      name: "Keysha",
+      role: "Presenter",
+      text: "let chat choose the next move"
+    },
+    {
+      name: "Jayden",
+      role: "Presenter",
+      text: "nah this is about to go bad"
+    },
+    {
+      name: "Denise",
+      role: "Presenter",
+      text: "I voted risk 😭"
+    },
+    {
+      name: "Aylmer",
+      role: "Presenter",
+      text: "we are NOT surviving this"
+    },
+    {
+      name: "Drossog",
+      role: "BOT",
+      text: "wait that actually worked"
+    },
+    {
+      name: "Frenchfries",
+      role: "BOT",
+      text: "chat is cooking today"
+    },
+    {
+      name: "Keysha",
+      role: "Presenter",
+      text: "Ash look behind you"
+    },
+    {
+      name: "Jaymat1210",
+      role: "BOT",
+      text: "BRO 💀"
+    },
+    {
+      name: "Scrappy",
+      role: "BOT",
+      text: "classic stream moment"
+    },
+    {
+      name: "Aylmer",
+      role: "Presenter",
+      text: "okay buddy"
+    },
+    {
+      name: "Ash",
+      role: "Presenter",
+      text: "six seven"
+    },
+    {
+      name: "Jayden",
+      role: "Presenter",
+      text: "HAHAHAHA"
+    },
+    {
+      name: "Keysha",
+      role: "Presenter",
+      text: "stop staring at me"
+    },
+    {
+      name: "Denise",
+      role: "Presenter",
+      text: "someone clip that"
     }
+  ];
 
-    pollOptions.forEach(option => {
 
-      const name =
-        option.dataset.option;
+  /* =======================================================
+     HELPERS
+     ======================================================= */
 
-      const votes =
-        pollVotes[name];
+  function showToast(message) {
 
-      const percentage =
-        Math.round(
-          (votes / total) * 100
-        );
+    if (!toast) return;
 
-      const bar =
-        option.querySelector(
-          ".poll-bar i"
-        );
+    toast.textContent = message;
+    toast.classList.add("show");
 
-      const result =
-        option.querySelector(
-          ".poll-result"
-        );
+    clearTimeout(showToast.timer);
 
-      option.classList.add("voted");
-
-      bar.style.width =
-        `${percentage}%`;
-
-      result.textContent =
-        `${percentage}%`;
-
-    });
-
+    showToast.timer = setTimeout(() => {
+      toast.classList.remove("show");
+    }, 2200);
   }
 
 
-  /* =====================================================
-     RESEARCH READ MORE
-  ====================================================== */
+  function formatTime(totalSeconds) {
 
-  researchCards.forEach(card => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
 
-    const button =
-      card.querySelector(".read-more");
-
-    button.addEventListener("click", () => {
-
-      const expanded =
-        card.classList.toggle("expanded");
-
-      button.textContent =
-        expanded
-          ? "Read less −"
-          : "Read more +";
-
-    });
-
-  });
+    return [
+      hours,
+      minutes,
+      seconds
+    ]
+      .map(value => String(value).padStart(2, "0"))
+      .join(":");
+  }
 
 
-  /* =====================================================
+  function updateStreamUI() {
+
+    body.classList.toggle("live", isLive);
+
+    if (isLive) {
+
+      streamStatus.innerHTML = "<i></i> LIVE";
+      navStatus.innerHTML =
+        '<span class="status-dot"></span> LIVE';
+
+      chatStatus.textContent = "LIVE";
+
+      statStatus.textContent = "LIVE";
+
+      playButton.textContent = "Ⅱ";
+
+      chatInput.disabled = false;
+      chatForm.querySelector("button").disabled = false;
+
+      chatInput.placeholder = "Say something...";
+
+      viewerCount.textContent = "12";
+
+    } else {
+
+      streamStatus.innerHTML = "<i></i> OFFLINE";
+      navStatus.innerHTML =
+        '<span class="status-dot"></span> OFFLINE';
+
+      chatStatus.textContent = "OFFLINE";
+
+      statStatus.textContent = "OFFLINE";
+
+      playButton.textContent = "▶";
+
+      chatInput.disabled = true;
+      chatForm.querySelector("button").disabled = true;
+
+      chatInput.placeholder = "Go live to chat...";
+
+      viewerCount.textContent = "0";
+    }
+  }
+
+
+  /* =======================================================
      THEME
-  ====================================================== */
+     ======================================================= */
 
-  themeButton.addEventListener("click", () => {
+  themeToggle.addEventListener("click", () => {
 
-    document.body.classList.toggle("light");
+    body.classList.toggle("light");
 
-    const light =
-      document.body.classList.contains("light");
+    const isLight = body.classList.contains("light");
 
-    themeButton.textContent =
-      light ? "☀" : "☾";
+    themeToggle.textContent = isLight ? "☀" : "☾";
 
     localStorage.setItem(
       "blocklive-theme",
-      light ? "light" : "dark"
+      isLight ? "light" : "dark"
     );
-
   });
 
 
   const savedTheme =
-    localStorage.getItem(
-      "blocklive-theme"
-    );
+    localStorage.getItem("blocklive-theme");
 
   if (savedTheme === "light") {
 
-    document.body.classList.add("light");
+    body.classList.add("light");
 
-    themeButton.textContent = "☀";
-
+    themeToggle.textContent = "☀";
   }
 
 
-  /* =====================================================
+  /* =======================================================
      MOBILE NAV
-  ====================================================== */
+     ======================================================= */
 
-  mobileButton.addEventListener("click", () => {
+  menuToggle.addEventListener("click", () => {
 
-    navLinks.classList.toggle("open");
+    mobileNav.classList.toggle("open");
 
+    menuToggle.textContent =
+      mobileNav.classList.contains("open")
+        ? "×"
+        : "☰";
   });
 
 
-  navLinks.querySelectorAll("a")
-    .forEach(link => {
+  document.querySelectorAll(".mobile-nav a").forEach(link => {
 
-      link.addEventListener("click", () => {
+    link.addEventListener("click", () => {
 
-        navLinks.classList.remove("open");
+      mobileNav.classList.remove("open");
+
+      menuToggle.textContent = "☰";
+    });
+  });
+
+
+  /* =======================================================
+     STREAM
+     ======================================================= */
+
+  function startStream() {
+
+    if (isLive) return;
+
+    isLive = true;
+    streamSeconds = 0;
+
+    updateStreamUI();
+
+    clearInterval(streamInterval);
+
+    streamInterval = setInterval(() => {
+
+      streamSeconds++;
+
+      streamTimer.textContent =
+        formatTime(streamSeconds);
+
+      const progress =
+        Math.min((streamSeconds % 60) / 60 * 100, 100);
+
+      progressBar.style.width =
+        `${progress}%`;
+
+    }, 1000);
+
+    addChatMessage({
+      name: "System",
+      role: "LIVE",
+      text: "The stream is now live."
+    });
+
+    showToast("BlockLive is now live.");
+
+    setTimeout(() => {
+
+      runBotChat();
+
+    }, 900);
+  }
+
+
+  function stopStream() {
+
+    if (!isLive) return;
+
+    isLive = false;
+
+    clearInterval(streamInterval);
+
+    streamInterval = null;
+
+    updateStreamUI();
+
+    showToast("Stream ended.");
+  }
+
+
+  function toggleStream() {
+
+    if (isLive) {
+      stopStream();
+    } else {
+      startStream();
+    }
+  }
+
+
+  heroStart.addEventListener("click", () => {
+
+    startStream();
+
+    document
+      .getElementById("live-stream")
+      .scrollIntoView({
+        behavior: "smooth"
+      });
+  });
+
+
+  playButton.addEventListener("click", toggleStream);
+
+
+  /* =======================================================
+     CHAT
+     ======================================================= */
+
+  function addChatMessage(message) {
+
+    if (emptyChat) {
+      emptyChat.remove();
+    }
+
+    const wrapper =
+      document.createElement("div");
+
+    wrapper.className = "chat-message";
+
+    const name =
+      document.createElement("div");
+
+    name.className = "chat-name";
+
+    const nameText =
+      document.createElement("span");
+
+    nameText.textContent = message.name;
+
+    const role =
+      document.createElement("span");
+
+    role.className = "chat-role";
+
+    role.textContent = message.role;
+
+    name.appendChild(nameText);
+    name.appendChild(role);
+
+    const text =
+      document.createElement("div");
+
+    text.className = "chat-text";
+
+    text.textContent = message.text;
+
+    wrapper.appendChild(name);
+    wrapper.appendChild(text);
+
+    chatMessages.appendChild(wrapper);
+
+    chatMessages.scrollTop =
+      chatMessages.scrollHeight;
+
+    messageTotal++;
+
+    messageCount.textContent =
+      messageTotal;
+  }
+
+
+  function runBotChat() {
+
+    if (!isLive) return;
+
+    let index = 0;
+
+    const nextMessage = () => {
+
+      if (!isLive) return;
+
+      if (index >= chatSequence.length) {
+        return;
+      }
+
+      addChatMessage(chatSequence[index]);
+
+      index++;
+
+      setTimeout(
+        nextMessage,
+        1400 + Math.random() * 1200
+      );
+    };
+
+    nextMessage();
+  }
+
+
+  chatForm.addEventListener("submit", event => {
+
+    event.preventDefault();
+
+    if (!isLive) return;
+
+    const text =
+      chatInput.value.trim();
+
+    if (!text) return;
+
+    addChatMessage({
+      name: "You",
+      role: "Presenter",
+      text
+    });
+
+    chatInput.value = "";
+  });
+
+
+  /* =======================================================
+     LIKES
+     ======================================================= */
+
+  likeButton.addEventListener("click", () => {
+
+    likeTotal++;
+
+    likeCount.textContent =
+      likeTotal;
+
+    statLikes.textContent =
+      likeTotal;
+  });
+
+
+  /* =======================================================
+     SHARE
+     ======================================================= */
+
+  shareButton.addEventListener("click", async () => {
+
+    const shareData = {
+      title: "BlockLive | Roblox Streaming Project",
+      text: "Check out our BlockLive Roblox streaming project.",
+      url: window.location.href
+    };
+
+    try {
+
+      if (navigator.share) {
+
+        await navigator.share(shareData);
+
+      } else {
+
+        await navigator.clipboard.writeText(
+          window.location.href
+        );
+
+        showToast("Project link copied.");
+      }
+
+    } catch (error) {
+
+      if (error.name !== "AbortError") {
+        showToast("Could not share right now.");
+      }
+    }
+  });
+
+
+  /* =======================================================
+     MUTE
+     ======================================================= */
+
+  const muteButton =
+    document.getElementById("muteButton");
+
+  let muted = false;
+
+  muteButton.addEventListener("click", () => {
+
+    muted = !muted;
+
+    muteButton.textContent =
+      muted ? "🔇" : "🔊";
+
+    showToast(
+      muted
+        ? "Stream audio muted."
+        : "Stream audio unmuted."
+    );
+  });
+
+
+  /* =======================================================
+     FULLSCREEN
+     ======================================================= */
+
+  const fullscreenButton =
+    document.getElementById("fullscreenButton");
+
+  const streamScreen =
+    document.getElementById("streamScreen");
+
+  fullscreenButton.addEventListener("click", async () => {
+
+    try {
+
+      if (!document.fullscreenElement) {
+
+        await streamScreen.requestFullscreen();
+
+      } else {
+
+        await document.exitFullscreen();
+      }
+
+    } catch {
+
+      showToast("Fullscreen is unavailable here.");
+    }
+  });
+
+
+  /* =======================================================
+     EXPERIENCE SWITCHING
+     ======================================================= */
+
+  document
+    .querySelectorAll(".experience-button")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        document
+          .querySelectorAll(".experience-button")
+          .forEach(item => {
+            item.classList.remove("active");
+          });
+
+        button.classList.add("active");
+
+        const game =
+          button.dataset.game;
+
+        currentExperience.textContent =
+          game;
+
+        showToast(
+          `Experience changed to ${game}.`
+        );
+      });
+    });
+
+
+  /* =======================================================
+     POLL
+     ======================================================= */
+
+  document
+    .querySelectorAll(".poll-option")
+    .forEach(button => {
+
+      button.addEventListener("click", () => {
+
+        const selected =
+          button.dataset.option;
+
+        pollVotes[selected]++;
+
+        pollVoted = true;
+
+        document
+          .querySelectorAll(".poll-option")
+          .forEach(option => {
+            option.classList.remove("selected");
+          });
+
+        button.classList.add("selected");
+
+        updatePoll();
 
       });
 
     });
 
 
-  /* =====================================================
-     FULLSCREEN
-  ====================================================== */
+  function updatePoll() {
 
-  document
-    .getElementById("fullscreenButton")
-    .addEventListener("click", () => {
+    const total =
+      Object.values(pollVotes)
+        .reduce((sum, value) => sum + value, 0);
 
-      const stage =
-        document.getElementById("streamStage");
+    document
+      .querySelectorAll(".poll-option")
+      .forEach(button => {
 
-      if (!document.fullscreenElement) {
+        const option =
+          button.dataset.option;
 
-        if (stage.requestFullscreen) {
-          stage.requestFullscreen();
+        let percentage = 0;
+
+        if (total > 0) {
+
+          percentage =
+            Math.round(
+              (pollVotes[option] / total) * 100
+            );
         }
 
-      } else {
-
-        document.exitFullscreen();
-
-      }
-
-    });
+        button.querySelector("b")
+          .textContent =
+          `${percentage}%`;
+      });
 
 
-  /* =====================================================
-     MUTE BUTTON
-  ====================================================== */
+    const pollNote =
+      document.getElementById("pollNote");
 
-  let muted = false;
+    if (pollVoted) {
+
+      pollNote.textContent =
+        "Live percentages update as viewers vote.";
+    }
+  }
+
+
+  /* =======================================================
+     READ MORE
+     ======================================================= */
 
   document
-    .getElementById("muteButton")
-    .addEventListener("click", event => {
+    .querySelectorAll(".read-more")
+    .forEach(button => {
 
-      muted = !muted;
+      button.addEventListener("click", () => {
 
-      event.currentTarget.textContent =
-        muted ? "🔇" : "🔊";
+        const card =
+          button.closest(".research-card");
 
-      showToast(
-        muted
-          ? "Stream audio muted."
-          : "Stream audio restored."
-      );
+        const expanded =
+          card.classList.toggle("expanded");
 
+        button.innerHTML =
+          expanded
+            ? 'Read less <span>+</span>'
+            : 'Read more <span>+</span>';
+      });
     });
 
 
-  /* =====================================================
-     VIEWER SIMULATION
-  ====================================================== */
-
-  setInterval(() => {
-
-    if (streamLive) {
-      updateViewers();
-    }
-
-  }, 5000);
-
-
-  /* =====================================================
+  /* =======================================================
      INITIAL STATE
-  ====================================================== */
+     ======================================================= */
 
-  statLikes.textContent =
-    likes;
-
-  statMessages.textContent =
-    chatCount;
-
-  statViewers.textContent =
-    "0";
-
-  keyboardStatus.textContent =
-    "OFFLINE";
+  updateStreamUI();
 
 });
