@@ -1,1076 +1,1086 @@
+/* =========================================================
+   BLOCKLIVE
+   ROBLOX STREAMING PROJECT
+   MAIN JAVASCRIPT
+   ========================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
 
-    /* =========================
-       HELPERS
-    ========================= */
+    /* =====================================================
+       ELEMENTS
+       ===================================================== */
 
-    const $ = (selector) => document.querySelector(selector);
+    const startStreamButton =
+        document.getElementById("startStreamButton");
 
-    const $$ = (selector) => [
-        ...document.querySelectorAll(selector)
-    ];
+    const videoLive =
+        document.getElementById("videoLive");
 
+    const streamStatus =
+        document.getElementById("streamStatus");
 
-    /* =========================
-       GAME DATA
-    ========================= */
+    const videoMessage =
+        document.getElementById("videoMessage");
 
-    const games = [
+    const viewerCount =
+        document.getElementById("viewerCount");
 
-        {
-            name: "Brookhaven RP",
-            type: "roleplay",
-            icon: "🏙️",
-            description: "A social sandbox where spontaneous stories and community interaction happen naturally.",
-            energy: "HIGH",
-            best: "Social"
-        },
+    const streamTimer =
+        document.getElementById("streamTimer");
 
-        {
-            name: "Adopt Me!",
-            type: "roleplay",
-            icon: "🐾",
-            description: "Collect pets, explore the world, trade, and build a community-focused stream.",
-            energy: "MEDIUM",
-            best: "Community"
-        },
+    const currentGame =
+        document.getElementById("currentGame");
 
-        {
-            name: "Blox Fruits",
-            type: "action",
-            icon: "⚔️",
-            description: "Progression, combat, exploration, and objectives that keep viewers invested.",
-            energy: "HIGH",
-            best: "Progression"
-        },
+    const streamTitle =
+        document.getElementById("streamTitle");
 
-        {
-            name: "Murder Mystery 2",
-            type: "action",
-            icon: "🔎",
-            description: "Short rounds with simple rules and plenty of opportunities for reactions.",
-            energy: "HIGH",
-            best: "Reactions"
-        },
+    const sidebarStatus =
+        document.getElementById("sidebarStatus");
 
-        {
-            name: "DOORS",
-            type: "horror",
-            icon: "🚪",
-            description: "A tense horror experience that naturally creates reaction moments.",
-            energy: "HIGH",
-            best: "Reactions"
-        },
+    const sidebarViewers =
+        document.getElementById("sidebarViewers");
 
-        {
-            name: "Tower of Hell",
-            type: "obby",
-            icon: "🗼",
-            description: "Precision platforming with clear challenges and easy viewer stakes.",
-            energy: "EXTREME",
-            best: "Challenges"
-        },
+    const sidebarStatusBox =
+        document.querySelector(".sidebar-stream-status");
 
-        {
-            name: "Arsenal",
-            type: "action",
-            icon: "🎯",
-            description: "Fast matches and competitive gameplay for a high-energy stream.",
-            energy: "HIGH",
-            best: "Competition"
-        },
+    const chatStatus =
+        document.getElementById("chatStatus");
 
-        {
-            name: "BedWars",
-            type: "action",
-            icon: "🛏️",
-            description: "Strategy, teamwork, defense, and clutch moments.",
-            energy: "HIGH",
-            best: "Team Play"
-        },
+    const chatMessages =
+        document.getElementById("chatMessages");
 
-        {
-            name: "Piggy",
-            type: "horror",
-            icon: "🐷",
-            description: "Puzzle-solving and escape gameplay with a strong story element.",
-            energy: "MEDIUM",
-            best: "Story"
-        },
+    const chatEmpty =
+        document.getElementById("chatEmpty");
 
-        {
-            name: "Dress to Impress",
-            type: "roleplay",
-            icon: "👗",
-            description: "Theme rounds that naturally encourage audience voting.",
-            energy: "MEDIUM",
-            best: "Voting"
-        },
+    const chatInput =
+        document.getElementById("chatInput");
 
-        {
-            name: "Natural Disaster Survival",
-            type: "action",
-            icon: "🌪️",
-            description: "Simple objectives with unpredictable moments and reactions.",
-            energy: "HIGH",
-            best: "Reactions"
-        },
+    const sendChatButton =
+        document.getElementById("sendChatButton");
 
-        {
-            name: "Obby Challenge",
-            type: "obby",
-            icon: "🧱",
-            description: "A straightforward challenge format that works well with viewer dares.",
-            energy: "EXTREME",
-            best: "Challenges"
-        }
+    const typingIndicator =
+        document.getElementById("typingIndicator");
 
-    ];
+    const likeButton =
+        document.getElementById("likeButton");
+
+    const likeCount =
+        document.getElementById("likeCount");
+
+    const shareButton =
+        document.getElementById("shareButton");
+
+    const notifyButton =
+        document.getElementById("notifyButton");
+
+    const notificationButton =
+        document.getElementById("notificationButton");
+
+    const clearChatButton =
+        document.getElementById("clearChatButton");
+
+    const muteButton =
+        document.getElementById("muteButton");
+
+    const fullscreenButton =
+        document.getElementById("fullscreenButton");
+
+    const statStatus =
+        document.getElementById("statStatus");
+
+    const statViewers =
+        document.getElementById("statViewers");
+
+    const statLikes =
+        document.getElementById("statLikes");
+
+    const statMessages =
+        document.getElementById("statMessages");
+
+    const toastContainer =
+        document.getElementById("toastContainer");
 
 
-    /* =========================
-       STREAM STATE
-    ========================= */
+    /* =====================================================
+       STATE
+       ===================================================== */
 
-    let isLive = false;
+    let streamStarted = false;
 
     let streamSeconds = 0;
 
-    let viewerCount = 0;
+    let viewers = 0;
 
-    let streamTimer = null;
+    let likes = 42;
 
-    let botTimer = null;
+    let messagesSent = 0;
 
-    let selectedGame = games[0];
+    let muted = false;
 
-    let likes = Number(
-        localStorage.getItem("rshLikes") || 0
-    );
+    let liked = false;
+
+    let notificationsEnabled = false;
+
+    let selectedGame = "Brookhaven";
+
+    let streamTimerInterval = null;
+
+    let viewerInterval = null;
+
+    let chatInterval = null;
 
 
-    /* =========================
-       BOT CONVERSATIONS
-    ========================= */
+    /* =====================================================
+       PEOPLE
+       ===================================================== */
 
-    const conversations = [
-
-        [
-            ["Aylmer", "BRO the lobby is already wild"],
-            ["Keysha", "let chat choose the next move"],
-            ["Jayden", "nah this is about to go bad"],
-            ["Denise", "I voted risk 😭"],
-            ["Aylmer", "we are NOT surviving this"]
-        ],
-
-        [
-            ["Drossog", "wait that actually worked"],
-            ["Frenchfries", "chat is cooking today"],
-            ["Keysha", "Ash look behind you"],
-            ["Jaymat1210", "BRO 💀"],
-            ["Scrappy", "classic stream moment"]
-        ],
-
-        [
-            ["Ash", "okay buddy"],
-            ["Aylmer", "six seven"],
-            ["Jayden", "HAHAHAHA"],
-            ["Keysha", "stop staring at me"],
-            ["Denise", "someone clip that"]
-        ]
-
+    const humans = [
+        "Denise",
+        "Alymer",
+        "Jayden",
+        "Keysha",
+        "Ash"
     ];
 
-    let currentConversation = 0;
 
-    let currentMessage = 0;
-
-
-    /* =========================
-       TOAST
-    ========================= */
-
-    function showToast(message) {
-
-        const toast = document.createElement("div");
-
-        toast.className = "toast";
-
-        toast.innerHTML = `
-            <strong>RSH</strong> · ${message}
-        `;
-
-        $("#toastWrap").appendChild(toast);
-
-        setTimeout(() => {
-
-            toast.remove();
-
-        }, 2600);
-    }
-
-
-    /* =========================
-       HTML ESCAPE
-    ========================= */
-
-    function escapeHTML(text) {
-
-        return text.replace(
-            /[&<>"']/g,
-            char => ({
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#039;"
-            })[char]
-        );
-
-    }
-
-
-    /* =========================
-       GAME LIBRARY
-    ========================= */
-
-    function renderGames() {
-
-        const search =
-            $("#gameSearch").value
-                .toLowerCase()
-                .trim();
-
-        const filter =
-            $("#gameFilter").value;
-
-
-        const savedGames =
-            JSON.parse(
-                localStorage.getItem("rshFavorites") || "[]"
-            );
-
-
-        const filteredGames =
-            games.filter(game => {
-
-                const matchesSearch =
-                    game.name
-                        .toLowerCase()
-                        .includes(search);
-
-                const matchesFilter =
-                    filter === "all" ||
-                    game.type === filter;
-
-                return matchesSearch && matchesFilter;
-
-            });
-
-
-        $("#gameGrid").innerHTML =
-            filteredGames.map(game => {
-
-                const gameIndex =
-                    games.indexOf(game);
-
-                const favorite =
-                    savedGames.includes(game.name);
-
-
-                return `
-
-                    <article
-                        class="game-card"
-                        data-index="${gameIndex}"
-                    >
-
-                        <button
-                            class="favorite-button ${favorite ? "active" : ""}"
-                            data-favorite="${game.name}"
-                        >
-                            ★
-                        </button>
-
-
-                        <div class="game-thumbnail">
-
-                            <div class="game-symbol">
-                                ${game.icon}
-                            </div>
-
-                        </div>
-
-
-                        <div class="game-card-content">
-
-                            <h3>
-                                ${game.name}
-                            </h3>
-
-                            <p>
-                                ${game.description}
-                            </p>
-
-                            <div class="game-meta">
-                                ${game.type.toUpperCase()}
-                                ·
-                                ${game.energy}
-                            </div>
-
-                        </div>
-
-                    </article>
-
-                `;
-
-            }).join("");
-
-
-        $$(".game-card").forEach(card => {
-
-            card.addEventListener("click", event => {
-
-                if (
-                    event.target.closest(
-                        ".favorite-button"
-                    )
-                ) {
-                    return;
-                }
-
-                openGame(
-                    Number(card.dataset.index)
-                );
-
-            });
-
-        });
-
-
-        $$(".favorite-button").forEach(button => {
-
-            button.addEventListener("click", event => {
-
-                event.stopPropagation();
-
-                let favorites =
-                    JSON.parse(
-                        localStorage.getItem(
-                            "rshFavorites"
-                        ) || "[]"
-                    );
-
-                const game =
-                    button.dataset.favorite;
-
-
-                if (favorites.includes(game)) {
-
-                    favorites =
-                        favorites.filter(
-                            item => item !== game
-                        );
-
-                    button.classList.remove(
-                        "active"
-                    );
-
-                    showToast(
-                        `${game} removed from favorites.`
-                    );
-
-                } else {
-
-                    favorites.push(game);
-
-                    button.classList.add(
-                        "active"
-                    );
-
-                    showToast(
-                        `${game} saved to favorites.`
-                    );
-
-                }
-
-
-                localStorage.setItem(
-                    "rshFavorites",
-                    JSON.stringify(favorites)
-                );
-
-            });
-
-        });
+    const bots = [
+        "drossog",
+        "frenchfries",
+        "jaymat1210",
+        "scrappy"
+    ];
+
+
+    /* =====================================================
+       BOT MESSAGES
+       ===================================================== */
+
+    const botMessages = {
+
+        drossog: [
+            "tuff",
+            "okay this is actually clean",
+            "nah that was crazy",
+            "bro is cooking",
+            "W stream",
+            "that jump was questionable",
+            "this game is kinda fire",
+            "chat is alive today",
+            "that was NOT supposed to happen 😭",
+            "okay I see the vision"
+        ],
+
+        frenchfries: [
+            "rating this a 6.7",
+            "okay maybe 7.2 now",
+            "solid stream so far",
+            "the gameplay is decent",
+            "im giving that one an 8",
+            "chat what are we rating this",
+            "honestly not bad",
+            "this deserves a higher rating",
+            "6.9 after that one",
+            "I might have to raise the score"
+        ],
+
+        jaymat1210: [
+            "I'm the goat",
+            "easy",
+            "I could do this first try",
+            "chat knows I'm right",
+            "absolute cinema",
+            "W",
+            "bro trust me",
+            "this is peak",
+            "too easy",
+            "goat behavior"
+        ],
+
+        scrappy: [
+            "dream of the year watch jobs minecraft",
+            "any minecraft players here",
+            "this is actually entertaining",
+            "what game next",
+            "chat is moving fast",
+            "someone clip that",
+            "that was funny",
+            "we need another challenge",
+            "okay what are we playing",
+            "minecraft mentioned 🗣️"
+        ]
+
+    };
+
+
+    /* =====================================================
+       HUMAN MESSAGES
+       ===================================================== */
+
+    const humanMessages = {
+
+        Denise: [
+            "wait this is actually fun 😭",
+            "what game are we playing next?",
+            "LOL",
+            "I wasn't expecting that",
+            "the chat is moving so fast",
+            "okay I'm invested now",
+            "that was actually good",
+            "can we do the obby next?",
+            "bro 😭",
+            "W stream"
+        ],
+
+        Alymer: [
+            "yo the stream is finally up",
+            "this looks clean",
+            "what happened 💀",
+            "nahhh",
+            "I vote obby",
+            "that was actually crazy",
+            "chat what are we doing",
+            "someone explain what just happened",
+            "this is kinda fire",
+            "W"
+        ],
+
+        Jayden: [
+            "Roblox has way too many games bro",
+            "this is why we picked Roblox",
+            "the stream idea is actually working",
+            "I vote simulator",
+            "chat interaction is important fr",
+            "that was clean",
+            "we should try something harder",
+            "okay that was unexpected",
+            "W gameplay"
+        ],
+
+        Keysha: [
+            "HELLO CHAT 👋",
+            "okay everyone behave 😭",
+            "what should we play next?",
+            "I think the audience is gonna like this",
+            "the reactions are funny",
+            "this is exactly what we were talking about",
+            "wait I actually like this game",
+            "someone vote",
+            "W chat",
+            "okay that was good"
+        ],
+
+        Ash: [
+            "yo chat",
+            "we are actually live now",
+            "this took way too long 😭",
+            "okay we're cooking",
+            "what should I play next?",
+            "chat is already chaotic",
+            "nah bro",
+            "I swear that wasn't intentional",
+            "W",
+            "this stream is gonna be good"
+        ]
+
+    };
+
+
+    /* =====================================================
+       GAME MESSAGES
+       ===================================================== */
+
+    const gameMessages = {
+
+        Brookhaven: [
+            "Brookhaven time",
+            "this place is huge",
+            "what are we doing first?",
+            "someone start a random scenario"
+        ],
+
+        "Obby Challenge": [
+            "OBBY TIME",
+            "this is where the stream ends 💀",
+            "good luck",
+            "no way you beat this first try"
+        ],
+
+        Simulator: [
+            "simulator arc begins",
+            "this is gonna be grindy",
+            "okay let's see how far we get",
+            "W choice"
+        ],
+
+        Adventure: [
+            "adventure time",
+            "this actually looks interesting",
+            "let's explore",
+            "what is over there?"
+        ]
+
+    };
+
+
+    /* =====================================================
+       UTILITY
+       ===================================================== */
+
+    function randomItem(array) {
+
+        return array[
+            Math.floor(Math.random() * array.length)
+        ];
 
     }
 
 
-    /* =========================
-       GAME MODAL
-    ========================= */
+    function escapeHTML(value) {
 
-    function openGame(index) {
+        const element =
+            document.createElement("div");
 
-        selectedGame = games[index];
+        element.textContent = value;
 
-        $("#modalTitle").textContent =
-            selectedGame.name;
-
-        $("#modalDescription").textContent =
-            selectedGame.description;
-
-        $("#modalType").textContent =
-            selectedGame.type.toUpperCase();
-
-        $("#modalEnergy").textContent =
-            selectedGame.energy;
-
-        $("#modalBest").textContent =
-            selectedGame.best;
-
-        $("#gameModal").classList.add("open");
+        return element.innerHTML;
 
     }
 
-
-    /* =========================
-       UPDATE STREAM UI
-    ========================= */
-
-    function updateStreamUI() {
-
-        $("#statStatus").textContent =
-            isLive ? "LIVE" : "OFFLINE";
-
-        $("#statStatusText").textContent =
-            isLive
-                ? "Broadcasting now"
-                : "Not broadcasting";
-
-
-        $("#viewerCount").textContent =
-            isLive
-                ? viewerCount.toLocaleString()
-                : "0";
-
-        $("#sideViewerCount").textContent =
-            isLive
-                ? viewerCount.toLocaleString()
-                : "0";
-
-
-        $("#sideStatus").textContent =
-            isLive
-                ? "LIVE"
-                : "OFFLINE";
-
-
-        $("#streamTimer").textContent =
-            formatTime(streamSeconds);
-
-
-        $("#chatUsers").textContent =
-            isLive
-                ? `${viewerCount.toLocaleString()} WATCHING`
-                : "0 WATCHING";
-
-
-        $("#likeCount").textContent =
-            likes;
-
-        $("#sideLikeCount").textContent =
-            likes;
-
-
-        $("#offlineScreen")
-            .classList.toggle(
-                "live",
-                isLive
-            );
-
-
-        $("#startStream").disabled =
-            isLive;
-
-        $("#startStream").textContent =
-            isLive
-                ? "STREAM LIVE"
-                : "Start Stream";
-
-
-        $("#chatInput").disabled =
-            !isLive;
-
-        $("#chatInput").placeholder =
-            isLive
-                ? "Say something..."
-                : "Go live to chat...";
-
-    }
-
-
-    /* =========================
-       TIME FORMAT
-    ========================= */
 
     function formatTime(totalSeconds) {
 
-        const hours =
-            Math.floor(totalSeconds / 3600);
-
         const minutes =
-            Math.floor(
-                (totalSeconds % 3600) / 60
-            );
+            Math.floor(totalSeconds / 60);
 
         const seconds =
             totalSeconds % 60;
 
-
-        if (hours > 0) {
-
-            return [
-                hours,
-                minutes,
-                seconds
-            ]
-                .map(
-                    value =>
-                        String(value).padStart(2, "0")
-                )
-                .join(":");
-
-        }
-
-
-        return [
-            minutes,
-            seconds
-        ]
-            .map(
-                value =>
-                    String(value).padStart(2, "0")
-            )
-            .join(":");
+        return (
+            String(minutes).padStart(2, "0") +
+            ":" +
+            String(seconds).padStart(2, "0")
+        );
 
     }
 
 
-    /* =========================
-       CHAT
-    ========================= */
+    /* =====================================================
+       TOAST
+       ===================================================== */
 
-    function addChatMessage(
-        username,
-        message,
-        isBot = false
-    ) {
+    function showToast(message) {
 
-        $("#emptyChat")?.remove();
-
-
-        const messageElement =
+        const toast =
             document.createElement("div");
 
-        messageElement.className =
-            "chat-message";
+        toast.className = "toast";
+
+        toast.textContent = message;
+
+        toastContainer.appendChild(toast);
 
 
-        messageElement.innerHTML = `
+        setTimeout(() => {
 
-            <div class="chat-name">
+            toast.style.opacity = "0";
 
-                ${escapeHTML(username)}
+            toast.style.transform =
+                "translateX(10px)";
 
-                ${
-                    isBot
-                        ? `<span class="bot-badge">BOT</span>`
-                        : ""
-                }
+            setTimeout(() => {
+                toast.remove();
+            }, 200);
 
-            </div>
-
-            <div class="chat-text">
-                ${escapeHTML(message)}
-            </div>
-
-        `;
-
-
-        $("#chatMessages")
-            .appendChild(messageElement);
-
-
-        $("#chatMessages").scrollTop =
-            $("#chatMessages").scrollHeight;
+        }, 2400);
 
     }
 
 
-    /* =========================
-       BOT CHAT
-    ========================= */
+    /* =====================================================
+       CHAT MESSAGE
+       ===================================================== */
 
-    function sendBotMessage() {
+    function addChatMessage(
+        name,
+        text,
+        type = "human"
+    ) {
 
-        if (!isLive) {
-            return;
+        if (chatEmpty) {
+            chatEmpty.remove();
         }
-
-
-        const conversation =
-            conversations[
-                currentConversation
-            ];
 
 
         const message =
-            conversation[currentMessage];
+            document.createElement("div");
+
+        message.className =
+            `chat-message ${type}`;
 
 
-        addChatMessage(
-            message[0],
-            message[1],
-            true
-        );
+        const letter =
+            name.charAt(0).toUpperCase();
 
 
-        currentMessage++;
+        const role =
+            type === "bot"
+                ? "BOT"
+                : "HUMAN";
 
 
-        if (
-            currentMessage >=
-            conversation.length
-        ) {
-
-            currentMessage = 0;
-
-            currentConversation =
-                (currentConversation + 1)
-                % conversations.length;
-
-        }
+        const roleClass =
+            type === "bot"
+                ? "bot"
+                : "human";
 
 
-        botTimer =
-            setTimeout(
-                sendBotMessage,
-                1800 +
-                Math.random() * 2200
-            );
+        message.innerHTML = `
+
+            <div class="chat-avatar">
+                ${letter}
+            </div>
+
+            <div>
+
+                <div class="chat-author">
+
+                    <strong>
+                        ${escapeHTML(name)}
+                    </strong>
+
+                    <span class="role ${roleClass}">
+                        ${role}
+                    </span>
+
+                    <time>now</time>
+
+                </div>
+
+                <div class="chat-text">
+                    ${escapeHTML(text)}
+                </div>
+
+            </div>
+        `;
+
+
+        chatMessages.appendChild(message);
+
+
+        chatMessages.scrollTop =
+            chatMessages.scrollHeight;
+
+
+        messagesSent++;
+
+        statMessages.textContent =
+            messagesSent;
 
     }
 
 
-    /* =========================
-       START STREAM
-    ========================= */
+    /* =====================================================
+       INITIAL CHAT
+       ===================================================== */
 
-    function startStream() {
+    function addInitialChat() {
 
-        if (isLive) {
+        const openingMessages = [
+
+            {
+                name: "drossog",
+                text: "tuff",
+                type: "bot"
+            },
+
+            {
+                name: "frenchfries",
+                text: "rating this a 6.7",
+                type: "bot"
+            },
+
+            {
+                name: "jaymat1210",
+                text: "I'm the goat",
+                type: "bot"
+            },
+
+            {
+                name: "scrappy",
+                text: "dream of the year watch jobs minecraft",
+                type: "bot"
+            }
+
+        ];
+
+
+        openingMessages.forEach((message, index) => {
+
+            setTimeout(() => {
+
+                addChatMessage(
+                    message.name,
+                    message.text,
+                    message.type
+                );
+
+            }, index * 450);
+
+        });
+
+
+        setTimeout(() => {
+
+            addChatMessage(
+                "Keysha",
+                "HELLO CHAT 👋",
+                "human"
+            );
+
+        }, 2100);
+
+
+        setTimeout(() => {
+
+            addChatMessage(
+                "Ash",
+                "yo chat",
+                "human"
+            );
+
+        }, 2750);
+
+
+        setTimeout(() => {
+
+            addChatMessage(
+                "Jayden",
+                "Roblox has way too many games bro",
+                "human"
+            );
+
+        }, 3450);
+
+    }
+
+
+    /* =====================================================
+       RANDOM CHAT
+       ===================================================== */
+
+    function sendRandomChat() {
+
+        if (!streamStarted) {
             return;
         }
 
 
-        isLive = true;
-
-        streamSeconds = 0;
-
-        viewerCount =
-            1100 +
-            Math.floor(
-                Math.random() * 400
-            );
+        const shouldBot =
+            Math.random() < 0.48;
 
 
-        currentConversation =
-            Math.floor(
-                Math.random() *
-                conversations.length
-            );
+        if (shouldBot) {
 
-        currentMessage = 0;
+            const bot =
+                randomItem(bots);
 
-
-        showToast(
-            "Your stream is now live."
-        );
+            const message =
+                randomItem(botMessages[bot]);
 
 
-        updateStreamUI();
+            showTyping();
 
 
-        streamTimer =
+            setTimeout(() => {
+
+                hideTyping();
+
+                addChatMessage(
+                    bot,
+                    message,
+                    "bot"
+                );
+
+            }, 650);
+
+        } else {
+
+            const human =
+                randomItem(humans);
+
+            const message =
+                randomItem(humanMessages[human]);
+
+
+            showTyping();
+
+
+            setTimeout(() => {
+
+                hideTyping();
+
+                addChatMessage(
+                    human,
+                    message,
+                    "human"
+                );
+
+            }, 700);
+
+        }
+
+    }
+
+
+    /* =====================================================
+       TYPING
+       ===================================================== */
+
+    function showTyping() {
+
+        typingIndicator.classList.add("show");
+
+    }
+
+
+    function hideTyping() {
+
+        typingIndicator.classList.remove("show");
+
+    }
+
+
+    /* =====================================================
+       START TIMER
+       ===================================================== */
+
+    function startTimer() {
+
+        clearInterval(streamTimerInterval);
+
+
+        streamTimerInterval =
             setInterval(() => {
+
+                if (!streamStarted) {
+                    return;
+                }
 
                 streamSeconds++;
 
-
-                viewerCount =
-                    Math.max(
-                        0,
-                        viewerCount +
-                        Math.floor(
-                            Math.random() * 25
-                        ) - 11
-                    );
-
-
-                updateStreamUI();
+                streamTimer.textContent =
+                    formatTime(streamSeconds);
 
             }, 1000);
 
+    }
 
-        botTimer =
-            setTimeout(
-                sendBotMessage,
-                900
-            );
+
+    /* =====================================================
+       VIEWER COUNTER
+       ===================================================== */
+
+    function startViewerCounter() {
+
+        clearInterval(viewerInterval);
+
+
+        viewerInterval =
+            setInterval(() => {
+
+                if (!streamStarted) {
+                    return;
+                }
+
+
+                const change =
+                    Math.floor(
+                        Math.random() * 9
+                    ) - 4;
+
+
+                viewers += change;
+
+
+                if (viewers < 40) {
+                    viewers = 40;
+                }
+
+
+                viewerCount.textContent =
+                    viewers;
+
+                statViewers.textContent =
+                    viewers;
+
+                sidebarViewers.textContent =
+                    `${viewers} viewers`;
+
+            }, 4000);
 
     }
 
 
-    /* =========================
-       STOP STREAM
-    ========================= */
+    /* =====================================================
+       RANDOM CHAT TIMER
+       ===================================================== */
 
-    function stopStream() {
+    function startRandomChat() {
 
-        isLive = false;
-
-        clearInterval(streamTimer);
-
-        clearTimeout(botTimer);
+        clearInterval(chatInterval);
 
 
-        streamTimer = null;
+        chatInterval =
+            setInterval(() => {
 
-        botTimer = null;
+                sendRandomChat();
 
+            }, 4500);
+
+    }
+
+
+    /* =====================================================
+       START STREAM
+       ===================================================== */
+
+    function startStream() {
+
+        if (streamStarted) {
+            stopStream();
+            return;
+        }
+
+
+        streamStarted = true;
 
         streamSeconds = 0;
 
-        viewerCount = 0;
+        viewers =
+            Math.floor(Math.random() * 25) + 85;
 
 
-        $("#chatMessages").innerHTML = `
-
-            <div
-                class="empty-chat"
-                id="emptyChat"
-            >
-
-                <div>◌</div>
-
-                <strong>
-                    The room is quiet.
-                </strong>
-
-                <span>
-                    Start the stream to open the conversation.
-                </span>
-
-            </div>
-
+        startStreamButton.innerHTML = `
+            <span>■</span>
+            End Stream
         `;
 
 
+        videoLive.textContent = "LIVE";
+
+        videoLive.classList.add("live");
+
+
+        streamStatus.innerHTML = `
+            <span></span>
+            LIVE NOW
+        `;
+
+        streamStatus.classList.add("live");
+
+
+        videoMessage.innerHTML = `
+            <div class="video-play">▶</div>
+
+            <h3>
+                BlockLive is live
+            </h3>
+
+            <p>
+                Welcome to the Roblox stream.
+            </p>
+        `;
+
+
+        viewerCount.textContent =
+            viewers;
+
+
+        sidebarStatus.textContent =
+            "Live Now";
+
+
+        sidebarViewers.textContent =
+            `${viewers} viewers`;
+
+
+        sidebarStatusBox.classList.add("live");
+
+
+        chatStatus.textContent =
+            "Live conversation";
+
+
+        statStatus.textContent =
+            "LIVE";
+
+
+        statViewers.textContent =
+            viewers;
+
+
         showToast(
-            "Stream stopped and session reset."
+            "🔴 Stream started — chat is live"
         );
 
 
-        updateStreamUI();
+        addInitialChat();
+
+        startTimer();
+
+        startViewerCounter();
+
+        startRandomChat();
 
     }
 
 
-    /* =========================
-       LIKE
-    ========================= */
+    /* =====================================================
+       STOP STREAM
+       ===================================================== */
 
-    $("#likeButton")
-        .addEventListener(
-            "click",
-            () => {
+    function stopStream() {
 
-                if (!isLive) {
-
-                    showToast(
-                        "Go live before reacting."
-                    );
-
-                    return;
-                }
+        streamStarted = false;
 
 
-                likes++;
+        clearInterval(streamTimerInterval);
 
-                localStorage.setItem(
-                    "rshLikes",
-                    likes
-                );
+        clearInterval(viewerInterval);
 
-
-                updateStreamUI();
+        clearInterval(chatInterval);
 
 
-                showToast(
-                    "Like sent to the stream."
-                );
+        startStreamButton.innerHTML = `
+            <span>▶</span>
+            Start Stream
+        `;
 
-            }
+
+        videoLive.textContent =
+            "OFFLINE";
+
+        videoLive.classList.remove("live");
+
+
+        streamStatus.innerHTML = `
+            <span></span>
+            OFFLINE
+        `;
+
+        streamStatus.classList.remove("live");
+
+
+        videoMessage.innerHTML = `
+            <div class="video-play">▶</div>
+
+            <h3>
+                Stream has ended
+            </h3>
+
+            <p>
+                Start the stream again to continue.
+            </p>
+        `;
+
+
+        viewerCount.textContent =
+            "0";
+
+
+        sidebarStatus.textContent =
+            "Offline";
+
+
+        sidebarViewers.textContent =
+            "Waiting for stream";
+
+
+        sidebarStatusBox.classList.remove("live");
+
+
+        chatStatus.textContent =
+            "Stream ended";
+
+
+        statStatus.textContent =
+            "OFFLINE";
+
+
+        statViewers.textContent =
+            "0";
+
+
+        showToast(
+            "Stream ended"
         );
 
-
-    /* =========================
-       SHARE
-    ========================= */
-
-    $("#shareButton")
-        .addEventListener(
-            "click",
-            async () => {
-
-                try {
-
-                    await navigator.clipboard
-                        .writeText(
-                            window.location.href
-                        );
-
-                    showToast(
-                        "Stream link copied."
-                    );
-
-                } catch {
-
-                    showToast(
-                        "Share link ready."
-                    );
-
-                }
-
-            }
-        );
+    }
 
 
-    /* =========================
-       CHAT FORM
-    ========================= */
+    /* =====================================================
+       START STREAM BUTTON
+       ===================================================== */
 
-    $("#chatForm")
-        .addEventListener(
-            "submit",
-            event => {
-
-                event.preventDefault();
+    startStreamButton.addEventListener(
+        "click",
+        startStream
+    );
 
 
-                if (!isLive) {
+    /* =====================================================
+       SEND CHAT
+       ===================================================== */
 
-                    showToast(
-                        "Chat is locked while offline."
-                    );
+    function sendUserMessage() {
 
-                    return;
-                }
-
-
-                const message =
-                    $("#chatInput")
-                        .value
-                        .trim();
+        const text =
+            chatInput.value.trim();
 
 
-                if (!message) {
-                    return;
-                }
+        if (!text) {
+            return;
+        }
 
 
-                addChatMessage(
-                    "You",
-                    message,
-                    false
-                );
+        if (!streamStarted) {
 
-
-                $("#chatInput").value = "";
-
-            }
-        );
-
-
-    /* =========================
-       POLL
-    ========================= */
-
-    const pollVotes = {
-        optionA: 0,
-        optionB: 0,
-        optionC: 0
-    };
-
-
-    $$("[data-poll]").forEach(
-        button => {
-
-            button.addEventListener(
-                "click",
-                () => {
-
-                    if (!isLive) {
-
-                        showToast(
-                            "Start the stream before voting."
-                        );
-
-                        return;
-                    }
-
-
-                    const option =
-                        button.dataset.poll;
-
-
-                    pollVotes[option]++;
-
-
-                    const total =
-                        Object.values(
-                            pollVotes
-                        )
-                        .reduce(
-                            (sum, value) =>
-                                sum + value,
-                            0
-                        );
-
-
-                    $$("[data-poll]")
-                        .forEach(
-                            pollButton => {
-
-                                const key =
-                                    pollButton.dataset.poll;
-
-                                const percentage =
-                                    Math.round(
-                                        (
-                                            pollVotes[key] /
-                                            total
-                                        ) * 100
-                                    );
-
-
-                                pollButton
-                                    .querySelector("b")
-                                    .textContent =
-                                    `${percentage}%`;
-
-                            }
-                        );
-
-
-                    $("#pollHint").textContent =
-                        `${total} vote${
-                            total === 1
-                                ? ""
-                                : "s"
-                        } recorded`;
-
-
-                    showToast(
-                        "Vote counted."
-                    );
-
-                }
+            showToast(
+                "Start the stream before chatting"
             );
+
+            return;
+
+        }
+
+
+        addChatMessage(
+            "Ash",
+            text,
+            "human"
+        );
+
+
+        chatInput.value = "";
+
+
+        setTimeout(() => {
+
+            const responses = [
+                "W",
+                "fr",
+                "real",
+                "😭",
+                "that's actually true",
+                "chat agrees",
+                "LMAO",
+                "nahhh"
+            ];
+
+
+            const responder =
+                Math.random() < .5
+                    ? "Denise"
+                    : "Keysha";
+
+
+            addChatMessage(
+                responder,
+                randomItem(responses),
+                "human"
+            );
+
+        }, 900);
+
+    }
+
+
+    sendChatButton.addEventListener(
+        "click",
+        sendUserMessage
+    );
+
+
+    chatInput.addEventListener(
+        "keydown",
+        event => {
+
+            if (event.key === "Enter") {
+                sendUserMessage();
+            }
 
         }
     );
 
 
-    /* =========================
-       AUDIENCE
-    ========================= */
+    /* =====================================================
+       LIKE BUTTON
+       ===================================================== */
 
-    const audienceData = {
+    likeButton.addEventListener(
+        "click",
+        () => {
 
-        core: {
-            title: "Core viewers",
-            text: "These are viewers who already understand your style and are most likely to participate in polls, chat, and recurring stream activities.",
-            stat: "High interaction",
-            best: "Chat + community"
-        },
+            if (liked) {
 
-        new: {
-            title: "New viewers",
-            text: "New viewers need context quickly. Make the game, goal, and reason to stay obvious within the first few moments.",
-            stat: "Discovery",
-            best: "Clear hooks"
-        },
+                likes--;
 
-        returning: {
-            title: "Returning viewers",
-            text: "Returning viewers are familiar with the stream. Recurring challenges and community choices give them another reason to come back.",
-            stat: "Strong loyalty",
-            best: "Recurring segments"
+                liked = false;
+
+                likeButton.classList.remove(
+                    "liked"
+                );
+
+            } else {
+
+                likes++;
+
+                liked = true;
+
+                likeButton.classList.add(
+                    "liked"
+                );
+
+                showToast(
+                    "♥ Stream liked"
+                );
+
+            }
+
+
+            likeCount.textContent =
+                likes;
+
+            statLikes.textContent =
+                likes;
+
         }
-
-    };
-
-
-    function showAudience(type) {
-
-        const data =
-            audienceData[type];
+    );
 
 
-        $("#audienceDetail").innerHTML = `
+    /* =====================================================
+       GAME SELECTOR
+       ===================================================== */
 
-            <h3>
-                ${data.title}
-            </h3>
-
-            <p>
-                ${data.text}
-            </p>
-
-            <div class="audience-stat">
-
-                <span>
-                    ${data.stat}
-                </span>
-
-                <strong>
-                    ${data.best}
-                </strong>
-
-            </div>
-
-        `;
-
-    }
-
-
-    $$("[data-audience]").forEach(
-        button => {
+    document
+        .querySelectorAll(".game-option")
+        .forEach(button => {
 
             button.addEventListener(
                 "click",
                 () => {
 
-                    $$("[data-audience]")
-                        .forEach(
-                            item =>
-                                item.classList.remove(
-                                    "active"
-                                )
-                        );
+                    selectedGame =
+                        button.dataset.game;
+
+
+                    document
+                        .querySelectorAll(".game-option")
+                        .forEach(item => {
+                            item.classList.remove(
+                                "active"
+                            );
+                        });
 
 
                     button.classList.add(
@@ -1078,167 +1088,373 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-                    showAudience(
-                        button.dataset.audience
+                    currentGame.textContent =
+                        selectedGame;
+
+
+                    streamTitle.textContent =
+                        `${selectedGame} — Project Stream`;
+
+
+                    showToast(
+                        `Game changed to ${selectedGame}`
                     );
 
+
+                    if (streamStarted) {
+
+                        addChatMessage(
+                            "Ash",
+                            `okay chat, we're playing ${selectedGame}`,
+                            "human"
+                        );
+
+
+                        setTimeout(() => {
+
+                            addChatMessage(
+                                randomItem(bots),
+                                randomItem(
+                                    gameMessages[selectedGame]
+                                ),
+                                "bot"
+                            );
+
+                        }, 750);
+
+                    }
+
                 }
+            );
+
+        });
+
+
+    /* =====================================================
+       POLL
+       ===================================================== */
+
+    document
+        .querySelectorAll(".poll-option")
+        .forEach(option => {
+
+            option.addEventListener(
+                "click",
+                () => {
+
+                    const game =
+                        option.dataset.option;
+
+
+                    showToast(
+                        `Vote recorded for ${game}`
+                    );
+
+
+                    if (streamStarted) {
+
+                        addChatMessage(
+                            "Keysha",
+                            `I voted for ${game}`,
+                            "human"
+                        );
+
+                    }
+
+                }
+            );
+
+        });
+
+
+    /* =====================================================
+       SHARE
+       ===================================================== */
+
+    shareButton.addEventListener(
+        "click",
+        async () => {
+
+            const url =
+                window.location.href;
+
+
+            try {
+
+                await navigator.clipboard.writeText(
+                    url
+                );
+
+                showToast(
+                    "Stream link copied"
+                );
+
+            } catch {
+
+                showToast(
+                    "Stream link ready to share"
+                );
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       NOTIFY
+       ===================================================== */
+
+    notifyButton.addEventListener(
+        "click",
+        () => {
+
+            notificationsEnabled =
+                !notificationsEnabled;
+
+
+            if (notificationsEnabled) {
+
+                notifyButton.textContent =
+                    "✓ Notifications On";
+
+                showToast(
+                    "Stream notifications enabled"
+                );
+
+            } else {
+
+                notifyButton.textContent =
+                    "♢ Notify Me";
+
+                showToast(
+                    "Stream notifications disabled"
+                );
+
+            }
+
+        }
+    );
+
+
+    notificationButton.addEventListener(
+        "click",
+        () => {
+
+            showToast(
+                streamStarted
+                    ? "You are already watching the live stream"
+                    : "No new stream notifications"
             );
 
         }
     );
 
 
-    /* =========================
-       GAME SEARCH
-    ========================= */
+    /* =====================================================
+       CLEAR CHAT
+       ===================================================== */
 
-    $("#gameSearch")
-        .addEventListener(
-            "input",
-            renderGames
-        );
+    clearChatButton.addEventListener(
+        "click",
+        () => {
 
+            chatMessages.innerHTML = `
 
-    $("#gameFilter")
-        .addEventListener(
-            "change",
-            renderGames
-        );
+                <div class="chat-empty">
 
+                    <div>💬</div>
 
-    /* =========================
-       SELECT GAME
-    ========================= */
+                    <strong>
+                        Chat cleared
+                    </strong>
 
-    $("#selectGame")
-        .addEventListener(
-            "click",
-            () => {
+                    <span>
+                        New messages will appear
+                        when the stream continues.
+                    </span>
 
-                $("#previewGame")
-                    .textContent =
-                    selectedGame.name;
+                </div>
+
+            `;
 
 
-                $("#currentGame")
-                    .textContent =
-                    selectedGame.name;
+            messagesSent = 0;
+
+            statMessages.textContent =
+                "0";
 
 
-                $("#gameModal")
-                    .classList.remove(
-                        "open"
-                    );
+            showToast(
+                "Chat cleared"
+            );
 
+        }
+    );
+
+
+    /* =====================================================
+       MUTE
+       ===================================================== */
+
+    muteButton.addEventListener(
+        "click",
+        () => {
+
+            muted = !muted;
+
+
+            if (muted) {
+
+                muteButton.textContent =
+                    "🔇";
 
                 showToast(
-                    `${selectedGame.name} selected.`
+                    "Stream audio muted"
+                );
+
+            } else {
+
+                muteButton.textContent =
+                    "🔊";
+
+                showToast(
+                    "Stream audio unmuted"
                 );
 
             }
-        );
+
+        }
+    );
 
 
-    /* =========================
-       CLOSE MODAL
-    ========================= */
+    /* =====================================================
+       FULLSCREEN
+       ===================================================== */
 
-    $$("[data-close]").forEach(
-        button => {
+    fullscreenButton.addEventListener(
+        "click",
+        () => {
+
+            const video =
+                document.querySelector(".video");
+
+
+            if (!document.fullscreenElement) {
+
+                if (video.requestFullscreen) {
+
+                    video.requestFullscreen();
+
+                } else {
+
+                    showToast(
+                        "Fullscreen isn't supported here"
+                    );
+
+                }
+
+            } else {
+
+                document.exitFullscreen();
+
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       READ MORE
+       ===================================================== */
+
+    document
+        .querySelectorAll(".read-more")
+        .forEach(button => {
 
             button.addEventListener(
                 "click",
                 () => {
 
-                    $(
-                        `#${button.dataset.close}`
-                    )
-                        .classList.remove(
+                    const content =
+                        button.previousElementSibling;
+
+
+                    const isOpen =
+                        content.classList.toggle(
                             "open"
                         );
+
+
+                    button.textContent =
+                        isOpen
+                            ? "Show less ↑"
+                            : "Read full research →";
 
                 }
             );
 
-        }
-    );
+        });
 
 
-    $("#gameModal")
-        .addEventListener(
-            "click",
-            event => {
+    /* =====================================================
+       NAVIGATION ACTIVE STATE
+       ===================================================== */
 
-                if (
-                    event.target.id ===
-                    "gameModal"
-                ) {
+    const navLinks =
+        document.querySelectorAll(".nav-link");
 
-                    event.currentTarget
-                        .classList.remove(
-                            "open"
+
+    const sections =
+        document.querySelectorAll(
+            "section[id]"
+        );
+
+
+    const observer =
+        new IntersectionObserver(
+            entries => {
+
+                entries.forEach(entry => {
+
+                    if (!entry.isIntersecting) {
+                        return;
+                    }
+
+
+                    navLinks.forEach(link => {
+
+                        link.classList.remove(
+                            "active"
                         );
 
-                }
 
+                        if (
+                            link.getAttribute("href") ===
+                            `#${entry.target.id}`
+                        ) {
+
+                            link.classList.add(
+                                "active"
+                            );
+
+                        }
+
+                    });
+
+                });
+
+            },
+            {
+                rootMargin: "-30% 0px -60% 0px"
             }
         );
 
 
-    /* =========================
-       THEME
-    ========================= */
+    sections.forEach(section => {
 
-    $("#themeToggle")
-        .addEventListener(
-            "click",
-            () => {
+        observer.observe(section);
 
-                document.body
-                    .classList.toggle(
-                        "light"
-                    );
-
-
-                $("#themeToggle")
-                    .textContent =
-                    document.body.classList.contains(
-                        "light"
-                    )
-                        ? "☀"
-                        : "☾";
-
-            }
-        );
-
-
-    /* =========================
-       BUTTONS
-    ========================= */
-
-    $("#startStream")
-        .addEventListener(
-            "click",
-            startStream
-        );
-
-
-    $("#stopStream")
-        .addEventListener(
-            "click",
-            stopStream
-        );
-
-
-    /* =========================
-       INITIALIZE
-    ========================= */
-
-    renderGames();
-
-    showAudience("core");
-
-    updateStreamUI();
+    });
 
 });
